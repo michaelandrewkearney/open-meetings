@@ -1,0 +1,1106 @@
+<!DOCTYPE html><html style="height: 100%;"><head>
+    <title>Rhode Island Department of State</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 128x128 -->
+    
+    <link rel="shortcut icon" type="image/ico" href="/Content/img/WebCoa.png">
+    <link href="/Content/public-bootstrap.min.css" rel="stylesheet">
+    <link href="/Content/jquery.alerts.css" rel="stylesheet">
+    <link href="/Content/Site.css" rel="stylesheet">
+    <link href="/Content/bootstrap-datepicker.css" rel="stylesheet">
+    <link href="/Content/bootstrap-timepicker.css" rel="stylesheet">
+    <!-- DataTables Core CSS -->
+    <link href="/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet">
+    <link href="/Content/DataTables/css/responsive.dataTables.css" rel="stylesheet">
+
+    <style>
+        .panel-primary > .panel-heading {
+            color: #fff;
+            background-color: #112e51;
+            border-color: #fff;
+        }
+
+        .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+            color: #fff !important;
+            cursor: default;
+            background-color: #205493;
+            border: 1px solid #fff;
+            /*border-bottom-color: transparent;*/
+            /*border:none !important;*/
+            border-radius: 0px 0px 0 0 !important;
+        }
+
+        .nav-tabs > li > a {
+            margin-right: 0px !important;
+            color: #fff !important;
+        }
+
+        .subtab a {
+            color: #fff !important;
+        }
+
+        hr {
+            border-top: 1px solid #000 !important;
+        }
+
+        .body-content {
+            min-height: 735px;
+        }
+
+        .nav-tabs > li > a:hover {
+            color: #205493 !important;
+            border-radius: 0px 0px 0 0 !important;
+        }
+
+        .row {
+            max-width: 120rem;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .body-content {
+            min-height: 735px !important;
+        }
+
+        #site-title {
+            font-family: "Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif !important;
+        }
+
+            #site-title .agency-name, #site-title .agency-head-title {
+                font-size: 0.3em !important;
+            }
+
+            #site-title .agency-head-name {
+                font-size: 0.5em !important;
+            }
+
+            #site-title .agency-head-title {
+                font-size: 0.3em !important;
+            }
+
+        .sos-tile-container {
+            padding: 5px 0px 0px 5px;
+            /*padding: 5px 3px 0px 3px;*/
+        }
+
+        .sos-tile {
+            display: table;
+            width: 100%;
+            height: 102px;
+            position: relative;
+            color: #FFF;
+            cursor: pointer;
+        }
+
+        .sos-blue {
+            background-color: #298DCB;
+        }
+
+        .sos-tile-caption {
+            display: table-cell;
+            vertical-align: middle;
+            padding-left: 10px;
+            font-size: 1.8rem;
+            width: 80%;
+            text-shadow: 3px 1px 2px rgba(76, 76, 76, 0.8);
+        }
+
+        .sos-blue, .sos-purple, .sos-green, .sos-red, .sos-orange {
+            background: #FFF none repeat scroll 0% 0%; /**color will be overridden*/
+            color: #FFF;
+        }
+
+        .sos-blue {
+            background-color: #298DCB;
+        }
+
+            .sos-blue:hover {
+                background-color: #1074B2;
+            }
+
+            .trans, .sos-tile-caption, .sos-tile-icon, .sos-blue, .sos-blue:hover {
+                -webkit-transition: all 0.5s ease 0s;
+                -moz-transition: all 0.5s ease 0s;
+                -o-transition: all 0.5s ease 0s;
+                transition: all 0.5s ease 0s;
+            }
+
+        .dir-title {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 18px !important;
+            font-family: Helvetica, Arial !important;
+        }
+
+        .sos-tile a {
+            color: #FFF;
+        }
+
+        h1, h2, h3, h4, h5, h6, legend, label, #site-title {
+            font-family: "Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif !important;
+        }
+
+        h1, h2, h3, h4, h5, h6, legend {
+            /*color: rgba(12, 61, 111,1) !important;*/
+        }
+
+        p.tree-intro {
+            margin-bottom: 0em !important;
+        }
+
+        ul.tree-intro {
+            margin-left: 3em !important;
+        }
+
+        p {
+            margin-bottom: 1rem !important;
+            font-size: inherit !important;
+            line-height: 1.6 !important;
+            text-rendering: optimizeLegibility !important;
+        }
+
+        .card.sos_lblue {
+            background-color: #f1f1f1;
+            color: #205493;
+            font-size: 1.1em;
+        }
+
+        .datepicker-legend {
+            border-color: #E9E9E9 !important;
+            background: #E9E9E9 !important;
+            color: white;
+            width: 20px;
+            height: 20px;
+            float: left;
+            font-family: "Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif !important;
+        }
+
+        .legend-span {
+            font-family: "Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif !important;
+        }
+
+        .button {
+            background-color: hsl(204, 78%, 41%);
+            color: hsl(0, 0%, 100%);
+            font-family: sans-serif;
+        }
+
+        .label {
+            /*display: block !important;*/
+            margin: 0 !important;
+            font-weight: normal !important;
+            line-height: 1.8;
+        }
+
+        .sos-tile-icon {
+            position: absolute;
+            top: 30px;
+            right: 20px;
+            font-size: 20px;
+        }
+
+        .table thead {
+            background: hsl(0, 0%, 95%) !important;
+            color: hsl(0, 0%, 4%) !important;
+            border: 1px solid hsl(0, 0%, 95%) !important;
+        }
+
+        .table tbody tr:nth-child(even) {
+            border-bottom: 0;
+            background-color: hsl(0, 0%, 95%);
+        }
+
+        .table a {
+            color: hsl(0, 0%, 4%);
+        }
+
+        #site-title {
+            font-family: "Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif !important;
+        }
+
+            #site-title .agency-name, #site-title .agency-head-title {
+                font-size: 0.3em !important;
+            }
+
+            #site-title .agency-head-name {
+                font-size: 0.5em !important;
+            }
+
+            #site-title .agency-head-title {
+                font-size: 0.3em !important;
+            }
+
+        .DashboardButton {
+            background-color: #112e51;
+            color: #fff !important;
+            text-align: center;
+            padding: 10px 0px 10px 0px;
+        }
+    </style>
+
+    <script src="/Scripts/jquery-2.2.4.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/Scripts/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/Scripts/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script src="/Scripts/bootstrap-timepicker.js" type="text/javascript"></script>
+    <script src="/Scripts/Validate.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery.alerts.js" type="text/javascript"></script>
+    <script src="/Scripts/bootstrap.js" type="text/javascript"></script>
+    <!-- DataTables Js -->
+    <script src="/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="/Scripts/DataTables/dataTables.responsive.js"></script>
+    <script src="/Scripts/jquery.inputmask.bundle.js"></script><style type="text/css">span.im-caret {
+    -webkit-animation: 1s blink step-end infinite;
+    animation: 1s blink step-end infinite;
+}
+
+@keyframes blink {
+    from, to {
+        border-right-color: black;
+    }
+    50% {
+        border-right-color: transparent;
+    }
+}
+
+@-webkit-keyframes blink {
+    from, to {
+        border-right-color: black;
+    }
+    50% {
+        border-right-color: transparent;
+    }
+}
+
+span.im-static {
+    color: grey;
+}
+
+div.im-colormask {
+    display: inline-block;
+    border-style: inset;
+    border-width: 2px;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+div.im-colormask > input {
+    position: absolute;
+    display: inline-block;
+    background-color: transparent;
+    color: transparent;
+    -webkit-appearance: caret;
+    -moz-appearance: caret;
+    appearance: caret;
+    border-style: none;
+    left: 0; /*calculated*/
+}
+
+div.im-colormask > input:focus {
+    outline: none;
+}
+
+div.im-colormask > input::-moz-selection{
+    background: none;
+}
+
+div.im-colormask > input::selection{
+    background: none;
+}
+div.im-colormask > input::-moz-selection{
+    background: none;
+}
+
+div.im-colormask > div {
+    color: black;
+    display: inline-block;
+    width: 100px; /*calculated*/
+}</style>
+    <link href="/Content/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        $("a[href='#top']").click(function () {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            return false;
+        });
+    </script>
+<link type="text/css" rel="stylesheet" charset="UTF-8" href="https://www.gstatic.com/_/translate_http/_/ss/k=translate_http.tr.69JJaQ5G5xA.L.W.O/d=0/rs=AN8SPfpC36MIoWPngdVwZ4RUzeJYZaC7rg/m=el_main_css"><script type="text/javascript" charset="UTF-8" src="https://translate.googleapis.com/_/translate_http/_/js/k=translate_http.tr.en_US.rq5EqCXBzRI.O/d=1/exm=el_conf/ed=1/rs=AN8SPfqCcuFldCyiz7zVQdNKLkyOIIgpkA/m=el_main"></script></head>
+
+<body style="position: relative; min-height: 100%; top: 0px;">
+    <!-- Site Header -->
+
+
+<input id="topmenuId" name="topmenuId" type="hidden" value="">
+<input id="hdnAppFlag" name="hdnAppFlag" type="hidden" value="False">
+<header role="banner" id="site-header" style="background: #205493">
+    <div id="site-disclaimer-banner">
+        <div class="row">
+            <div id="site-official" class="small-12 medium-6 columns">
+                <div class="v-align-block">
+                    <a href="#" title="Rhode Island state website." style="cursor:default !important">
+                        <img class="v-align-image" src="/Content/img/statecoabw-footer.png" alt="Image of the Rhode Island coat of arms.">
+                        <div class="v-align-text">
+                            <span class="v-align-text-line">
+                                An Official Rhode Island State Website.
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="site-banner" class="row column hide-for-small-only">
+        <div class="col-md-9 col-sm-9 col-lg-9 v-align-block site-title-block">
+            <a title="Back to the Secretary of State homepage.">
+                <img id="site-logo" class="v-align-image" src="/Content/img/WebCoa.png" alt="An image of Gregg M. Amore with the Rhode Island coat of arms in the background.">
+                <div id="site-title" class="v-align-text">
+                    <span class="v-align-text-line agency-name">
+                        Rhode Island Department of State
+                    </span>
+                    <span class="v-align-text-line agency-head-name">
+                        Gregg M. Amore
+                    </span>
+                    <span class="v-align-text-line agency-head-title">
+                        Secretary of State
+                    </span>
+                </div>
+            </a>
+            
+        </div>
+        <div class="col-md-3 col-sm-3 col-lg-3 right">
+            <div id="google_translate_element"><div class="skiptranslate goog-te-gadget" dir="ltr" style="display: none;"><div id=":0.targetLanguage"><select class="goog-te-combo" aria-label="Language Translate Widget"></select></div>Powered by <span style="white-space:nowrap"><a class="VIpgJd-ZVi9od-l4eHX-hSRGPd" href="https://translate.google.com" target="_blank"><img src="https://www.gstatic.com/images/branding/googlelogo/1x/googlelogo_color_42x16dp.png" width="37px" height="14px" style="padding-right: 3px" alt="Google Translate">Translate</a></span></div></div>
+        </div>
+    </div>
+        <nav class="navbar navbar-default navbar-static-top" role="navigation">
+            <div id="site-navigation" class="navbar-inner" style="height:50px !important;  font-size: 1.1em; font-weight: 700;vertical-align:middle;padding: 7px;">
+                <div id="">
+                    <div class="container" style="padding-left:0px !important">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+                        <div class="collapse navbar-collapse" id="myNavbar" style="background: #112e51;">
+                            <ul class="nav navbar-nav">
+                   
+                                <li class="menu-text" style="display:none;" role="menuitem"><img alt="Image of the Rhode Island coat of arms." src="/Content/img/WebCoa.png"></li>
+                                <li role="menuitem">
+                                    <a href="https://sos.ri.gov/divisions/business-services" title="Business Services homepage.">Business Services</a>
+                                </li>
+                                <li role="menuitem"><a href="https://vote.sos.ri.gov" title="Elections homepage.">Elections</a></li>
+                                <li role="menuitem"><a href="https://sos.ri.gov/divisions/civics-and-education" title="Civics and Education homepage.">Civics and Education</a></li>
+                                <li role="menuitem"><a href="https://sos.ri.gov/divisions/open-government-center" title="Open Government homepage.">Open Government</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+</header>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+    $(document).ready(function () {
+        $('ul.nav li.dropdown').hover(function () {
+            $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(000);
+        }, function () {
+            $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(000);
+        });
+
+        //$(".chzn-select").chosen();
+    });
+
+    function signOff() {
+        jConfirm('Are you sure you want to sign off from the portal?', 'Sign Off', function (r) {
+            if (r) {
+                $.ajax({
+                    url: '/Admin/SignOff?id=' + Math.random(),
+                    type: 'GET',
+                    success: function (data) {
+                        if ($("#hdnAppFlag").val() == 'True') {
+                            window.location.href = '/Login/Login';
+                        }
+                        return true;
+                    },
+                    error: function (err) {
+                        jAlert('Error.', '');
+                        return false;
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        });
+        return false;
+    }
+
+    function TabEnable() {
+        if (document.getElementById("topmenuId") != null && document.getElementById("topmenuId").value != "") {
+            TopMenuInfo(document.getElementById("topmenuId").value);
+        }
+    }
+
+    function TopMenuInfo(id) {
+        $('#topNav li').removeClass('selected');
+        var activeTab = "#topNav li:nth-child(" + id.substring(1, 3) + ")";
+        $(activeTab).addClass('selected');
+        $('.dropdown-menu li').removeClass('selected');
+        $('#nav-logout li').removeClass('selected');
+    }
+
+    function ChangePubliBody(obj) {
+        window.location.href = "/Admin/GetLogonDetails?EntityID=" + obj;
+        return false;
+    }
+</script>
+<style>
+    #site-header {
+        background-color: #205493;
+    }
+
+   .navbar-nav{
+       margin:0px !important;
+   }
+        #site-header, #site-header a, #site-header a h1 {
+            color: #ffffff;
+        }
+
+    #site-disclaimer-banner {
+        color: #000000;
+        font-size: 0.8em;
+        background-color: #ffffff;
+    }
+
+    .navbar-inne-custom {
+        height: 2px;
+        min-height: 2px !important;
+        background-color: #112e51;
+    }
+
+    .goog-te-combo {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    .dropdown-menu {
+        font-size: 13px !important;
+        font-weight: bold;
+        padding: 1px 0;
+        margin: 2px 0 0;
+        min-width: 195px !important;
+    }
+
+        .dropdown-menu .divider {
+            margin: 2px 0;
+        }
+
+    .navbar-default .navbar-nav > li > a {
+        color: #fff !important;
+        font-weight: bold !important;
+    }
+
+    .dropdown-menu > li > a {
+        color: #FFF !important;
+    }
+
+    .navbar-nav > li > a {
+        padding-top: 5px !important;
+        padding-bottom: 5px;
+    }
+
+    .nav > li > a:hover, .nav > li > a:focus {
+        text-decoration: none;
+        /*background-color: #112e51 !important;*/
+    }
+
+    /*.dropdown-menu > .active > a:hover {
+        background-color: #FFF !important;
+        color: #15528F !important;
+    }
+
+    .dropdown-menu > li > a:hover,
+    .dropdown-menu > li > a:focus {
+        background-color: #FFF !important;
+        color: #15528F !important;
+    }*/
+
+    .navbar-collapse {
+        padding-left: 0px !important;      
+    }
+
+    .chosen-container-single .chosen-single span {
+        display: block;
+        overflow: hidden;
+        margin-right: 26px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: black;
+    }    
+</style>
+
+
+
+<form action="/OpenMeetingsPublic/GovDirectory?subtopmenuId=202&amp;EntityID=3570&amp;MeetingID=0" method="post">    <div class="container">
+        <h1 style="color: rgba(12, 61, 111,1) !important;">Transit Authority, Rhode Island Public</h1>
+        <hr style="background-color:#cacaca !important;border-top: 0px !important;border-bottom: 1px solid #cacaca;">
+        <h2 class="subTitle">Contact Information</h2>
+        <div class="row">
+            <div class="col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;padding-left: 0px;">
+                <label class="control-label">Contact Person:</label>
+            </div>
+            <div class="col-sm-9 col-md-9 col-lg-9" style="padding-right: 0px;padding-left: 0px;">
+                Courtney  Marciano
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;padding-left: 0px;">
+                <label class="control-label">Phone:</label>
+            </div>
+            <div class="col-sm-9 col-md-9 col-lg-9" style="padding-right: 0px;padding-left: 0px;">
+                <span id="spContactPhone">(401) 784-9500</span>
+                
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;padding-left: 0px;">
+                <label class="control-label">Email:</label>
+            </div>
+            <div class="col-sm-9 col-md-9 col-lg-9" style="padding-right: 0px;padding-left: 0px;">
+                <a data-rel="external" href="mailto:cmarciano@ripta.com">cmarciano@ripta.com</a>
+            </div>
+        </div>
+    </div>
+</form><script src="/Scripts/jquery.mask.js"></script>
+<script>
+    $(document).ready(function () {
+        var spContactPhoneVal = $('#spContactPhone').text();
+        var spanContactPhone = ($('#spContactPhone').html()).length;
+        if (spanContactPhone == 10) {
+            $('#spContactPhone').mask("(999) 999-9999");
+        }
+        else if (spanContactPhone == 12) {
+            var removeContactHyphens = spContactPhoneVal.replace(/-/g, "");
+            if (removeContactHyphens.length == 10) {
+                $('#spContactPhone').text(removeContactHyphens);
+                $('#spContactPhone').mask("(999) 999-9999");
+            }
+        }
+
+    });
+</script>
+    <div class="container body-content">
+        <br>
+        
+        <div class="tab-content">
+            
+
+
+<form action="/OpenMeetingsPublic/GovDirectory?subtopmenuId=202&amp;EntityID=3570&amp;MeetingID=0" method="post"><input id="IsGovDataFlag" name="IsGovDataFlag" type="hidden" value="1"><input id="IsBoardsFlag" name="IsBoardsFlag" type="hidden" value="8"><input data-val="true" data-val-number="The field EntityType must be a number." data-val-required="The EntityType field is required." id="EntityType" name="EntityType" type="hidden" value="3">    <div class="row">
+        <a href="/OpenMeetingsPublic/OpenMeetingDashboard?subtopmenuId=201&amp;EntityID=3570&amp;MeetingID=0">
+            <div class="col-sm-4 col-md-4 col-lg-4 DashboardButton" id="OpenMeetingsSubTab" style="border-right:10px solid #fff !important;">
+                <span>Open Meetings</span>
+            </div>
+        </a>
+        <a href="/OpenMeetingsPublic/GovDirectory?subtopmenuId=202&amp;EntityID=3570&amp;MeetingID=0">
+            <div class="col-sm-4 col-md-4 col-lg-4 DashboardButton" id="GovDirectorySubTab" style="border-right: 10px solid rgb(255, 255, 255) !important; background-color: rgb(32, 84, 147);">
+                <span>RI Gov Directory</span>
+            </div>
+        </a>
+        <a href="/OpenMeetingsPublic/BoardMembers?subtopmenuId=203&amp;EntityID=3570&amp;MeetingID=0">
+            <div class="col-sm-4 col-md-4 col-lg-4 DashboardButton" id="BoardMemberSubTab" style="">
+                <span>Board Members</span>
+            </div>
+        </a>
+    </div>
+    <br>
+        <table style="width:100%" class="table meeting">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" colspan="2"><label class="required">Contact Information</label></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width:25%"><label for="Address">Address:</label></td>
+                    <td>705 Elmwood Avenue, Providence, RI, 02907</td>
+                </tr>
+                <tr>
+                    <td><label for="OfficePhone">Office Phone:</label></td>
+                    <td><span id="spOfficePhone">(401) 784-9500</span></td>
+                </tr>
+                <tr>
+                    <td><label for="TTY">TTY:</label></td>
+                    <td>1-800-7455555</td>
+                </tr>
+                <tr>
+                    <td><label for="Fax">Fax:</label></td>
+                    <td><span id="spFax">(401) 784-9513</span></td>
+                </tr>
+                <tr>
+                    <td><label for="Web">Web:</label></td>
+                    <td>https://www.ripta.com/</td>
+                </tr>
+                <tr>
+                    <td><label for="Email">Email:</label></td>
+                    <td>
+                        <a style="color:blue" data-rel="external" href="mailto:cmarciano@ripta.com">
+                            cmarciano@ripta.com
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    <br>
+    <table style="width:100%" class="table meeting">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col" colspan="2"><label class="required">Social Media Contact</label></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="width:25%"><label for="Address"><img style="height: 30px" src="/Content/img/Facebook.png"></label></td>
+                <td>https://www.facebook.com/RideRIPTA/</td>
+            </tr>
+            <tr>
+                <td><label for="OfficePhone"><img style="height: 30px" src="/Content/img/Twitter.png"></label></td>
+                <td>https://twitter.com/RIPTA_RI</td>
+            </tr>
+            <tr>
+                <td><label for="TTY"><img style="height: 30px" src="/Content/img/Instagram.jfif"></label></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label for="Fax"><img style="height: 30px" src="/Content/img/Linkedin.jfif"></label></td>
+                <td>https://www.linkedin.com/company/rhode-island-public-transit-authority</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table style="width:100%" class="table meeting">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col" colspan="2"><label class="required">Description</label></th>
+            </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td style="width:25%"><label for="AnnualBudget">Annual Budget:</label></td>
+                    <td id="AnnualBudget">$ 146,898,402</td>
+                </tr>
+            <tr>
+                <td><label for="TotalPersonnel">Total Personnel:</label></td>
+                <td>870</td>
+            </tr>
+            <tr>
+                <td colspan="2">The Rhode Island Public Transit Authority (RIPTA) provides mass transit service in 37 of the 39 cities and towns within the State of Rhode Island. An 8-member Board of Directors governs the Authority. RIPTA's present fleet of vehicles contains 229 fixed-route buses, 72 paratransit vans, and 13 flex vans. RIPTA's main transit center is in Downtown Providence, with satellite hubs in Newport, Warwick, and the new Pawtucket-Central Falls Transit Center. In FY 2022, RIPTA provided approximately 9,627,384 million fixed-route vehicle miles annually in Rhode Island. RIPTA, the State's Mobility Manager, operates over 2,700 daily bus trips on over 58 bus routes throughout the state. In FY 2022, RIPTA provided over 9,367,431 million rides.</td>
+            </tr>
+            <tr>
+                <th scope="col" colspan="2"><label class="required">Responsibilities</label></th>
+            </tr>
+            <tr>
+                <td colspan="2">RIPTA is empowered to provide fixed-route mass bus operations and complementary paratransit service to ADA eligible Rhode Islanders within 3/4 mile of fixed-route service.</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+        <table style="width:100%">
+            <thead class="thead-dark meeting">
+                <tr>
+                    <th scope="col" colspan="2"><label class="required">Key Staff</label></th>
+                </tr>
+            </thead>
+            <tbody><tr>
+                <td colspan="2">
+                        <div class="container-fluid">
+                                <table class="KeyStaff table" id="KeyStaffSummary">
+    <thead>
+        <tr class="grid-header">
+            <th scope="col">
+Title            </th>
+            <th scope="col">
+Name            </th>
+            <th scope="col">
+Phone Number            </th>
+            <th scope="col">
+Email            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="center">Chief Executive Officer</td>
+            <td class="center">Scott Avedisian</td>
+            <td class="center">401-784-9500 x1171</td>
+            <td class="center">ceoexecutiveassistant@ripta.com</td>
+        </tr>
+        <tr class="alternate-row">
+            <td class="center">Chief of Executive Communications</td>
+            <td class="center">Courtney Marciano</td>
+            <td class="center">401-784-9500 x 1171</td>
+            <td class="center">cmarciano@ripta.com</td>
+        </tr>
+        <tr>
+            <td class="center">Chief Legal Counsel</td>
+            <td class="center">Steven Colantuono</td>
+            <td class="center">(401)-784-9500 x1139</td>
+            <td class="center">scolantuono@ripta.com</td>
+        </tr>
+        <tr class="alternate-row">
+            <td class="center">Chief of Strategic Advancement</td>
+            <td class="center">Vacant</td>
+            <td class="center"></td>
+            <td class="center"></td>
+        </tr>
+        <tr>
+            <td class="center">Chief of Human Resources</td>
+            <td class="center">Kathy Nadeau</td>
+            <td class="center">401-784-9500 x1156</td>
+            <td class="center">knadeau@ripta.com</td>
+        </tr>
+        <tr class="alternate-row">
+            <td class="center">Chief of Security &amp; Operations </td>
+            <td class="center">James Pereira</td>
+            <td class="center">401-784-9500 x1222</td>
+            <td class="center">jpereira@ripta.com</td>
+        </tr>
+        <tr>
+            <td class="center">Chief Financial Officer</td>
+            <td class="center">Christopher Durand</td>
+            <td class="center">401-784-9500 x1231</td>
+            <td class="center">cdurand@ripta.com</td>
+        </tr>
+    </tbody>
+    </table>
+
+                        </div>
+                        <br>
+                </td>
+            </tr>
+        </tbody></table>
+    <br>
+    <div class="row">
+        <div class="col-ls-12 col-sm-12 col-md-12">
+            <div align="center">
+                <input type="submit" class="btn btn-primary gradient btncustomcss" id="Submit" name="Cancel" value="Close">
+            </div>
+        </div>
+    </div>
+</form>
+<script src="/Scripts/jquery.mask.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+
+        var officePhoneVal = $('#spOfficePhone').text();
+        var spanOfficePhone = ($('#spOfficePhone').html()).length;
+        if (spanOfficePhone == 10) {
+            $('#spOfficePhone').mask("(999) 999-9999");
+        }
+        else if (spanOfficePhone == 12) {
+            var removePhoneHyphens = officePhoneVal.replace(/-/g, "");
+            if (removePhoneHyphens.length == 10) {
+                $('#spOfficePhone').text(removePhoneHyphens);
+                $('#spOfficePhone').mask("(999) 999-9999");
+            }
+        }
+
+        var spanFax = ($('#spFax').html()).length;
+        var spanFaxVal = $('#spFax').text();
+        if (spanFax == 10) {
+            $('#spFax').mask("(999) 999-9999");
+        }
+        else if (spanFax == 12) {
+            var removeFaxHyphens = spanFaxVal.replace(/-/g, "");
+            if (removeFaxHyphens.length == 10) {
+                $('#spFax').text(removeFaxHyphens);
+                $('#spFax').mask("(999) 999-9999");
+            }
+        }
+
+        var GovDirVal = $('#IsGovDataFlag').val();
+        var BoardsFlagVal = $('#IsBoardsFlag').val();
+        //Hide gov directory tab based on gov directory flag value
+        if (GovDirVal == "0") {
+            $('#GovDirectorySubTab').hide();
+        }
+        else {
+            $('#GovDirectorySubTab').show();
+        }
+        //Hide boards tab based on boards flag value
+        if (BoardsFlagVal == "0") {
+            $('#BoardMemberSubTab').hide();
+        } else {
+            $('#BoardMemberSubTab').show();
+        }
+
+        $("#GovDirectorySubTab").css('background-color', '#205493');
+    });
+
+    $('#AnnualBudget').inputmask("numeric", {
+        radixPoint: ".",
+        groupSeparator: ",",
+        digits: 2,
+        autoGroup: true,
+        prefix: '$ ',
+        rightAlign: false,
+        oncleared: function () { self.Value(''); }
+    });
+</script>
+<style>
+    /* Start Web Grid CSS */
+    .meeting {
+        width: 100%;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-family: 'Helvetica';
+    }
+
+        .meeting th {
+            color: #fff;
+            background-image: linear-gradient(to bottom, #rgb(32, 167, 139), #rgb(32, 167, 139));
+            background-color: #26578F;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #dddddd;
+            padding: 5px;
+            text-align: center;
+            vertical-align: top;
+            font-family: Helvetica;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: underline;
+            text-decoration: none;
+        }
+
+            .meeting th a {
+                color: #FFF;
+                text-decoration: none;
+            }
+
+        .meeting tr {
+            color: #121112;
+            font-family: 'Helvetica';
+            font-size: 14px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: grey;
+        }
+
+        .meeting td {
+            padding: 3px 5px;
+            vertical-align: middle;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #dddddd;
+        }
+
+        .meeting tr:nth-child(odd) {
+            background-color: #F4F4F4;
+        }
+
+        .meeting tr:nth-child(even) {
+            background-color: #FFF;
+        }
+
+    .KeyStaff th {
+        /*//color: #fff;*/
+        background-image: linear-gradient(to bottom, #rgb(32, 167, 139), #rgb(32, 167, 139));
+        /*background-color: #26578F;*/
+        border-style: solid;
+        border-width: 1px;
+        border-color: #dddddd;
+        padding: 5px;
+        text-align: center;
+        vertical-align: top;
+        font-family: Helvetica;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: underline;
+        text-decoration: none;
+    }
+
+    .KeyStaff {
+        width: 100%;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-family: 'Helvetica';
+    }
+
+
+        .KeyStaff th a {
+            color: #FFF;
+            text-decoration: none;
+        }
+
+        .KeyStaff tr {
+            color: #121112;
+            font-family: 'Helvetica';
+            font-size: 14px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: grey;
+        }
+
+        .KeyStaff td {
+            padding: 3px 5px;
+            vertical-align: middle;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #dddddd;
+        }
+
+        .KeyStaff tr:nth-child(odd) {
+            background-color: #F4F4F4;
+        }
+
+        .KeyStaff tr:nth-child(even) {
+            background-color: #FFF;
+        }
+</style>
+
+
+        </div>
+
+        
+    </div>
+    <!-- Site Footer -->
+<div class="col-sm-12 col-md-12 col-lg-12" style="text-align:center">
+    <a href="#top" style="text-decoration:none;">
+        <span class="glyphicon glyphicon-chevron-up"></span>
+        Return to top
+    </a>
+</div>
+<div style="height:15px">
+    &nbsp;
+</div>
+<div id="footer-banner">
+    <nav role="navigation" id="site-quick-links">
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-6 col-sm-6 col-lg-6">
+                    <a style="color:#112e51 !important" href="https://sos.ri.gov/about-us" target="_blank" title="About the Department of State.">About</a>
+                    &nbsp; &nbsp;
+                    <a style="color:#112e51 !important" href="https://sos.ri.gov/contact" target="_blank" title="Contact the Department of State.">Contact</a>
+                    &nbsp; &nbsp;
+                    <a style="color:#112e51 !important" href="https://sos.ri.gov/news-and-events" target="_blank" title="Recent news from the Department of State.">News</a>
+                    &nbsp; &nbsp;
+                    <a style="color:#112e51 !important" href="https://sos.ri.gov/divisions/notary-public" target="_blank" title="Notary Public information.">Notary Public</a>
+                </div>
+                <div class="col-md-6 col-sm-6 col-lg-6" style="text-align:right">
+                    <a style="color:#112e51 !important" href="tel://1-401-222-3983" title="Call Public Information." target="_blank">(401) 222-3983</a>
+                    &nbsp; &nbsp;
+                    <a style="color:#112e51 !important" href="mailto:opengovernment@sos.ri.gov" title="Email Public Information." target="_blank">opengovernment@sos.ri.gov</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="form-group" style="padding: 1em 0;">
+            <div class="col-md-9 col-sm-9 col-lg-9">
+                <div class="v-align-block site-title-block">
+                    <a href="#" title="Back to the Secretary of State homepage.">
+                        
+                        <img id="footer-logo" class="v-align-image" src="/Content/img/WebCoa.png" alt="Image of the Rhode Island coat of arms.">
+                        <div class="v-align-text"> <span class="v-align-text-line">Rhode Island Department of State</span></div>
+                        <img id="footer-logo" class="v-align-image" src="/Content/img/statecoabw-footer.png" alt="Image of the Rhode Island coat of arms.">
+                        <div class="v-align-text"> <span class="v-align-text-line">An Official Rhode Island State Website</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-3 col-lg-3">
+                <table align="right">
+                    <tbody><tr>
+                        <td>
+                            <a href="https://twitter.com/risecstate" title="View the Secretary's Twitter page"><span style="color: #fff;" class="fa fa-twitter-square fa-2x fa-fw" title="Twitter logo."></span><span class="sr-only">Twitter</span></a>
+                        </td>
+                        <td>
+                            <a href="https://www.linkedin.com/company/1391989" title="View the Secretary's LinkedIn page"><span style="color: #fff;" class="fa fa-linkedin-square fa-2x fa-fw" title="LinkedIn Logo"></span><span class="sr-only">LinkedIn</span></a>
+                        </td>
+                        <td>
+                            <a href="https://www.facebook.com/RIDepartmentOfState/?fref=ts" title="View the Secretary's Facebook page"><span style="color: #fff;" class="fa fa-facebook-square fa-2x fa-fw" title="Facebook logo."></span><span class="sr-only">Facebook</span></a>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    #footer-banner {
+        margin: 0px;
+        height: 100px;
+        width: 100%;
+        left: 0px;
+        bottom: 0px;
+        z-index: 1000;
+        background-color: #112e51; /* For browsers that do not support gradients */
+        color: #FFF;
+        font-family: "Arial","Source Sans Pro", "Helvetica Neue", "Helvetica", "Roboto", sans-serif;
+        line-height: 2.2;
+    }
+
+    #site-quick-links {
+        -webkit-box-shadow: 0px -5px 5px -3px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px -5px 5px 0px rgba(0,0,0,0.75);
+        box-shadow: 0px -5px 5px 0px rgba(0,0,0,0.75);
+        color: #ffffff;
+        background-color: #f1f1f1;
+    }
+
+    .row {
+        max-width: 120rem;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    #footer-banner .site-title-block .v-align-text {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .v-align-text {
+        color: #000000;
+    }
+
+    .v-align-block .v-align-image, .v-align-block .v-align-text {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .v-align-text .v-align-text-line {
+        float: left;
+        clear: both;
+    }
+</style><div id="goog-gt-" class="skiptranslate VIpgJd-yAWNEb-L7lbkb" dir="ltr"><div style="padding: 8px;"><div><div class="VIpgJd-yAWNEb-l4eHX"><img src="https://www.gstatic.com/images/branding/product/1x/translate_24dp.png" width="20" height="20" alt="Google Translate"></div></div></div><div style="padding: 8px; float: left; width: 100%;"><h1 class="VIpgJd-yAWNEb-r4nke VIpgJd-yAWNEb-mrxPge">Original text</h1></div><div style="padding: 8px;"><div class="VIpgJd-yAWNEb-nVMfcd-fmcmS"></div></div><div class="VIpgJd-yAWNEb-cGMI2b" style="padding: 8px;"><div class="VIpgJd-yAWNEb-Z0Arqf-PLDbbf"><span class="VIpgJd-yAWNEb-Z0Arqf-hSRGPd">Contribute a better translation</span></div><div class="VIpgJd-yAWNEb-fw42Ze-Z0Arqf-haAclf"><hr style="color: #ccc; background-color: #ccc; height: 1px; border: none;"><div class="VIpgJd-yAWNEb-Z0Arqf-H9tDt"></div></div></div><div class="VIpgJd-yAWNEb-jOfkMb-Ne3sFf" style="display: none;"></div></div>
+
+
+
+<div class="VIpgJd-ZVi9od-aZ2wEe-wOHMyf"><div class="VIpgJd-ZVi9od-aZ2wEe-OiiCO"><svg xmlns="http://www.w3.org/2000/svg" class="VIpgJd-ZVi9od-aZ2wEe" width="96px" height="96px" viewBox="0 0 66 66"><circle class="VIpgJd-ZVi9od-aZ2wEe-Jt5cK" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg></div></div></body><iframe sandbox="allow-scripts" srcdoc="<!DOCTYPE html><body><script>(function(){/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+'use strict';var e=this||self;function f(a){return a};var h;function k(a,c){this.g=c===l?a:&quot;&quot;}k.prototype.toString=function(){return this.g+&quot;&quot;};var l={};function m(a){if(void 0===h){var c=null;var b=e.trustedTypes;if(b&amp;&amp;b.createPolicy){try{c=b.createPolicy(&quot;goog#html&quot;,{createHTML:f,createScript:f,createScriptURL:f})}catch(d){e.console&amp;&amp;e.console.error(d.message)}h=c}else h=c}a=(c=h)?c.createScriptURL(a):a;return new k(a,l)};/*
+
+ SPDX-License-Identifier: Apache-2.0
+*/
+if(!function(){if(self.origin)return&quot;null&quot;===self.origin;if(&quot;&quot;!==location.host)return!1;try{return window.parent.escape(&quot;&quot;),!1}catch(a){return!0}}())throw Error(&quot;sandboxing error&quot;);
+window.addEventListener(&quot;message&quot;,function(a){var c=a.ports[0];a=a.data;var b=a.callbackName.split(&quot;.&quot;),d=window;&quot;window&quot;===b[0]&amp;&amp;b.shift();for(var g=0;g<b.length-1;g++)d[b[g]]={},d=d[b[g]];d[b[b.length-1]]=function(n){c.postMessage(JSON.stringify(n))};b=document.createElement(&quot;script&quot;);a=m(a.url);b.src=a instanceof k&amp;&amp;a.constructor===k?a.g:&quot;type_error:TrustedResourceUrl&quot;;document.body.appendChild(b)},!0);}).call(this);
+</script></body>" src="data:text/html;charset=UTF-8;base64,PCFET0NUWVBFIGh0bWw+PGJvZHk+PHNjcmlwdD4oZnVuY3Rpb24oKXsvKgoKIENvcHlyaWdodCBUaGUgQ2xvc3VyZSBMaWJyYXJ5IEF1dGhvcnMuCiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogQXBhY2hlLTIuMAoqLwondXNlIHN0cmljdCc7dmFyIGU9dGhpc3x8c2VsZjtmdW5jdGlvbiBmKGEpe3JldHVybiBhfTt2YXIgaDtmdW5jdGlvbiBrKGEsYyl7dGhpcy5nPWM9PT1sP2E6IiJ9ay5wcm90b3R5cGUudG9TdHJpbmc9ZnVuY3Rpb24oKXtyZXR1cm4gdGhpcy5nKyIifTt2YXIgbD17fTtmdW5jdGlvbiBtKGEpe2lmKHZvaWQgMD09PWgpe3ZhciBjPW51bGw7dmFyIGI9ZS50cnVzdGVkVHlwZXM7aWYoYiYmYi5jcmVhdGVQb2xpY3kpe3RyeXtjPWIuY3JlYXRlUG9saWN5KCJnb29nI2h0bWwiLHtjcmVhdGVIVE1MOmYsY3JlYXRlU2NyaXB0OmYsY3JlYXRlU2NyaXB0VVJMOmZ9KX1jYXRjaChkKXtlLmNvbnNvbGUmJmUuY29uc29sZS5lcnJvcihkLm1lc3NhZ2UpfWg9Y31lbHNlIGg9Y31hPShjPWgpP2MuY3JlYXRlU2NyaXB0VVJMKGEpOmE7cmV0dXJuIG5ldyBrKGEsbCl9Oy8qCgogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEFwYWNoZS0yLjAKKi8KaWYoIWZ1bmN0aW9uKCl7aWYoc2VsZi5vcmlnaW4pcmV0dXJuIm51bGwiPT09c2VsZi5vcmlnaW47aWYoIiIhPT1sb2NhdGlvbi5ob3N0KXJldHVybiExO3RyeXtyZXR1cm4gd2luZG93LnBhcmVudC5lc2NhcGUoIiIpLCExfWNhdGNoKGEpe3JldHVybiEwfX0oKSl0aHJvdyBFcnJvcigic2FuZGJveGluZyBlcnJvciIpOwp3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcigibWVzc2FnZSIsZnVuY3Rpb24oYSl7dmFyIGM9YS5wb3J0c1swXTthPWEuZGF0YTt2YXIgYj1hLmNhbGxiYWNrTmFtZS5zcGxpdCgiLiIpLGQ9d2luZG93OyJ3aW5kb3ciPT09YlswXSYmYi5zaGlmdCgpO2Zvcih2YXIgZz0wO2c8Yi5sZW5ndGgtMTtnKyspZFtiW2ddXT17fSxkPWRbYltnXV07ZFtiW2IubGVuZ3RoLTFdXT1mdW5jdGlvbihuKXtjLnBvc3RNZXNzYWdlKEpTT04uc3RyaW5naWZ5KG4pKX07Yj1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCJzY3JpcHQiKTthPW0oYS51cmwpO2Iuc3JjPWEgaW5zdGFuY2VvZiBrJiZhLmNvbnN0cnVjdG9yPT09az9hLmc6InR5cGVfZXJyb3I6VHJ1c3RlZFJlc291cmNlVXJsIjtkb2N1bWVudC5ib2R5LmFwcGVuZENoaWxkKGIpfSwhMCk7fSkuY2FsbCh0aGlzKTsKPC9zY3JpcHQ+PC9ib2R5Pg==" style="display: none;"></iframe></html>
