@@ -3,33 +3,41 @@ import sqlite3
 import sys
 from time import sleep
 import traceback
+from typing import Iterable, Iterator, Tuple
 from riomp_scrape.objects import AnalysisMeeting
 from riomp_scrape.utils import get_meeting_details_page
 from riomp_scrape.meeting import parse_analysis_meeting
 import datetime as dt
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from os.path import isfile
 
 ANALYSIS_DB_PATH = 'data/analysis.db'
 LOG: TextIOWrapper = open(f"data/log_{str(dt.datetime.utcnow()).replace(' ', '_')}.txt", 'x')
 
-LOWER_BOUND: int = 700000
-UPPER_BOUND: int = 1130000
+# LOWER_BOUND: int = 700000
+# UPPER_BOUND: int = 1130000
+RETRY_COUNT = 100
+RETRY_PAUSE = 0.01
+WORKERS = 4096
 
-MTGS: list[AnalysisMeeting] = list()
-NONMTGS: list[int] = list()
-DUPLICATES: list[int] = list()
+START_TEST_ID = 900000
+TEST_COUNT = 1000
+TEST_WORKERS = 64
+
+MTGS: dict[int, AnalysisMeeting] = dict()
 
 log_lock = threading.Lock()
 
 def clear():
+    if not isfile(ANALYSIS_DB_PATH):
+        open(ANALYSIS_DB_PATH, 'x').close()
     conn: sqlite3.Connection = sqlite3.connect(ANALYSIS_DB_PATH)
     c = conn.cursor()
     c.execute('DROP TABLE IF EXISTS "meetings";')
     c.execute('''
         CREATE TABLE meetings
         (id INT PRIMARY KEY NOT NULL,
-        is_meeting INT,
         form_action TEXT,
         body TEXT,
         meeting_date TEXT,
@@ -58,174 +66,263 @@ def clear():
         cancelled_dt TEXT,
         cancelled_reason TEXT)
     ''')
+    c.execute('DROP TABLE IF EXISTS "nonmeetings";')
+    c.execute('''
+        CREATE TABLE nonmeetings
+        (id INT PRIMARY KEY NOT NULL)''')
+    c.execute('DROP TABLE IF EXISTS "unknownmeetings";')
+    c.execute('''
+        CREATE TABLE unknownmeetings
+        (id INT PRIMARY KEY NOT NULL)''')
     conn.commit()
     c.close()
     conn.close()
 
-def insert_mtgs_into_db():
-    conn: sqlite3.Connection = sqlite3.connect(ANALYSIS_DB_PATH)
-    c = conn.cursor()
-    for mtg in MTGS:
-        try:
-            c.execute('''INSERT INTO meetings VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);''',(
-                    (mtg.id,
-                    1,
-                    mtg.form_action,
-                    mtg.body,
-                    mtg.meeting_date,
-                    mtg.meeting_time,
-                    mtg.meeting_address,
-                    mtg.filing_dt,
-                    mtg.is_emergency,
-                    mtg.is_annual_calendar,
-                    mtg.is_public_notice,
-                    str(mtg.agendas),
-                    str(mtg.minutes),
-                    mtg.contact_person,
-                    mtg.phone,
-                    mtg.email,
-                    mtg.is_meeting_date_changed,
-                    mtg.is_meeting_time_changed,
-                    mtg.is_address_changed,
-                    mtg.is_annual_calendar_changed,
-                    mtg.is_emergency_changed,
-                    mtg.is_public_notice_changed,
-                    mtg.is_agenda_changed,
-                    mtg.is_emergency_flag,
-                    mtg.is_annual_flag,
-                    mtg.is_public_notice_flag,
-                    mtg.is_cancelled,
-                    mtg.cancelled_dt,
-                    mtg.cancelled_reason)
-                    ))
-        except sqlite3.IntegrityError:
-            DUPLICATES.append(mtg.id)
-        except:
-            with log_lock:
-                LOG.write(f"Error writing meeting {mtg.id} to database:")
-                traceback.print_exc(file=LOG)
-    for nonid in NONMTGS:
-        try:
-            c.execute(f'''INSERT INTO nonmeetings VALUES ({nonid});''')
-        except sqlite3.IntegrityError:
-            DUPLICATES.append(nonid)
-        except:
-            with log_lock:
-                LOG.write(f"Error writing nonmeeting {nonid} to database:")
-                traceback.print_exc(file=LOG)
-    conn.commit()
-    c.close()
-    conn.close()
-    MTGS.clear()
-    NONMTGS.clear()
-
-def tear_down():
-    LOG.close()
-
-def get_meeting_details(id: int) -> str:
+def resilient_get_meeting_details_page(id: int) -> str:
     count: int = 0
-    while count < 10:
+    while count < RETRY_COUNT:
         try:
             text: str = get_meeting_details_page(id)
             return text
         except:
-            sleep(0.01)
+            count += 1
+            sleep(RETRY_PAUSE)
     raise Exception(f"Tried getting meeting {id} details 10 times and failed.")
 
-def append_analysis_meeting(id: int):
+# 0 = id has associated meeting
+# 1 = id has no associated meeting
+# 2 = id association is unknown
+def append_meeting(id: int) -> Tuple[int, int]:
     try:
-        text = get_meeting_details(id)
+        text = resilient_get_meeting_details_page(id)
         mtg: AnalysisMeeting = parse_analysis_meeting(text)
-        mtg.id = id
         if mtg.is_real_meeting():
-            MTGS.append(mtg)
-        else:
-            NONMTGS.append(id)
+            MTGS[id] = mtg
+            return (0, id)
+        return (1, id)
     except Exception:
         with log_lock:
             LOG.write(f"{id}: Could not parse meeting {id}:\n")
             traceback.print_exc(file=LOG)
+        return (2, id)
 
-def run_threads(id_range: range, max_workers: int = 4096):
-    print(f'Parsing {len(id_range)} meetings...')
-    try:
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            executor.map(append_analysis_meeting,    
-                                id_range,
-                                timeout = 60)
-    except:
-        with log_lock:
-            LOG.write(f"Threading Error:\n")
-            traceback.print_exc(file=LOG)
-    print(f'Parsed {len(MTGS)} out of {len(MTGS)+len(NONMTGS)} meetings, of which {len(DUPLICATES)} were duplicates.')
-    insert_mtgs_into_db()
-    print(f'Meetings added to database.')
+def scrape_mtgs_threaded(ids: Iterator[int], max_workers):
+    print(f'Parsing meetings...')
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        try:
+            results = executor.map(append_meeting,    
+                        ids,
+                        timeout = 60)
+            print('Meetings parsed.')
+            return results
+        except:
+            with log_lock:
+                LOG.write(f"Threading Error:\n")
+                traceback.print_exc(file=LOG)
+                LOG.close()
+                exit(1)
 
-def get_ungotten_meetings(from_id: int, to_id: int):
+def write_results_to_database(ids: Iterator[Tuple[int, int]]) -> list[int]:
+    print('Writing meetings...')
     conn: sqlite3.Connection = sqlite3.connect(ANALYSIS_DB_PATH)
     c = conn.cursor()
-    c.execute('''SELECT id FROM meetings OUTERJOIN nonmeetings''')
+    meeting_count: int = 0
+    nonmeeting_count: int = 0
+    unknownmeeting_count: int = 0
+    for outcome, id in ids:
+        if outcome == 0:
+            # add real meeting
+            try:
+                mtg = MTGS[id]
+                c.execute('''INSERT INTO meetings VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);''',(
+                (id,
+                mtg.form_action,
+                mtg.body,
+                mtg.meeting_date,
+                mtg.meeting_time,
+                mtg.meeting_address,
+                mtg.filing_dt,
+                mtg.is_emergency,
+                mtg.is_annual_calendar,
+                mtg.is_public_notice,
+                str(mtg.agendas),
+                str(mtg.minutes),
+                mtg.contact_person,
+                mtg.phone,
+                mtg.email,
+                mtg.is_meeting_date_changed,
+                mtg.is_meeting_time_changed,
+                mtg.is_address_changed,
+                mtg.is_annual_calendar_changed,
+                mtg.is_emergency_changed,
+                mtg.is_public_notice_changed,
+                mtg.is_agenda_changed,
+                mtg.is_emergency_flag,
+                mtg.is_annual_flag,
+                mtg.is_public_notice_flag,
+                mtg.is_cancelled,
+                mtg.cancelled_dt,
+                mtg.cancelled_reason)
+                ))
+                meeting_count += 1
+            except:
+                with log_lock:
+                    LOG.write(f"Error writing meeting {id} to database:")
+                    traceback.print_exc(file=LOG)
+        elif outcome == 1:
+            # add non meeting
+            try:
+                c.execute(f'''INSERT INTO nonmeetings VALUES ({id});''')
+                nonmeeting_count += 1
+            except:
+                with log_lock:
+                    LOG.write(f"Error writing nonmeeting {id} to database:")
+                    traceback.print_exc(file=LOG)
+        else:
+            # add unknown meeting
+            try:
+                c.execute(f'''INSERT INTO unknownmeetings VALUES ({id});''')
+                unknownmeeting_count += 1
+            except:
+                with log_lock:
+                    LOG.write(f"Error writing unknown meeting {id} to database:")
+                    traceback.print_exc(file=LOG)
+    conn.commit()
+    c.close()
+    conn.close()
+    print('Meetings written.')
+    return [meeting_count, nonmeeting_count, unknownmeeting_count]
+
+def int_pkey_to_set(keylist: list[Tuple[int, None]]) -> set[int]:
+    keys: set[int] = set()
+    for key in keylist:
+        keys.add(key[0])
+    return keys
+
+# Generates a set of meeting_id ints in the given range that have not already been parsed into the database
+def get_ungotten_meetings(from_id: int, parse_count: int):
+    conn: sqlite3.Connection = sqlite3.connect(ANALYSIS_DB_PATH)
+    c = conn.cursor()
+    meetings = set()
+    meetings = meetings.union(
+        int_pkey_to_set(c.execute('''SELECT id FROM meetings''').fetchall()),
+        int_pkey_to_set(c.execute('''SELECT id FROM nonmeetings''').fetchall()))
+    c.close()
+    conn.close()
+    return set(range(from_id, from_id + parse_count)) - meetings
 
 def main(args):
-
-    start_test_id = 1030000
-    test_count = 5000
-    from_id: int
-    to_id: int
-    if len(args) == 2:
-        if args[1].lower() == 'help':
-            print("Use this script to add an analysis meeting to the analysis database.\n\tMeeting range is inclusive.\n\tThis script takes one or two arguments as follows:\n\n\t\tanalysis.py < 'help' | mtg_id:int | (from_mtg_id:int to_mtg_id:int) >\n\n")
-            return
-        if args[1].lower() == 'test':
-            print('Testing speed against number of worker threads...')
-            for i in range(1, 10):
-                before = dt.datetime.utcnow().timestamp()
-                run_threads(range(start_test_id, start_test_id+test_count), max_workers=i)
-                after = dt.datetime.utcnow().timestamp()
-                print(f"{i} thread{'s' if i != 1 else ' '} took {after-before} seconds.\n")
-            tear_down()
-            return
-        if args[1].lower() == 'clear':
-            print('Clearing database...')
-            clear()
-            print('Database cleared.')
-            return
-        try:
-            id: int = int(args[1])
-        except ValueError:
-            print("Error: argument must be parseable int.")
-            return
-        from_id = id
-        to_id = id + 1
-    elif len(args) == 3:
-        if args[1].lower() == 'test':
-            try:
-                threads: int = int(args[2])
-            except:
-                print("Error: must pass int parseable argument with test.")
+    arg_count = len(args)
+    if arg_count >= 2:
+        match(args[1]):
+            case 'help':
+                print("Use this script to scrape meetings into the analysis database.\nCommands:\n\tclear : Clears and resets the database\n\ttest (num_threads)? (num_tests)? (start_id)? : tests thread efficiency\n\t\tnum_threads: the numbers of threads to test\n\t\tnum_tests: the number of meetings to test\n\t\tstart_id: the id of the first meeting\n\t(start_id) (num_mtgs) : parses meetings into database\n\t\tstart_id: the id of the first meeting\n\t\tnum_mtgs: the number of meetings to parse")
                 return
-            print(f'Testing speed for {threads} threads...')
-            before = dt.datetime.utcnow().timestamp()
-            run_threads(range(start_test_id, start_test_id+test_count), max_workers=threads)
-            after = dt.datetime.utcnow().timestamp()
-            print(f"{threads} thread{'s' if threads != 1 else ' '} took {after-before} seconds.\n")
-            tear_down()
+            case 'clear':
+                clear()
+                print("Database reinitialized.")
+                return
+            case 'test':
+                workers: int = TEST_WORKERS
+                start_id: int = START_TEST_ID
+                test_count: int = TEST_COUNT
+                try:
+                    if arg_count == 3 or arg_count == 4 or arg_count == 5: 
+                        workers = int(args[2])
+                    if arg_count == 4 or arg_count == 5:
+                        test_count = int(args[3])
+                    if arg_count == 5:
+                        start_id = int(args[4])
+                except ValueError:
+                        print("Arguments passed to 'test' command must be ints.")
+                        return
+                before = dt.datetime.utcnow().timestamp()
+                results = scrape_mtgs_threaded(
+                    range(start_id, start_id+test_count).__iter__(),
+                    max_workers=workers)
+                elapsed = dt.datetime.utcnow().timestamp() - before
+                counts = [0, 0, 0]
+                for outcome, id in results:
+                    counts[outcome] += 1
+                print(f'''Test Results:
+                max_workers:        {workers}
+                time elapsed:       {elapsed}
+                avg time per parse: {elapsed/test_count}
+                start_id:           {start_id}
+                test_count:         {test_count}
+                real mtgs parsed:   {counts[0]}
+                non-mtgs parsed:    {counts[1]}
+                total mtgs parsed:  {counts[0] + counts[1]}
+                error count:        {counts[2]}''')
+                return
+        if arg_count == 3 or arg_count == 4:
+            try:
+                start_id: int = int(args[1])
+                parse_count: int = int(args[2])
+            except ValueError:
+                print("Arguments passed to scraper must be ints.")
+                return
+            workers: int = WORKERS
+            if arg_count == 4:
+                try:
+                    workers = int(args[3])
+                except ValueError:
+                    print("Arguments passed to scraper must be ints.")
+                    return
+            with sqlite3.connect(ANALYSIS_DB_PATH) as conn:
+                c = conn.cursor()
+                ids = get_ungotten_meetings(start_id, parse_count).__iter__()
+                count_to_get = sum(1 for _ in ids)
+                final_counts = [0, 0, parse_count]
+                final_before = dt.datetime.utcnow().timestamp()
+                while count_to_get > 0:
+                    before: float = dt.datetime.utcnow().timestamp()
+                    results = scrape_mtgs_threaded(ids, workers)
+                    after_parse: float = dt.datetime.utcnow().timestamp()
+                    counts = write_results_to_database(results)
+                    final_counts[0] += counts[0]
+                    final_counts[1] += counts[1]
+                    final_counts[2] -= counts[0] + counts[1]
+                    after_write: float = dt.datetime.utcnow().timestamp()
+                    parse_elapsed: float = after_parse-before
+                    print(f'''Parse results:
+                        max_workers:        {workers}
+                        parse time elapsed: {parse_elapsed}
+                        avg time per parse: {parse_elapsed/parse_count}
+                        write time elapsed: {after_write-after_parse}
+                        start_id:           {start_id}
+                        parse_count:        {parse_count}
+                        real mtgs parsed:   {counts[0]}
+                        non-mtgs parsed:    {counts[1]}
+                        total mtgs parsed:  {counts[0] + counts[1]}
+                        error count:        {counts[2]}\n''')
+                    unknowns = c.execute('''SELECT id FROM unknownmeetings''').fetchall()
+                    count_to_get = len(unknowns)
+                    if count_to_get > 0:
+                        ids = int_pkey_to_set(unknowns).__iter__()
+                        c.execute('''DELETE FROM unknownmeetings''')
+                        conn.commit()
+                        print(f'\nRerunning parse of {count_to_get} unknown meetings.')
+                c.close()
+            final_elapsed = dt.datetime.utcnow().timestamp() - final_before
+            print(f'''Final parse results:
+                max_workers:        {workers}
+                time elapsed:       {final_elapsed}
+                avg time per parse: {final_elapsed/(final_counts[0]+final_counts[1])}
+                start_id:           {start_id}
+                parse_count:        {parse_count}
+                real mtgs parsed:   {final_counts[0]}
+                non-mtgs parsed:    {final_counts[1]}
+                total mtgs parsed:  {final_counts[0] + final_counts[1]}
+                error count:        {final_counts[2]}''')
             return
-        try:
-            from_id: int = int(args[1])
-            to_id: int = int(args[2])
-        except ValueError:
-            print("Error: arguments must be parseable ints.")
-            return
-        if from_id > to_id:
-            print("Error: from_mtg_id cannot be greater than to_mtg_id.")
-            return
-    else:
-        print("Error: wrong number of arguments. Try 'analysis.py help'.")
-        return
-    run_threads(range(from_id, to_id))
-    tear_down()
+    print("Error: incorrect arguments. Try 'analysis.py help'.")
+    return
     
 
 if __name__ == '__main__':
-    main(sys.argv)
+    try:
+        main(sys.argv)
+    except:
+        print("Something went wrong. Have you initialized the database by running 'analysis.py clear'?")
+    LOG.close()

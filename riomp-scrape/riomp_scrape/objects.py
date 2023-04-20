@@ -91,7 +91,6 @@ class Document:
 # Meeting represents a public meeting
 class Meeting:
     def __init__(self,
-                 id: int,
                  body: int,
                  meeting_dt: float,
                  meeting_address: str,
@@ -111,7 +110,6 @@ class Meeting:
                  is_cancelled: bool,
                  cancelled_dt: float | None,
                  cancelled_reason: str | None):
-        self.id: int = id
         self.body: int = body
         self.meeting_dt: float = meeting_dt
         self.meeting_address: str = meeting_address
