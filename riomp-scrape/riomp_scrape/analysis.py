@@ -18,12 +18,12 @@ LOG: TextIOWrapper = open(f"data/log_{str(dt.datetime.utcnow()).replace(' ', '_'
 # LOWER_BOUND: int = 700000
 # UPPER_BOUND: int = 1130000
 RETRY_COUNT = 100
-RETRY_PAUSE = 0.01
-WORKERS = 4096
+RETRY_PAUSE = 10
+WORKERS = 1024
 
 START_TEST_ID = 900000
 TEST_COUNT = 1000
-TEST_WORKERS = 64
+TEST_WORKERS = 1024
 
 MTGS: dict[int, AnalysisMeeting] = dict()
 
@@ -113,14 +113,14 @@ def scrape_mtgs_threaded(ids: Iterator[int], max_workers):
             results = executor.map(append_meeting,    
                         ids,
                         timeout = 60)
-            print('Meetings parsed.')
-            return results
         except:
             with log_lock:
                 LOG.write(f"Threading Error:\n")
                 traceback.print_exc(file=LOG)
                 LOG.close()
                 exit(1)
+    print('Meetings parsed.')
+    return results
 
 def write_results_to_database(ids: Iterator[Tuple[int, int]]) -> list[int]:
     print('Writing meetings...')
@@ -174,6 +174,7 @@ def write_results_to_database(ids: Iterator[Tuple[int, int]]) -> list[int]:
             try:
                 c.execute(f'''INSERT INTO nonmeetings VALUES ({id});''')
                 nonmeeting_count += 1
+                print(nonmeeting_count)
             except:
                 with log_lock:
                     LOG.write(f"Error writing nonmeeting {id} to database:")
@@ -269,52 +270,24 @@ def main(args):
                 except ValueError:
                     print("Arguments passed to scraper must be ints.")
                     return
-            with sqlite3.connect(ANALYSIS_DB_PATH) as conn:
-                c = conn.cursor()
-                ids = get_ungotten_meetings(start_id, parse_count).__iter__()
-                count_to_get = sum(1 for _ in ids)
-                final_counts = [0, 0, parse_count]
-                final_before = dt.datetime.utcnow().timestamp()
-                while count_to_get > 0:
-                    before: float = dt.datetime.utcnow().timestamp()
-                    results = scrape_mtgs_threaded(ids, workers)
-                    after_parse: float = dt.datetime.utcnow().timestamp()
-                    counts = write_results_to_database(results)
-                    final_counts[0] += counts[0]
-                    final_counts[1] += counts[1]
-                    final_counts[2] -= counts[0] + counts[1]
-                    after_write: float = dt.datetime.utcnow().timestamp()
-                    parse_elapsed: float = after_parse-before
-                    print(f'''Parse results:
-                        max_workers:        {workers}
-                        parse time elapsed: {parse_elapsed}
-                        avg time per parse: {parse_elapsed/parse_count}
-                        write time elapsed: {after_write-after_parse}
-                        start_id:           {start_id}
-                        parse_count:        {parse_count}
-                        real mtgs parsed:   {counts[0]}
-                        non-mtgs parsed:    {counts[1]}
-                        total mtgs parsed:  {counts[0] + counts[1]}
-                        error count:        {counts[2]}\n''')
-                    unknowns = c.execute('''SELECT id FROM unknownmeetings''').fetchall()
-                    count_to_get = len(unknowns)
-                    if count_to_get > 0:
-                        ids = int_pkey_to_set(unknowns).__iter__()
-                        c.execute('''DELETE FROM unknownmeetings''')
-                        conn.commit()
-                        print(f'\nRerunning parse of {count_to_get} unknown meetings.')
-                c.close()
-            final_elapsed = dt.datetime.utcnow().timestamp() - final_before
-            print(f'''Final parse results:
+            ids = get_ungotten_meetings(start_id, parse_count).__iter__()
+            before: float = dt.datetime.utcnow().timestamp()
+            results = scrape_mtgs_threaded(ids, workers)
+            after_parse: float = dt.datetime.utcnow().timestamp()
+            counts = write_results_to_database(results)
+            after_write: float = dt.datetime.utcnow().timestamp()
+            parse_elapsed: float = after_parse-before
+            print(f'''Parse results:
                 max_workers:        {workers}
-                time elapsed:       {final_elapsed}
-                avg time per parse: {final_elapsed/(final_counts[0]+final_counts[1])}
+                parse time elapsed: {parse_elapsed}
+                avg time per parse: {parse_elapsed/parse_count}
+                write time elapsed: {after_write-after_parse}
                 start_id:           {start_id}
-                parse_count:        {parse_count}
-                real mtgs parsed:   {final_counts[0]}
-                non-mtgs parsed:    {final_counts[1]}
-                total mtgs parsed:  {final_counts[0] + final_counts[1]}
-                error count:        {final_counts[2]}''')
+                parse_count:        {sum(1 for _ in ids)}
+                real mtgs parsed:   {counts[0]}
+                non-mtgs parsed:    {counts[1]}
+                total mtgs parsed:  {counts[0] + counts[1]}
+                error count:        {counts[2]}\n''')
             return
     print("Error: incorrect arguments. Try 'analysis.py help'.")
     return
