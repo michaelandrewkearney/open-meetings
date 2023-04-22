@@ -2,6 +2,9 @@ import { MeetingDocumentMetadata } from "../../server/searchResponse"
 
 export const mockMeetingMetadata: Map<string, MeetingDocumentMetadata<boolean>> = new Map()
 
+// date fields are set using the Date constructor: Date(year, monthIndex, date)
+// monthIndex is 0-indexed, so 0 is January and 11 is December
+
 mockMeetingMetadata.set("1", {
   id: "1",
   body: "Rhode Island School Building Taskforce",
@@ -14,7 +17,7 @@ mockMeetingMetadata.set("1", {
 mockMeetingMetadata.set("2", {
   id: "2",
   body: "Rhode Island School Building Taskforce",
-  meeting_dt: new Date(2023, 3 - 1, 15).getTime() / 1000, // 3/15/2023
+  meeting_dt: new Date(2023, 3 - 1, 15).getTime() / 1000, 
   address: "East Providence High School - library, 2000 Pawtucket Avenue, East Providence, RI, 02914",
   is_cancelled: true,
   cancelled_dt: new Date(2023, 3 - 1, 10).getTime() / 1000,

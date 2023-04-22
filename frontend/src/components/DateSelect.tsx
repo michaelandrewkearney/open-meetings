@@ -31,10 +31,7 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
         id="start"
         value={startDate}
         required
-        pattern="\d{4}-\d{2}-\d{2}"
-        onChange={(e) => {
-          setStartDate(e.currentTarget.value);
-        }}
+        onChange={(e) => setStartDate(e.currentTarget.value)}
         onBlur={() => handleDate(toDate(startDate), toDate(endDate))}
       />
 
@@ -45,9 +42,7 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
         value={endDate}
         required
         pattern="\d{4}-\d{2}-\d{2}"
-        onChange={(e) => {
-          setEndDate(e.currentTarget.value);
-        }}
+        onChange={(e) => setEndDate(e.currentTarget.value)}
         onBlur={() => handleDate(toDate(startDate), toDate(endDate))}
       />
     </fieldset>

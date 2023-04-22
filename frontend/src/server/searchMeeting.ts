@@ -15,6 +15,14 @@ interface SearchEndpointParams {
 interface SearchFunction {
   (keyphrase: string, selectedBody: string | null, dateStart: Date | null,  dateEnd: Date | null): Promise<Search>
 }
+
+/**
+ * Returns search function given a RequestJsonFunction to fetch the json 
+ * response. Allows for using mock API reponses. 
+ * 
+ * @param requestJson 
+ * @returns 
+ */
 export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
   async function search(
     keyphrase: string, 
@@ -23,6 +31,7 @@ export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
     dateEnd: Date | null): Promise<Search> {
 
     const searchParams: SearchEndpointParams = {
+      // Typesense wants query="*" to return all documents
       keyphrase: keyphrase === "" ? "*" : keyphrase,
       publicBody: body ? body : undefined,
       dateStart: dateStart ? dateStart.getTime() / 1000 : undefined,
@@ -31,7 +40,7 @@ export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
     const fetchResponse = buildGetSearchResponse(requestJson)
     const resp: SearchResponse = await fetchResponse(searchParams)
 
-    // set up Map of body names to counts
+    //Map of public body names to counts
     const bodyFacetMap: Map<string, number> = new Map()
     const bodyFacet: Facet | undefined = resp.facet_counts.find((facet) => facet.field_name === "body")
     
@@ -54,6 +63,13 @@ export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
   return search;
 }
 
+/**
+ * Converts Hits from the API response to custom MeetingResult objects used
+ * in the React app.
+ * 
+ * @param hits 
+ * @returns 
+ */
 function convertHits(hits: Hit[]): MeetingResult[] {
   const results: MeetingResult[] = []
   hits.forEach((hit: Hit) => {
@@ -84,9 +100,19 @@ function convertHits(hits: Hit[]): MeetingResult[] {
 }
 
 
+/**
+ * Function that gets search response from API meetingSearch endpoint
+ */
 interface GetSearchResponseFunction {
   (params: SearchEndpointParams): Promise<SearchResponse>
 }
+
+/**
+ * Returns getSearchResponse function given a RequestJsonFunction to fetch the json 
+ * response. Allows for using mock API reponses. 
+ * @param requestJson 
+ * @returns 
+ */
 function buildGetSearchResponse(requestJson: RequestJsonFunction): GetSearchResponseFunction {
     async function getSearchResponse({ keyphrase, page, per_page, publicBody, dateStart, dateEnd }: SearchEndpointParams): Promise<SearchResponse> {
 

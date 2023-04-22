@@ -3,12 +3,13 @@ import { SearchResponse } from "../../server/searchResponse";
 import { mockMeetingMetadata } from "./meetingMetadata";
 
 export const apiResponses: Map<string, SearchResponse> = new Map()
+
+// BASE_URL can be modified in src/config.ts
 const searchURL: URL = new URL(`${BASE_URL}/searchMeeting`)
 
 const allMeetingsParams= new URLSearchParams([
   ["keyphrase", "*"],
 ])
-
 apiResponses.set(`${searchURL}?${allMeetingsParams}`, {
   result: "success",
   found: 4, 
@@ -53,7 +54,6 @@ const taskforceBodySearchParams = new URLSearchParams([
   ["keyphrase", "*"],
   ["publicBody", "Rhode Island School Building Taskforce"]
 ])
-
 apiResponses.set(`${searchURL}?${taskforceBodySearchParams}`, {
   result: "success",
   found: 2, 
@@ -86,7 +86,6 @@ const barringtonBodySearchParams = new URLSearchParams([
   ["keyphrase", "*"],
   ["publicBody", "Barrington School Committee"]
 ])
-
 apiResponses.set(`${searchURL}?${barringtonBodySearchParams}`, {
   result: "success",
   found: 2, 
@@ -119,7 +118,6 @@ const startDateSearchParams = new URLSearchParams([
   ["keyphrase", "*"],
   ["dateStart", (new Date(2022, 4 - 1, 1).getTime() / 1000).toString()],
 ])
-
 apiResponses.set(`${searchURL}?${startDateSearchParams}`, {
   result: "success",
   found: 3, 
@@ -161,7 +159,6 @@ const bothDateSearchParams = new URLSearchParams([
   ["dateStart", (new Date(2022, 4 - 1, 1).getTime() / 1000).toString()],
   ["dateEnd", (new Date(2023, 3 - 1, 15).getTime() / 1000).toString()],
 ])
-
 apiResponses.set(`${searchURL}?${bothDateSearchParams}`, {
   result: "success",
   found: 3, 

@@ -1,5 +1,4 @@
-import { FormEvent } from "react";
-import { MeetingResult, Search, SearchState } from "../meetingTypes";
+import { MeetingResult, Search } from "../meetingTypes";
 import BodySelect from "./BodySelect";
 import SearchResult from "./SearchResult";
 

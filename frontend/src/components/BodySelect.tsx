@@ -1,6 +1,7 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface BodySelectProps {
+  /** Map of body names to facet counts */
   facetMap: Map<string, number>;
   handleBodySelect: (body: string | null) => void;
 }
@@ -9,6 +10,7 @@ export default function BodySelect({
   facetMap,
   handleBodySelect,
 }: BodySelectProps) {
+  // when checkedBody is null, check "All bodies" option
   const [checkedBody, setCheckedBody] = useState<string | null>(null);
 
   useEffect(() => {

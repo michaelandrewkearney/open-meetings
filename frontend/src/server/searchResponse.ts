@@ -17,6 +17,10 @@ export interface Hit {
   document: MeetingDocumentMetadata<boolean>
 }
 
+/**
+ * Meeting JSON given by the API meetingSearch endpoint. Takes in a boolean 
+ * generic parameter indicating whether the meeting is cancelled or not. 
+ */
 export interface MeetingDocumentMetadata<isCancelled extends boolean> {
   id: string;
   body: string;
@@ -25,7 +29,6 @@ export interface MeetingDocumentMetadata<isCancelled extends boolean> {
   is_cancelled: isCancelled;
   cancelled_dt: isCancelled extends true ? number : null;
 }
-
 
 interface MeetingDocument extends MeetingDocumentMetadata<boolean> {
   cancelled_reason: string | null
@@ -86,20 +89,3 @@ export function isCancelled(target: any): target is MeetingDocumentMetadata<true
   if (target.cancelled_dt === null) return false
   return true
 }
-
-// const isPlannedMeetingMetadata = (target: any): target is MeetingMetadata<true> => {
-//   if (!isMeetingMetadata(target)) return false
-//   if (target.is_cancelled !== false) return false
-//   if (target.cancelled_dt !== null) return false
-//   return true
-// }
-
-// const isPlannedMeetingMetadata= (json: any): json is MeetingMetadata<false> => {
-//   if (!("id" in json)) return false
-//   if (!("body" in json)) return false
-//   if (!("meeting_dt" in json)) return false
-//   if (!("address" in json)) return false
-//   if (!json?.is_cancelled !== false) return false
-//   if (json?.is_cancelled_dt !== null ) return false
-//   return true
-// }
