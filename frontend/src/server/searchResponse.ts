@@ -24,7 +24,12 @@ export interface Hit {
 export interface MeetingDocumentMetadata<isCancelled extends boolean> {
   id: string;
   body: string;
-  meeting_dt: number;
+  /**
+   * Date of meeting in seconds since midnight, January 1, 1970 UTC. 
+   * Javascript date objects give Epoch time in *milli*seconds, so this value
+   * should multiplied by 1000 before being passed into the Date() constructor
+   */
+  meeting_dt: number; 
   address: string;
   is_cancelled: isCancelled;
   cancelled_dt: isCancelled extends true ? number : null;
