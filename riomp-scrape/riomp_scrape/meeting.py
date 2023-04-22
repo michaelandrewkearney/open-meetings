@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs, Tag
 from riomp_scrape.objects import AnalysisMeeting, Meeting, Document, DocumentType, Person, URL
-from riomp_scrape.utils import parse_sos_dt_to_timestamp, strip_ri_phone
+from riomp_scrape.omp_utils import parse_sos_dt_to_timestamp, strip_ri_phone
 import re
 
 # parses a Document object from a link as presented on ViewMeetingDetails page
@@ -263,4 +263,4 @@ def scrape_meeting_details(text: str):
                                       phone=strip_ri_phone(contact_dict['Phone:']),
                                       email=contact_dict['Email:'])
 
-    return Meeting(id, body, meeting_dt, meeting_address, filing_dt, is_emergency_meeting, is_annual_calendar, is_public_notice, agendas, minutes, point_of_contact, is_meeting_dt_changed, is_address_changed, is_annual_calendar_changed, is_emergency_changed, is_public_notice_changed, is_agenda_changed, is_cancelled, cancelled_dt, cancelled_reason)
+    return Meeting(body, meeting_dt, meeting_address, filing_dt, is_emergency_meeting, is_annual_calendar, is_public_notice, agendas, minutes, point_of_contact, is_meeting_dt_changed, is_address_changed, is_annual_calendar_changed, is_emergency_changed, is_public_notice_changed, is_agenda_changed, is_cancelled, cancelled_dt, cancelled_reason)
