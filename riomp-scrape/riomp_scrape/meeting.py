@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup as bs, Tag
 from riomp_scrape.objects import AnalysisMeeting, Meeting, Document, DocumentType, Person, URL
 from riomp_scrape.omp_utils import parse_sos_dt_to_timestamp, strip_ri_phone
 import re
+import datetime as dt
 
 # parses a Document object from a link as presented on ViewMeetingDetails page
 def parse_document_from_link(link: Tag) -> Document:
