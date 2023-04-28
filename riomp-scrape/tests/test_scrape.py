@@ -2,7 +2,7 @@ import pytest
 from bs4 import BeautifulSoup as bs, Tag, NavigableString
 from riomp_scrape.objects import AnalysisMeeting, Document, DocumentType
 from riomp_scrape.meeting import parse_analysis_meeting, parse_document_from_link
-from riomp_scrape.utils import timestamp_to_sos_dt, get_meeting_details_page
+from riomp_scrape.omp_utils import timestamp_to_sos_dt, get_meeting_details_page
 import datetime as dt
 
 def load_mock_meeting(url: str) -> str:
