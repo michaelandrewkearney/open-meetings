@@ -1,3 +1,6 @@
 private/
 riomp-scrape/riomp_scrape/data
 riomp-scrape/riomp_scrape/pages
+
+# typesense
+typesense-data/
