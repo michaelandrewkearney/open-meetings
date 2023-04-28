@@ -21,14 +21,16 @@ public class Tsearch {
     private Client client;
     private List<Field> fields;
     private String collectionName;
+    private List<String> stop_words;
 
-    public Tsearch() {
+    public Tsearch(StopWords stopWords) {
         // connect to the node we are running locally
         List<Node> nodes = new ArrayList<Node>();
         nodes.add(new Node("http", "localhost", "8108"));
         this.nodes = nodes;
         this.config = new Configuration(nodes, Duration.ofSeconds(2), "API_KEY");
         this.client = new Client(config);
+        this.stop_words = stopWords.stop_words();
     }
 
     /**
@@ -83,5 +85,26 @@ public class Tsearch {
         SearchParameters params = new SearchParameters().q(query).queryBy(queryField);
         SearchResult result = client.collections(this.collectionName).documents().search(params);
         return result;
+    }
+
+    /**
+     * filters unnecessary terms out of a query, if the query is not empty afterwards
+     * @param query, the query to enter
+     * @return, a filtered query OR the original query if filtered is empty
+     */
+    private String filterQuery(String query) {
+        String[] words = query.split(" "); // check all individual words
+        // TODO: a regex could be better here
+        String ret = "";
+        
+        for (String s : words) {
+            if (!stop_words.contains(s)) {
+                ret += s;
+            }
+        }
+        
+        if (ret.equals(""))
+            return query;
+        return ret;
     }
 }
