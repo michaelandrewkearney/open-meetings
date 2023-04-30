@@ -1,0 +1,30 @@
+.BodySelect {
+  border: none;
+  padding: 0;
+}
+
+.body-option {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15em;
+}
+
+.body-option:not(:first-of-type) {
+  padding-top: 0.5rem;
+}
+
+.body-option label {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.body-count {
+  display: block;
+  align-self: center;
+  background-color: var(--light-bg-color);
+  min-width: 1rem;
+  text-align: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.7rem;
+  font-size: 0.9rem;
+}

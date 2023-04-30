@@ -1,0 +1,14 @@
+.DateSelect {
+  border: none;
+  padding: 0;
+}
+
+.DateSelect label {
+  display: flex;
+  line-height: 150%;
+  font-weight: bold;
+}
+
+.DateSelect label:not(:first-child) {
+  padding-top: 1rem;
+}

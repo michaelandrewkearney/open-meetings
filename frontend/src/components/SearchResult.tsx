@@ -1,3 +1,5 @@
+import styles from "./SearchResult.module.css";
+
 import { MeetingResult } from "../meetingTypes";
 
 interface SearchResultProps {
@@ -6,17 +8,23 @@ interface SearchResultProps {
 
 export default function SearchResult({ result }: SearchResultProps) {
   return (
-    <div>
-      <ul>
-        <li>Body: {result.body}</li>
-        <li>Meeting time: {result.meetingDate.toLocaleString()}</li>
-        <li>Address: {result.address}</li>
-        {result.isCancelled ? (
-          <li>Cancelled {result.cancelledDate.toLocaleString()}</li>
-        ) : (
-          <></>
-        )}
+    <div className={styles["SearchResult"]}>
+      {result.isCancelled ? (
+        <p className={styles["cancelled-text"]}>
+          Cancelled {result.cancelledDate.toLocaleString()}
+        </p>
+      ) : (
+        <></>
+      )}
+      <h3>{result.body}</h3>
+      <ul className={styles["result-metadata"]}>
+        <p>{result.meetingDate.toLocaleString()}</p>
+        <p>{result.address}</p>
       </ul>
+      <p className={styles["snippet"]}>
+        placeholder snippet text to replace with dynamic snippets
+      </p>
+      <hr />
     </div>
   );
 }

@@ -1,5 +1,6 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { SearchState } from "../meetingTypes";
+import styles from "./DateSelect.module.css";
+
+import { useState } from "react";
 
 interface DateSelectProps {
   handleDate: (startDate: Date | null, endDate: Date | null) => void;
@@ -24,27 +25,30 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
   const [endDate, setEndDate] = useState<string>("");
 
   return (
-    <fieldset>
-      <label htmlFor="start">Start date:</label>
-      <input
-        type="date"
-        id="start"
-        value={startDate}
-        required
-        onChange={(e) => setStartDate(e.currentTarget.value)}
-        onBlur={() => handleDate(toDate(startDate), toDate(endDate))}
-      />
+    <fieldset className={styles["DateSelect"]}>
+      <legend>Date</legend>
+      <div>
+        <label htmlFor="start">Start</label>
+        <input
+          type="date"
+          id="start"
+          value={startDate}
+          required
+          onChange={(e) => setStartDate(e.currentTarget.value)}
+          onBlur={() => handleDate(toDate(startDate), toDate(endDate))}
+        />
 
-      <label htmlFor="end">End date:</label>
-      <input
-        type="date"
-        id="end"
-        value={endDate}
-        required
-        pattern="\d{4}-\d{2}-\d{2}"
-        onChange={(e) => setEndDate(e.currentTarget.value)}
-        onBlur={() => handleDate(toDate(startDate), toDate(endDate))}
-      />
+        <label htmlFor="end">End</label>
+        <input
+          type="date"
+          id="end"
+          value={endDate}
+          required
+          pattern="\d{4}-\d{2}-\d{2}"
+          onChange={(e) => setEndDate(e.currentTarget.value)}
+          onBlur={() => handleDate(toDate(startDate), toDate(endDate))}
+        />
+      </div>
     </fieldset>
   );
 }

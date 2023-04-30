@@ -1,3 +1,5 @@
+import styles from "./BodySelect.module.css";
+
 import { useEffect, useState } from "react";
 
 interface BodySelectProps {
@@ -23,9 +25,9 @@ export default function BodySelect({
     0
   );
   return (
-    <form>
-      <fieldset>
-        <legend>Body</legend>
+    <fieldset className={styles["BodySelect"]}>
+      <legend>Body</legend>
+      <div className={styles["body-option"]}>
         <input
           type="radio"
           id="all-bodies"
@@ -33,24 +35,28 @@ export default function BodySelect({
           checked={checkedBody === null}
           onChange={() => setCheckedBody(null)}
         />
-        <label htmlFor={"all-bodies"}>All Bodies | {numResults}</label>
-        {bodyNames.map((body: string) => {
-          return (
-            <div key={body}>
-              <input
-                type="radio"
-                id={body}
-                value={body}
-                checked={checkedBody === body}
-                onChange={(e) => setCheckedBody(e.currentTarget.value)}
-              />
-              <label htmlFor={body}>
-                {body} | {facetMap.get(body)}
-              </label>
-            </div>
-          );
-        })}
-      </fieldset>
-    </form>
+        <label htmlFor={"all-bodies"}>
+          All Bodies <span className={styles["body-count"]}>{numResults}</span>
+        </label>
+      </div>
+
+      {bodyNames.map((body: string) => {
+        return (
+          <div className={styles["body-option"]} key={body}>
+            <input
+              type="radio"
+              id={body}
+              value={body}
+              checked={checkedBody === body}
+              onChange={(e) => setCheckedBody(e.currentTarget.value)}
+            />
+            <label htmlFor={body}>
+              {body}{" "}
+              <span className={styles["body-count"]}>{facetMap.get(body)}</span>
+            </label>
+          </div>
+        );
+      })}
+    </fieldset>
   );
 }

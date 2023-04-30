@@ -1,10 +1,10 @@
+import styles from "./App.module.css";
+
 import { FormEvent, useState } from "react";
-import "./App.css";
 import SearchBar from "./components/SearchBar";
 import { RequestJsonFunction } from "./server/types";
 import { Search, SearchState } from "./meetingTypes";
-import ResultSection from "./components/ResultSection";
-import DateSelect from "./components/DateSelect";
+import ResultsSection from "./components/ResultsSection";
 import { buildSearch } from "./server/searchMeeting";
 
 interface AppProps {
@@ -58,8 +58,6 @@ function App({ requestJsonFunction }: AppProps) {
   };
 
   const handleDate = (dateStart: Date | null, dateEnd: Date | null) => {
-    console.log(dateStart ? dateStart.toDateString() : null);
-
     if (searchState.search) {
       runSearch(
         searchState.search.keyphrase,
@@ -89,11 +87,11 @@ function App({ requestJsonFunction }: AppProps) {
         handleSearchValue={(value) => setKeyphrase(value)}
         handleSearchSubmit={handleSearchSubmit}
       />
-      <DateSelect handleDate={handleDate} />
       {searchState.search ? (
-        <ResultSection
+        <ResultsSection
           search={searchState.search}
           handleBodySelect={handleBodySelect}
+          handleDate={handleDate}
         />
       ) : (
         <></>
