@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "bash ./scripts/start-server.sh 8108",
+    "index": "npx ts-node ./src/add_documents.ts ../data/test_omp_data.json 8108",
+    "prestart": "docker login && docker pull typesense/typesense:0.24.1 && docker rm opm",
+    "start": "docker run --name opm -p 8108:8108 -v typesense-database:/data typesense/typesense:0.24.1 --data-dir /data --api-key=xyz --enable-cors --api-port=8108",
+    "poststart": "docker kill opm && docker rm opm",
     "test": "npx jest"
   },
   "author": "",

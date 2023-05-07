@@ -30,14 +30,17 @@ async function importMeetingsFromJSON(): Promise<ImportResponse[]> {
 
 async function createMeetingsCollection(): Promise<CollectionSchema> {
   const existingCollections = await client.collections().retrieve()
-  const maybeMeetingsCollection = existingCollections.find((schema) =>
-    schema.name === "meetings"
-  )
-  // if meetings collection already exists, delete it
-  if (maybeMeetingsCollection) {
-    console.log("deleting old meetings collection")
-    client.collections('meetings').delete()
+  // delete all current collections
+  if (existingCollections.length > 0) {
+    console.log("deleting old collections...")
   }
+  
+  existingCollections.forEach(async (schema) => {
+    await client.collections(schema.name).delete()
+    console.log(`deleted ${schema.name} collection`)
+  }
+  )
+  
   let schema: CollectionCreateSchema = {
     name: "meetings", 
     fields: [
@@ -158,6 +161,7 @@ async function indexMeetings() {
 
   console.log("meeting import finished")
   console.log(`successfully imported ${successfulImports} out of ${totalImports} meetings`)
+  const collection = await client.collections('meetings').retrieve()
 }
 
 indexMeetings()

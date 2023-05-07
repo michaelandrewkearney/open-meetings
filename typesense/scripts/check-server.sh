@@ -1,5 +1,5 @@
 #!/bin/bash
-port=8108
+port=$1
 
 output=$(curl -s http://localhost:${port}/health)
 
