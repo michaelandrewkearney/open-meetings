@@ -1,6 +1,5 @@
 package edu.brown.cs.server;
 
-
 import static spark.Spark.after;
 
 import java.util.List;
@@ -11,15 +10,20 @@ import com.google.protobuf.Int32Value;
 
 import edu.brown.cs.searcher.StopWords;
 import edu.brown.cs.searcher.Tsearch;
+import edu.brown.cs.server.handlers.LoadMeetingHandler;
+import edu.brown.cs.server.handlers.SearchHandler;
 import spark.Spark;
+
 /*
  * top level class where we use spark to start the server and run endpoint handlers
  */
 public class Server {
 
-        // TODO: add more :)
-        static StopWords sWords = new StopWords(List.of("a", "the", "you", "we", "me", "i", "them", "this", "that", "is", "and", "but", "as", "or"));
-        public static void main(String[] args) {
+    // TODO: add more :)
+    static StopWords sWords = new StopWords(
+            List.of("a", "the", "you", "we", "me", "i", "them", "this", "that", "is", "and", "but", "as", "or"));
+
+    public static void main(String[] args) {
         Spark.port(3232);
 
         after((request, response) -> {
@@ -50,13 +54,14 @@ public class Server {
             searcher.addField("contactEmail", FieldTypes.STRING, false);
             searcher.addField("contactPhone", FieldTypes.STRING, false);
 
-            // create collection 
+            // create collection
             searcher.makeCollection("meetings", "id");
             // TODO: make documents
+            searcher.importDocs("TODO: put actual doc here");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         // put in all the endpoint handlers
         Spark.get("meetingSearch", new LoadMeetingHandler(searcher));
         Spark.get("getMeeting", new SearchHandler(searcher));

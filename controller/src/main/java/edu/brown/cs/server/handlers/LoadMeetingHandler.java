@@ -9,25 +9,22 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-
 /**
  * This is the LoadMeetingHandler. It handles the query "meetingSearch", which
  * loads a Meeting.
  */
 public class LoadMeetingHandler implements Route {
 
-
     private final Tsearch meetingData;
 
     /**
      * This is the LoadCSVHandler constructor.
+     * 
      * @param container - wrapper class for loaded CSV
      */
     public LoadMeetingHandler(Tsearch container) {
         this.meetingData = container;
     }
-
-
 
     /**
      * This is what is called when a request is made.
@@ -62,8 +59,9 @@ public class LoadMeetingHandler implements Route {
 
     /**
      * Success response object.
+     * 
      * @param response_type - success
-     * @param meeting - meeting info based on JSON
+     * @param meeting       - meeting info based on JSON
      */
     public record LoadMeetingSuccessResponse(String response_type, MeetingData meeting) {
         public LoadMeetingSuccessResponse(MeetingData meeting) {
@@ -73,13 +71,14 @@ public class LoadMeetingHandler implements Route {
         String serialize() {
             try {
                 // Just like in SoupAPIUtilities.
-                //   (How could we rearrange these similar methods better?)
+                // (How could we rearrange these similar methods better?)
                 Moshi moshi = new Moshi.Builder()
-                        //.add(Map.class) //this is complex, something i'm introducing
+                        // .add(Map.class) //this is complex, something i'm introducing
                         .build();
-                JsonAdapter<LoadMeetingHandler.LoadMeetingSuccessResponse> adapter = moshi.adapter(LoadMeetingHandler.LoadMeetingSuccessResponse.class);
+                JsonAdapter<LoadMeetingHandler.LoadMeetingSuccessResponse> adapter = moshi
+                        .adapter(LoadMeetingHandler.LoadMeetingSuccessResponse.class);
                 return adapter.toJson(this);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 // For debugging purposes, show in the console _why_ this fails
                 // Otherwise we'll just get an error 500 from the API in integration
                 // testing.
@@ -93,7 +92,9 @@ public class LoadMeetingHandler implements Route {
      * Response object to send if someone requested an invalid meeting
      */
     public record LoadMeetingJsonFailureResponse(String response_type, String output) {
-        public LoadMeetingJsonFailureResponse(String output) { this("error_bad_json", output); }
+        public LoadMeetingJsonFailureResponse(String output) {
+            this("error_bad_json", output);
+        }
 
         /**
          * @return this response, serialized as Json
@@ -105,10 +106,13 @@ public class LoadMeetingHandler implements Route {
     }
 
     /**
-     * Response object to send if someone requested soup before any recipes were loaded
+     * Response object to send if someone requested soup before any recipes were
+     * loaded
      */
     public record LoadMeetingRequestFailureResponse(String response_type, String output) {
-        public LoadMeetingRequestFailureResponse(String output) { this("error_bad_request", output); }
+        public LoadMeetingRequestFailureResponse(String output) {
+            this("error_bad_request", output);
+        }
 
         /**
          * @return this response, serialized as Json
@@ -120,10 +124,13 @@ public class LoadMeetingHandler implements Route {
     }
 
     /**
-     * Response object to send if someone requested soup before any recipes were loaded
+     * Response object to send if someone requested soup before any recipes were
+     * loaded
      */
     public record LoadMeetingDatasourceFailureResponse(String response_type, String output) {
-        public LoadMeetingDatasourceFailureResponse(String output) { this("error_datasource", output); }
+        public LoadMeetingDatasourceFailureResponse(String output) {
+            this("error_datasource", output);
+        }
 
         /**
          * @return this response, serialized as Json
