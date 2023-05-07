@@ -1,0 +1,1 @@
+npx ts-node ./src/add_documents.ts "../data/test_omp_data.json" "1818"
