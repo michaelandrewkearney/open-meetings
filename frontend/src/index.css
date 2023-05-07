@@ -1,0 +1,25 @@
+:root {
+  --text-accent-color: #006DD2;
+  --result-text-color: #2E577C;
+  --light-bg-color: #BCE7FF;
+  --cancelled-text-color: #AB2424;
+}
+
+* {
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

@@ -1,0 +1,38 @@
+.SearchBar {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  background-color: var(--light-bg-color);
+}
+
+#search-form {
+  flex: 3 0;
+}
+
+#logo {
+  flex: 1 0;
+  padding: 1rem;
+}
+
+#logo span {
+  display: block;
+  font-weight: bold;
+}
+
+#logo-small-text {
+  font-size: 1rem;
+}
+
+#logo-big-text {
+  font-size: 1.25rem;
+  color: var(--text-accent-color);
+}
+
+#search-label {
+  display: block;
+  font-weight: bold;
+}
+
+#search-input {
+  width: 80%;
+}
