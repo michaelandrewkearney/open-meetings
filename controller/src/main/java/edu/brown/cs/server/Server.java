@@ -58,8 +58,8 @@ public class Server {
         }
         
         // put in all the endpoint handlers
-        Spark.get("meetingSearch", null);
-        Spark.get("getMeeting", null);
+        Spark.get("meetingSearch", new LoadMeetingHandler(searcher));
+        Spark.get("getMeeting", new SearchHandler(searcher));
         Spark.init();
         Spark.awaitInitialization();
         System.out.println("Server started.");
