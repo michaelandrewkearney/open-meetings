@@ -1,9 +1,10 @@
-import { apiResponses } from "./apiResponses";
+import { apiResponses } from "./mockMap";
 
 export default function mockRequestJson(url: URL): any {
   console.log(url.href)
+  console.log([...apiResponses.keys()])
   const json = apiResponses.get(url.href)
   console.log(json)
-  console.log([...apiResponses.keys()])
+
   return Promise.resolve(json)
 }

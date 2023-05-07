@@ -1,9 +1,10 @@
 import styles from "./DateSelect.module.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface DateSelectProps {
   handleDate: (startDate: Date | null, endDate: Date | null) => void;
+  searchParams: URLSearchParams;
 }
 
 export default function DateSelect({ handleDate }: DateSelectProps) {
@@ -23,6 +24,10 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
 
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+
+  useEffect(() => {
+    return;
+  }, []);
 
   return (
     <fieldset className={styles["DateSelect"]}>

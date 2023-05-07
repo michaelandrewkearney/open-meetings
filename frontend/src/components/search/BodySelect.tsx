@@ -6,14 +6,23 @@ interface BodySelectProps {
   /** Map of body names to facet counts */
   facetMap: Map<string, number>;
   handleBodySelect: (body: string | null) => void;
+  searchParams: URLSearchParams;
 }
 
 export default function BodySelect({
   facetMap,
   handleBodySelect,
+  searchParams,
 }: BodySelectProps) {
   // when checkedBody is null, check "All bodies" option
   const [checkedBody, setCheckedBody] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (searchParams.has("body")) {
+      const body: string = searchParams.get("body")!;
+      body === "all" ? setCheckedBody(null) : setCheckedBody(body);
+    }
+  }, []);
 
   useEffect(() => {
     handleBodySelect(checkedBody);

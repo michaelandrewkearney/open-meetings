@@ -1,5 +1,5 @@
 import { BASE_URL } from "../config";
-import { CancelledMeetingResult, MeetingResult, PlannedMeetingResult, Search, SearchState } from "../meetingTypes";
+import { CancelledMeetingResult, MeetingResult, PlannedMeetingResult, Search } from "../meetingTypes";
 import { Facet, Hit, MeetingDocumentMetadata, SearchResponse, isCancelled, isSearchResponse } from "./searchResponse";
 import { RequestJsonFunction } from "./types";
 

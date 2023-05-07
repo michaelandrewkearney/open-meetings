@@ -35,14 +35,6 @@ export interface MeetingDocumentMetadata<isCancelled extends boolean> {
   cancelled_dt: isCancelled extends true ? number : null;
 }
 
-interface MeetingDocument extends MeetingDocumentMetadata<boolean> {
-  cancelled_reason: string | null
-  latestAgenda: string[]
-  latestMinutes: string[]
-  contactPerson: string
-  contactEmail: string
-  contactPhone: string
-}
 
 export const isSearchResponse = (json: any): json is SearchResponse => {
   if (!("result" in json) || json?.result !== "success") return false;
@@ -78,7 +70,7 @@ const isHit = (json: any): json is Hit => {
   return true
 }
 
-function isMeetingDocumentMetadata(json: any): json is MeetingDocumentMetadata<boolean> {
+export function isMeetingDocumentMetadata(json: any): json is MeetingDocumentMetadata<boolean> {
   if (!("id" in json)) return false
   if (!("body" in json)) return false
   if (!("meeting_dt" in json)) return false
