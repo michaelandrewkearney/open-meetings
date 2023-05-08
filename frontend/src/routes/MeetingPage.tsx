@@ -90,7 +90,7 @@ const DocumentSection = ({ title, link, paragraphs }: DocumentSectionProps) => (
       {link ? <a href={link ? link : undefined}>View PDF</a> : <></>}
     </div>
     {paragraphs ? (
-      paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
+      paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)
     ) : (
       <></>
     )}

@@ -31,7 +31,7 @@ export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
     const {body, dateStart, dateEnd} = filters
     const searchParams: SearchEndpointParams = {
       // Typesense wants query="*" to return all documents
-      keyphrase: keyphrase === "" ? "*" : keyphrase,
+      keyphrase: keyphrase,
       publicBody: body ? body : undefined,
       dateStart: dateStart ? dateStart.getTime() / 1000 : undefined,
       dateEnd: dateEnd ? dateEnd.getTime() / 1000 : undefined
@@ -41,7 +41,6 @@ export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
 
     //Map of public body names to counts
     const bodyFacetMap: Map<string, number> = new Map()
-    console.log(resp)
     const bodyFacet: FacetCount | undefined = resp.facet_counts.find((facet) => facet.fieldName === "body")
     
     if (bodyFacet === undefined) {
@@ -103,13 +102,11 @@ function convertHits(hits: Hit[]): MeetingResult[] {
 
 function convertHighlights(hit: Hit): ResultHighlight[] | undefined {
   const highlights = hit.highlights
-  console.log(highlights)
   if (!highlights) {return undefined}
 
   let toReturn: ResultHighlight[] = [];
   highlights.forEach(highlight => {
     if ("snippets" in highlight) {
-      console.log("into snippets")
       toReturn.push({
         field: highlight.field,
         snippets: highlight.snippets!
@@ -141,12 +138,18 @@ interface GetSearchResponseFunction {
 function buildGetSearchResponse(requestJson: RequestJsonFunction): GetSearchResponseFunction {
     async function getSearchResponse({ keyphrase, publicBody, dateStart, dateEnd }: SearchEndpointParams): Promise<SearchResponse> {
 
+    console.log("in getsearch response")
+    console.log({ keyphrase, publicBody, dateStart, dateEnd })
+
     const url: URL = new URL(`${BASE_URL}/meetingSearch`)
     url.searchParams.append("keyphrase", keyphrase)
 
     if (publicBody) url.searchParams.append("publicBody", publicBody)
     if (dateStart) url.searchParams.append("dateStart", dateStart.toString())
     if (dateEnd) url.searchParams.append("dateEnd", dateEnd.toString())
+
+    console.log(url.href)
+
     
     const json: Promise<any> = await requestJson(url)
     if (isSearchResponse(json)) {

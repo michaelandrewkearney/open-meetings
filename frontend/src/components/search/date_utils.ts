@@ -9,7 +9,7 @@
     const year: number = parseInt(date.substring(0, 4));
     const month: number = parseInt(date.substring(5, 7)) - 1;
     const day: number = parseInt(date.slice(8));
-    return new Date(year, month, day);
+    return new Date(year, month, day, 23, 59);
   };
 
    /**

@@ -16,10 +16,11 @@ export default function BodySelect({
 }: BodySelectProps) {
   // when checkedBody is null, check "All bodies" option
   const [checkedBody, setCheckedBody] = useState<string | null>(null);
+  const [bodyNames, setBodyNames] = useState<readonly string[]>();
+  const [numResults, setNumResults] = useState<number>();
 
   useEffect(() => {
     const bodyParam = searchParams.get("body");
-    console.log(bodyParam);
     setCheckedBody(bodyParam === "all" ? null : bodyParam);
   }, []);
 
@@ -27,11 +28,15 @@ export default function BodySelect({
     handleBodySelect(checkedBody);
   }, [checkedBody]);
 
-  const bodyNames: readonly string[] = [...facetMap.keys()];
-  const numResults: number = [...facetMap.values()].reduce(
-    (sum, count) => sum + count,
-    0
-  );
+  useEffect(() => {
+    setBodyNames(() => [...facetMap.keys()]);
+    const newNumResults: number = [...facetMap.values()].reduce(
+      (sum, count) => sum + count,
+      0
+    );
+    setNumResults(() => newNumResults);
+  }, [facetMap]);
+
   return (
     <fieldset className={styles["BodySelect"]}>
       <legend>Body</legend>
@@ -48,23 +53,29 @@ export default function BodySelect({
         </label>
       </div>
 
-      {bodyNames.map((body: string) => {
-        return (
-          <div className={styles["body-option"]} key={body}>
-            <input
-              type="radio"
-              id={body}
-              value={body}
-              checked={checkedBody === body}
-              onChange={(e) => setCheckedBody(e.currentTarget.value)}
-            />
-            <label htmlFor={body}>
-              {body}{" "}
-              <span className={styles["body-count"]}>{facetMap.get(body)}</span>
-            </label>
-          </div>
-        );
-      })}
+      {bodyNames ? (
+        bodyNames.map((body: string) => {
+          return (
+            <div className={styles["body-option"]} key={body}>
+              <input
+                type="radio"
+                id={body}
+                value={body}
+                checked={checkedBody === body}
+                onChange={(e) => setCheckedBody(e.currentTarget.value)}
+              />
+              <label htmlFor={body}>
+                {body}{" "}
+                <span className={styles["body-count"]}>
+                  {facetMap.get(body)}
+                </span>
+              </label>
+            </div>
+          );
+        })
+      ) : (
+        <></>
+      )}
     </fieldset>
   );
 }

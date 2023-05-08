@@ -15,7 +15,6 @@ export default function DateSelect({
   const [dateEnd, setDateEnd] = useState<string>("");
 
   useEffect(() => {
-    console.log([...searchParams.entries()]);
     const dateStartParam = searchParams.get("dateStart");
     const dateEndParam = searchParams.get("dateEnd");
     if (dateStartParam) {
@@ -24,15 +23,7 @@ export default function DateSelect({
     if (dateEndParam) {
       setDateEnd(dateEndParam);
     }
-    handleDate(
-      dateStartParam ? toDateObj(dateStartParam) : null,
-      dateEndParam ? toDateObj(dateEndParam) : null
-    );
   }, []);
-
-  useEffect(() => {
-    console.log(dateStart);
-  }, [dateStart]);
 
   return (
     <fieldset className={styles["DateSelect"]}>

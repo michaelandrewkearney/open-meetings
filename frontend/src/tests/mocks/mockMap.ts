@@ -68,12 +68,14 @@ const getMeetingURL: URL = new URL(`${BASE_URL}/getMeeting`)
 //           value: "Rhode Island School Building Taskforce",
 //         },
 //       ],
-//       field_name: "body"
+//       fieldName: "body"
 //     },
 //   ],
 //   hits: [
 //     {
-//       highlights: [],
+//       highlights: [{
+//         snippet
+//       }],
 //       document: mockMeetingMetadata.get("1")!
 //     },
 //     {
@@ -99,7 +101,7 @@ const getMeetingURL: URL = new URL(`${BASE_URL}/getMeeting`)
 //           value: "Barrington School Committee",
 //         },
 //       ],
-//       field_name: "body"
+//       fieldName: "body"
 //     },
 //   ],
 //   hits: [

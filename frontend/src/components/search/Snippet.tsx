@@ -11,11 +11,11 @@ export default function Snippet({ highlight }: SnippetProps) {
   return (
     <>
       {"snippet" in highlight ? (
-        <p className={styles["snippet"]} key={highlight.snippet}>
+        <p className={styles["snippet"]} key={JSON.stringify(highlight)}>
           {snippetToJSXElt(highlight.snippet)}
         </p>
       ) : (
-        <p className={styles["snippet"]} key={highlight.snippets[0]}>
+        <p className={styles["snippet"]} key={JSON.stringify(highlight)}>
           {snippetToJSXElt(highlight.snippets[0])}
         </p>
       )}
