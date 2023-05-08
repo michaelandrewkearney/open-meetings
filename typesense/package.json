@@ -1,0 +1,29 @@
+{
+  "name": "typesense",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "index": "npx ts-node ./src/add_documents.ts ../data/test_omp_data.json 8108",
+    "prestart": "docker login && docker pull typesense/typesense:0.24.1 && docker rm opm",
+    "start": "docker run --name opm -p 8108:8108 -v typesense-database:/data typesense/typesense:0.24.1 --data-dir /data --api-key=xyz --enable-cors --api-port=8108",
+    "poststart": "docker kill opm && docker rm opm",
+    "test": "npx jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^20.1.0",
+    "@types/shelljs": "^0.8.12",
+    "jest": "^29.5.0",
+    "node": "^20.1.0",
+    "shelljs": "^0.8.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4",
+    "typesense": "^1.5.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.1",
+    "ts-jest": "^29.1.0"
+  }
+}
