@@ -7,8 +7,9 @@ import { createBrowserRouter, Params, RouterProvider } from "react-router-dom";
 import { RequestJsonFunction } from "./server/types";
 import { buildGetMeeting } from "./server/getMeeting";
 import MeetingInfo from "./routes/MeetingPage";
+import fetchJson from "./server/fetchJson";
 
-const REQUEST_JSON_FUNCTION: RequestJsonFunction = mockRequestJson;
+const REQUEST_JSON_FUNCTION: RequestJsonFunction = fetchJson;
 
 const router = createBrowserRouter([
   {
