@@ -1,0 +1,18 @@
+#logo {
+  flex: 1 0;
+  padding: 1rem;
+}
+
+#logo span {
+  display: block;
+  font-weight: bold;
+}
+
+#logo-small-text {
+  font-size: 1rem;
+}
+
+#logo-big-text {
+  font-size: 1.25rem;
+  color: var(--text-accent-color);
+}

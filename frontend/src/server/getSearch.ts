@@ -1,5 +1,5 @@
 import { BASE_URL } from "../config";
-import { CancelledMeetingResult, MeetingResult, PlannedMeetingResult, Search } from "../meetingTypes";
+import { CancelledMeetingResult, MeetingResult, PlannedMeetingResult, SearchFilters, SearchResults } from "../meetingTypes";
 import { Facet, Hit, MeetingDocumentMetadata, SearchResponse, isCancelled, isSearchResponse } from "./searchResponse";
 import { RequestJsonFunction } from "./types";
 
@@ -13,7 +13,7 @@ interface SearchEndpointParams {
 }
 
 interface SearchFunction {
-  (keyphrase: string, selectedBody: string | null, dateStart: Date | null,  dateEnd: Date | null): Promise<Search>
+  (keyphrase: string, filters: SearchFilters): Promise<SearchResults>
 }
 
 /**
@@ -24,12 +24,8 @@ interface SearchFunction {
  * @returns 
  */
 export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
-  async function search(
-    keyphrase: string, 
-    body: string | null,
-    dateStart: Date | null, 
-    dateEnd: Date | null): Promise<Search> {
-
+  async function search(keyphrase: string, filters: SearchFilters): Promise<SearchResults> {
+    const {body, dateStart, dateEnd} = filters
     const searchParams: SearchEndpointParams = {
       // Typesense wants query="*" to return all documents
       keyphrase: keyphrase === "" ? "*" : keyphrase,
@@ -53,13 +49,12 @@ export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
 
     // return new Search
     return {
-      keyphrase: keyphrase,
       bodyFacetMap: bodyFacetMap,
       resultsInfo: {found: resp.found, outOf: resp.out_of},
-      selectedBody: null,
       results: convertHits(resp.hits)
     }
   }
+
   return search;
 }
 

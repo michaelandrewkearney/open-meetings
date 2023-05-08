@@ -1,18 +1,18 @@
 import styles from "./Sidebar.module.css";
 
-import { Search } from "../../meetingTypes";
-import BodySelect from "./BodySelect";
-import DateSelect from "./DateSelect";
+import { SearchResults } from "../../meetingTypes";
+import DateSelect from "./inputs/DateSelect";
+import BodySelect from "./inputs/BodySelect";
 
 interface SidebarProps {
-  search: Search;
+  searchResults: SearchResults;
   handleBodySelect: any;
   handleDate: any;
   searchParams: URLSearchParams;
 }
 
 export default function Sidebar({
-  search,
+  searchResults,
   handleBodySelect,
   handleDate,
   searchParams,
@@ -21,7 +21,7 @@ export default function Sidebar({
     <aside className={styles["Sidebar"]}>
       <DateSelect handleDate={handleDate} searchParams={searchParams} />
       <BodySelect
-        facetMap={search.bodyFacetMap}
+        facetMap={searchResults.bodyFacetMap}
         handleBodySelect={handleBodySelect}
         searchParams={searchParams}
       />
