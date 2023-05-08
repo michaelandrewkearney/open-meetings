@@ -29,7 +29,7 @@ public class Tsearch {
         List<Node> nodes = new ArrayList<Node>();
         nodes.add(new Node("http", "localhost", "8108"));
         this.nodes = nodes;
-        this.config = new Configuration(nodes, Duration.ofSeconds(2), "API_KEY");
+        this.config = new Configuration(nodes, Duration.ofSeconds(10), System.getenv("TYPESENSE_API_KEY"));
         this.client = new Client(config);
         this.stop_words = stopWords.stop_words();
     }
@@ -88,23 +88,13 @@ public class Tsearch {
         return result;
     }
 
-    /**
-     * Makes SearchParameters for the "q" and "queryBy" parameters
-     *
-     * Serves as a building block for the searchMeetings() methods to add optional parameters,
-     * based on which parameters are passed
-     */
-    private SearchParameters requiredSearchParams(String keyphrase) {
-        return new SearchParameters()
-            .q(keyphrase)
-            .queryBy("latestAgenda").queryBy("latestMinutes").queryBy("publicBody");
+
+    public SearchResult searchMeetings(SearchParameters params) throws Exception {
+        return client.collections("meetings").documents().search(params);
     }
 
-    public SearchResult searchMeetings(String keyphrase, String publicBody) {
-        SearchParameters params = requiredSearchParams(keyphrase)
-            .
-
-
+    public Map<String, Object> getMeeting(String id) throws Exception {
+        return client.collections("meetings").documents(id).retrieve();
     }
 
     /**
@@ -128,26 +118,6 @@ public class Tsearch {
         return ret;
     }
 
-    private class MeetingSearchParams {
-        private final SearchParameters params = new SearchParameters();
 
-        MeetingSearchParams(String keyphrase) {
-            params
-                .q(keyphrase)
-                .queryBy("latestAgenda")
-                .queryBy("latestMinutes")
-                .queryBy("publicBody");
-        }
-
-        MeetingSearchParams withBody(String publicBody) {
-            params.filterBy(String.format("body: %s", publicBody));
-            return this;
-        }
-
-        MeetingSearchParams withDateStart(String publicBody) {
-            params.filterBy(String.format("body: %s", publicBody));
-            return this;
-        }
-    }
 
 }

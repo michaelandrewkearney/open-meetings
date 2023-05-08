@@ -3,7 +3,9 @@ package edu.brown.cs.server.handlers;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import edu.brown.cs.searcher.Tsearch;
 import edu.brown.cs.server.helpers.MeetingData;
+import java.util.Map;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -14,7 +16,10 @@ import spark.Route;
  * loads a Meeting.
  */
 public class LoadMeetingHandler implements Route {
-
+    private final Tsearch searcher;
+    public LoadMeetingHandler(Tsearch searcher) {
+        this.searcher = searcher;
+    }
 
     /**
      * This is what is called when a request is made.
@@ -35,9 +40,7 @@ public class LoadMeetingHandler implements Route {
 
         // need to take in meeting from searcher? and return 
         try {
-            String JSON = " "; // this is where we get data from Tsearcher
-            Moshi m = new Moshi.Builder().build();
-            MeetingData meeting = m.adapter(MeetingData.class).fromJson(JSON);
+            Map<String, Object> meeting = searcher.getMeeting(id); // this is where we get data from Tsearcher
             return new LoadMeetingSuccessResponse(meeting).serialize();
         } catch (Exception e) {
             return new LoadMeetingDatasourceFailureResponse("Invalid Meeting.").serialize();
@@ -50,8 +53,8 @@ public class LoadMeetingHandler implements Route {
      * @param response_type - success
      * @param meeting - meeting info based on JSON
      */
-    public record LoadMeetingSuccessResponse(String response_type, MeetingData meeting) {
-        public LoadMeetingSuccessResponse(MeetingData meeting) {
+    public record LoadMeetingSuccessResponse(String response_type, Map<String, Object> meeting) {
+        public LoadMeetingSuccessResponse(Map<String, Object> meeting) {
             this("success", meeting);
         }
 

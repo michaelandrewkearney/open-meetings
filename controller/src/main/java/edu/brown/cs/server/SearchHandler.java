@@ -3,8 +3,15 @@ package edu.brown.cs.server;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import edu.brown.cs.searcher.SearchParamBuilder;
+import edu.brown.cs.searcher.Tsearch;
 import edu.brown.cs.server.helpers.MeetingData;
+import java.util.List;
+import java.util.Map;
 import org.typesense.model.FacetCounts;
+import org.typesense.model.SearchParameters;
+import org.typesense.model.SearchResult;
+import org.typesense.model.SearchResultHit;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -15,6 +22,10 @@ import spark.Route;
  * loads a Meeting.
  */
 public class SearchHandler implements Route {
+    private final Tsearch searcher;
+    public SearchHandler(Tsearch searcher) {
+        this.searcher = searcher;
+    }
 
 
     /**
@@ -26,26 +37,41 @@ public class SearchHandler implements Route {
      */
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        String searchWord = request.queryParams("keyphrase");
+        String keyphrase = request.queryParams("keyphrase");
+
+        //if no param query
+        if (keyphrase == null) {
+            return new SearchRequestFailureResponse("Must include an 'id' query.").serialize();
+        }
+
         String publicBody = request.queryParams("publicBody");
         String dateStart = request.queryParams("dateStart"); // epoch time (seconds)
         String dateEnd = request.queryParams("dateEnd"); // epoch time (seconds)
 
-
-        //if no param query
-        if (searchWord == null) {
-            return new SearchRequestFailureResponse("Must include an 'id' query.").serialize();
+        SearchParamBuilder paramBuilder = new SearchParamBuilder(keyphrase);
+        if (publicBody != null) {
+            paramBuilder.withBody(publicBody);
         }
-
+        if (dateStart != null) {
+            paramBuilder.withDateStart(Integer.parseInt(dateStart));
+        }
+        if (dateEnd != null) {
+            paramBuilder.withDateEnd(Integer.parseInt(dateEnd));
+        }
 
         // need to take in meeting results from searcher? and return the necessary info
         try {
-            String JSON = " "; // this is where we get data from Tsearcher
-            Moshi m = new Moshi.Builder().build();
-            MeetingData meeting = m.adapter(MeetingData.class).fromJson(JSON);
-            return new SearchSuccessResponse(meeting).serialize();
+            // this is where we get data from Tsearcher
+            SearchResult searchResult = searcher.searchMeetings(paramBuilder.build());
+            SearchSuccessResponse successResp = new SearchSuccessResponse(
+                searchResult.getFound(),
+                searchResult.getOutOf(),
+                searchResult.getFacetCounts(),
+                searchResult.getHits()
+            );
+            return successResp.serialize();
         } catch (Exception e) {
-
+            e.printStackTrace();
             return new SearchDatasourceFailureResponse("Invalid Meeting.").serialize();
         }
 
@@ -54,26 +80,18 @@ public class SearchHandler implements Route {
     /**
      * Success response object.
      * @param response_type - success
-     * @param meeting - meeting info based on JSON
      */
-    public record SearchSuccessResponse(String response_type, int found, int out_of, int page, FacetCounts facet_counts, Hits hits) {
-        public SearchSuccessResponse(int found, int out_of, int page, FacetCounts facet_counts, Hits hits) {
-            this("success", found, out_of, page, facet_counts, hits);
+    public record SearchSuccessResponse(String response_type, int found, int out_of, List<FacetCounts> facet_counts, List<SearchResultHit> hits) {
+        public SearchSuccessResponse(int found, int out_of, List<FacetCounts> facet_counts, List<SearchResultHit> hits) {
+            this("success", found, out_of, facet_counts, hits);
         }
-
         String serialize() {
             try {
-                // Just like in SoupAPIUtilities.
-                //   (How could we rearrange these similar methods better?)
                 Moshi moshi = new Moshi.Builder()
-                        //.add(Map.class) //this is complex, something i'm introducing
                         .build();
-                JsonAdapter<SearchHandler.SearchSuccessResponse> adapter = moshi.adapter(SearchHandler.SearchSuccessResponse.class);
+                JsonAdapter<SearchSuccessResponse> adapter = moshi.adapter(SearchSuccessResponse.class);
                 return adapter.toJson(this);
             } catch(Exception e) {
-                // For debugging purposes, show in the console _why_ this fails
-                // Otherwise we'll just get an error 500 from the API in integration
-                // testing.
                 e.printStackTrace();
                 throw e;
             }

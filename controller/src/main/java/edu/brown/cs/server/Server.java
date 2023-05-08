@@ -3,6 +3,7 @@ package edu.brown.cs.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.server.handlers.LoadMeetingHandler;
 import java.util.List;
 
 import org.typesense.api.FieldTypes;
@@ -26,10 +27,12 @@ public class Server {
             response.header("Access-Control-Allow-Origin", "*");
             response.header("Access-Control-Allow-Methods", "*");
         });
+
+        Tsearch searcher = new Tsearch(new StopWords(List.of()));
         
         // put in all the endpoint handlers
-        Spark.get("meetingSearch", null);
-        Spark.get("getMeeting", null);
+        Spark.get("meetingSearch", new SearchHandler(searcher));
+        Spark.get("getMeeting", new LoadMeetingHandler(searcher));
         Spark.init();
         Spark.awaitInitialization();
         System.out.println("Server started.");
