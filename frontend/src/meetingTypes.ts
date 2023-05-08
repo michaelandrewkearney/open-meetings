@@ -37,13 +37,20 @@ interface AbstractMeetingResult {
   readonly body: string;
   readonly meetingDate: Date;
   readonly address: string;
-  readonly highlights: readonly ResultHighlight[]
+  readonly highlights?: ResultHighlight[]
 }
 
-export interface ResultHighlight {
-  field: string
-  snippet: string
+export interface StringFieldHighlight {
+  field: string, 
+  snippet: string,
 }
+
+export interface ArrayFieldHighlight {
+  field: string, 
+  snippets: string[],
+}
+
+export type ResultHighlight = StringFieldHighlight | ArrayFieldHighlight
 
 export interface PlannedMeetingResult extends AbstractMeetingResult {
   readonly isCancelled: false;

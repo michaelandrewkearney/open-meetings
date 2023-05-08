@@ -18,11 +18,6 @@
   padding-inline-start: 0;
 }
 
-.snippet {
-  padding: 0.5rem 0;
-  font-style: italic;
-}
-
 .cancelled-text {
   font-style: italic;
   color: var(--cancelled-text-color)

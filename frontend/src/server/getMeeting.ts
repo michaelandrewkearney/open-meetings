@@ -19,6 +19,7 @@ export function buildGetMeeting(requestJson: RequestJsonFunction): GetMeetingFun
 
     const json: Promise<any> = await requestJson(url)
     if (!isMeetingResponse(json)) {
+      console.log(json)
       throw new Error("not a meeting response")
     } 
 

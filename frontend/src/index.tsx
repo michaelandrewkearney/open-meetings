@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./routes/SearchPage";
-import mockRequestJson from "./tests/mocks/mockRequestJson";
 import { createBrowserRouter, Params, RouterProvider } from "react-router-dom";
 import { RequestJsonFunction } from "./server/types";
 import { buildGetMeeting } from "./server/getMeeting";

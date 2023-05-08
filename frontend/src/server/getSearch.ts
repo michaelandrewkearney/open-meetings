@@ -1,7 +1,10 @@
+import { SearchResponseFacetCountSchema, SearchResponseHit } from "typesense/lib/Typesense/Documents";
 import { BASE_URL } from "../config";
-import { CancelledMeetingResult, MeetingResult, PlannedMeetingResult, SearchFilters, SearchResults } from "../meetingTypes";
-import { Facet, Hit, MeetingDocumentMetadata, SearchResponse, isCancelled, isSearchResponse } from "./searchResponse";
+import { CancelledMeetingResult, MeetingResult, PlannedMeetingResult, ResultHighlight, SearchFilters, SearchResults } from "../meetingTypes";
+import { FacetCount, Hit, MeetingDocumentMetadata, SearchResponse, isCancelled, isSearchResponse } from "./searchResponse";
 import { RequestJsonFunction } from "./types";
+import { MeetingDocument } from "./meetingResponse";
+import { DocumentHighlights } from "typescript";
 
 interface SearchEndpointParams {
   keyphrase: string, 
@@ -38,12 +41,13 @@ export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
 
     //Map of public body names to counts
     const bodyFacetMap: Map<string, number> = new Map()
-    const bodyFacet: Facet | undefined = resp.facet_counts.find((facet) => facet.field_name === "body")
+    console.log(resp)
+    const bodyFacet: FacetCount | undefined = resp.facet_counts.find((facet) => facet.fieldName === "body")
     
     if (bodyFacet === undefined) {
       throw new Error("body facet not in search response")
     }
-    bodyFacet.counts.forEach((facetCount) => {
+    bodyFacet.counts.forEach((facetCount: { value: string; count: number; }) => {
       bodyFacetMap.set(facetCount.value, facetCount.count)
     })
 
@@ -68,14 +72,16 @@ export function buildSearch(requestJson: RequestJsonFunction): SearchFunction {
 function convertHits(hits: Hit[]): MeetingResult[] {
   const results: MeetingResult[] = []
   hits.forEach((hit: Hit) => {
-    const doc: MeetingDocumentMetadata<boolean> = hit.document
+    const doc: MeetingDocument<boolean> = hit.document
     const basicMeetingInfo = {
       id: doc.id,
       body: doc.body,
       meetingDate: new Date(doc.meeting_dt * 1000),
       address: doc.address,
-      highlights: hit.highlights,
+      highlights: convertHighlights(hit),
+      filing_dt: doc.filing_dt,
     }
+    
     if (isCancelled(doc)) {
       const meetingResult: CancelledMeetingResult = {
         ...basicMeetingInfo,
@@ -95,6 +101,30 @@ function convertHits(hits: Hit[]): MeetingResult[] {
 }
 
 
+function convertHighlights(hit: Hit): ResultHighlight[] | undefined {
+  const highlights = hit.highlights
+  console.log(highlights)
+  if (!highlights) {return undefined}
+
+  let toReturn: ResultHighlight[] = [];
+  highlights.forEach(highlight => {
+    if ("snippets" in highlight) {
+      console.log("into snippets")
+      toReturn.push({
+        field: highlight.field,
+        snippets: highlight.snippets!
+      })
+    } else {
+      toReturn.push({
+        field: highlight.field,
+        snippet: highlight.snippet!
+      })
+    }
+  })
+
+  return toReturn
+}
+
 /**
  * Function that gets search response from API meetingSearch endpoint
  */
@@ -109,9 +139,9 @@ interface GetSearchResponseFunction {
  * @returns 
  */
 function buildGetSearchResponse(requestJson: RequestJsonFunction): GetSearchResponseFunction {
-    async function getSearchResponse({ keyphrase, page, per_page, publicBody, dateStart, dateEnd }: SearchEndpointParams): Promise<SearchResponse> {
+    async function getSearchResponse({ keyphrase, publicBody, dateStart, dateEnd }: SearchEndpointParams): Promise<SearchResponse> {
 
-    const url: URL = new URL(`${BASE_URL}/searchMeeting`)
+    const url: URL = new URL(`${BASE_URL}/meetingSearch`)
     url.searchParams.append("keyphrase", keyphrase)
 
     if (publicBody) url.searchParams.append("publicBody", publicBody)
@@ -123,6 +153,7 @@ function buildGetSearchResponse(requestJson: RequestJsonFunction): GetSearchResp
       const resp: SearchResponse = json
       return resp;
     } else {
+      console.log(json)
       throw new Error("not a search response")
     }
   }

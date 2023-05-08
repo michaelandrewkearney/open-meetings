@@ -3,6 +3,7 @@ import styles from "./SearchResult.module.css";
 import { MeetingResult, ResultHighlight } from "../../meetingTypes";
 import { snippetToJSXElt } from "./parseMarks";
 import { Link } from "react-router-dom";
+import Snippet from "./Snippet";
 
 interface SearchResultProps {
   result: MeetingResult;
@@ -14,10 +15,13 @@ export default function SearchResult({
   searchParams,
 }: SearchResultProps) {
   const getBodyName = (): string => {
-    const nameWithMarks: ResultHighlight | undefined = result.highlights.find(
+    const nameWithMarks: ResultHighlight | undefined = result.highlights?.find(
       (highlight) => highlight.field === "body"
     );
-    return nameWithMarks ? nameWithMarks.snippet : result.body;
+    if (nameWithMarks && "snippet" in nameWithMarks) {
+      return nameWithMarks.snippet;
+    }
+    return result.body;
   };
 
   const bodyName: JSX.Element = snippetToJSXElt(getBodyName());
@@ -41,11 +45,9 @@ export default function SearchResult({
         <p>{result.meetingDate.toLocaleString()}</p>
         <p>{result.address}</p>
       </ul>
-      {result.highlights.map((highlight) =>
+      {result.highlights?.map((highlight) =>
         ["latestAgenda", "latestMinutes"].includes(highlight.field) ? (
-          <p className={styles["snippet"]} key={highlight.snippet}>
-            {snippetToJSXElt(highlight.snippet)}
-          </p>
+          <Snippet highlight={highlight} />
         ) : (
           <></>
         )

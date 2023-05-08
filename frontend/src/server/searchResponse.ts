@@ -1,20 +1,20 @@
+import { SearchResponseFacetCountSchema, SearchResponseHit } from "typesense/lib/Typesense/Documents";
+import { Meeting } from "../meetingTypes";
+import { MeetingDocument } from "./meetingResponse";
+
+export type Hit = SearchResponseHit<MeetingDocument<boolean>>
+
 export interface SearchResponse {
-  result: string;
+  response_type: string;
   found: number,
   out_of: number, 
-  page: number, 
-  facet_counts: Facet[],
-  hits: Hit[]
+  facet_counts: FacetCount[],
+  hits: SearchResponseHit<MeetingDocument<boolean>>[]
 }
 
-export interface Facet {
-  counts: {count: number, value: string}[]
-  field_name: string
-}
-
-export interface Hit {
-  highlights: {field: string, snippet: string}[]
-  document: MeetingDocumentMetadata<boolean>
+export interface FacetCount {
+  counts: Array<{count: number, value: string}>;
+  fieldName: string;
 }
 
 /**
@@ -37,35 +37,38 @@ export interface MeetingDocumentMetadata<isCancelled extends boolean> {
 
 
 export const isSearchResponse = (json: any): json is SearchResponse => {
-  if (!("result" in json) || json?.result !== "success") return false;
+  if (!("response_type" in json) || json?.response_type !== "success") return false;
   if (!("found" in json)) return false
   if (!("out_of" in json)) return false
-  if (!("page" in json)) return false
 
   // checking that facet_counts is Facet[]
   if (!Array.isArray(json?.facet_counts)) return false
   if (!json.facet_counts.every((elt: any) => isFacet(elt))) return false
+
   
   // checking that hits is Hit[]
   if (!Array.isArray(json?.hits)) return false
-  if (!json.hits.every((elt: any) => isHit(elt))) return false
+  if (!json.hits.every((elt: any) => isSearchResponseHit(elt))) return false
   return true
 }
 
-const isFacet = (json: any): json is Facet => {
+const isFacet = (json: any): json is SearchResponseFacetCountSchema<MeetingDocument<boolean>> => {
   if (!Array.isArray(json?.counts)) return false
+
   if (!json.counts.every((countsObj: any) => (
     "count" in countsObj && "value" in countsObj
   ))) return false
-  if (!("field_name" in json)) return false
+  if (!("fieldName" in json)) return false
   return true
 }
 
-const isHit = (json: any): json is Hit => {
+const isSearchResponseHit = (json: any): json is SearchResponseHit<MeetingDocument<boolean>> => {
   if (!Array.isArray(json?.highlights)) return false
+
   if (!json.highlights.every((highlight: any) => (
-    "field" in highlight && "snippet" in highlight
+    "field" in highlight && ("snippet" in highlight || "snippets" in highlight)
   ))) return false
+
   if (!(isMeetingDocumentMetadata(json.document))) return false
   return true
 }
@@ -76,7 +79,7 @@ export function isMeetingDocumentMetadata(json: any): json is MeetingDocumentMet
   if (!("meeting_dt" in json)) return false
   if (!("address" in json)) return false
   if (!("is_cancelled" in json)) return false
-  if (!("cancelled_dt" in json)) return false
+  if (json.is_cancelled && !("cancelled_dt" in json)) return false
   return true
 }
 

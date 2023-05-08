@@ -1,7 +1,7 @@
 import { MeetingDocumentMetadata, isMeetingDocumentMetadata } from "./searchResponse"
 
 export interface MeetingResponse {
-  result: "success";
+  response_type: "success";
   meeting: MeetingDocument<boolean>
 }
 
@@ -21,7 +21,8 @@ export interface MeetingDocument<IsCancelled extends boolean> extends MeetingDoc
 }
 
 export function isMeetingResponse(json: any): json is MeetingResponse {
-  if (!("result" in json) || json?.result !== "success") return false;
+  if (!("response_type" in json) || json?.response_type !== "success") return false;
+
   if (!("meeting" in json)) return false;
   if (!(isMeetingDocument(json.meeting))) return false
   return true
@@ -29,17 +30,14 @@ export function isMeetingResponse(json: any): json is MeetingResponse {
 
 function isMeetingDocument(json: any): json is MeetingDocument<boolean> {
   if (!isMeetingDocumentMetadata(json)) return false
-
-  if (!("cancelled_reason" in json)) return false
+  if (json.is_cancelled && !("cancelled_reason" in json)) return false
   if (!("is_emergency" in json)) return false
   if (!("is_annual_calendar" in json)) return false
   if (!("is_public_notice" in json)) return false
-  if (!("latestAgenda" in json)) return false
-  if (!("latestAgendaLink" in json)) return false
-  if (json.latestAgenda === null && json.latestAgendaLink != null) return false
-  if (!("latestMinutes" in json)) return false
-  if (!("latestMinutesLink" in json)) return false
-  if (json.latestMinutes === null && json.latestMinutesLink != null) return false
+
+  if (!(("latestAgenda" in json) == ("latestAgendaLink" in json))) return false
+
+  if (!(("latestMinutes" in json) == ("latestMinutesLink" in json))) return false
   if (!("contactPerson" in json)) return false
   if (!("contactEmail" in json)) return false
   if (!("contactPhone" in json)) return false
