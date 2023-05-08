@@ -1,9 +1,10 @@
-package edu.brown.cs.server.handlers;
+package edu.brown.cs.server;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import edu.brown.cs.server.helpers.MeetingData;
+import org.typesense.model.FacetCounts;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -25,26 +26,16 @@ public class SearchHandler implements Route {
      */
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        String searchWord = request.queryParams("searchword");
-        String page = request.queryParams("page"); // int, direct to tsense
-        String perPage = request.queryParams("perpage"); // int, direct to tsense
-        String publicBody = request.queryParams("publicbody");
-        String dateStart = request.queryParams("datestart"); // int
-        String dateEnd = request.queryParams("datend"); // int
-
-
+        String searchWord = request.queryParams("keyphrase");
+        String publicBody = request.queryParams("publicBody");
+        String dateStart = request.queryParams("dateStart"); // epoch time (seconds)
+        String dateEnd = request.queryParams("dateEnd"); // epoch time (seconds)
 
 
         //if no param query
         if (searchWord == null) {
             return new SearchRequestFailureResponse("Must include an 'id' query.").serialize();
         }
-
-        //if no optional query, repeat as needed
-        if (page == null) {
-            return "depends what message needs to be sent to the tsense endpoint"
-        }
-
 
 
         // need to take in meeting results from searcher? and return the necessary info

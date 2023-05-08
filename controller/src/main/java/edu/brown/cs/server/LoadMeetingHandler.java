@@ -33,7 +33,6 @@ public class LoadMeetingHandler implements Route {
         }
 
 
-
         // need to take in meeting from searcher? and return 
         try {
             String JSON = " "; // this is where we get data from Tsearcher
@@ -41,7 +40,6 @@ public class LoadMeetingHandler implements Route {
             MeetingData meeting = m.adapter(MeetingData.class).fromJson(JSON);
             return new LoadMeetingSuccessResponse(meeting).serialize();
         } catch (Exception e) {
-
             return new LoadMeetingDatasourceFailureResponse("Invalid Meeting.").serialize();
         }
 
@@ -59,17 +57,11 @@ public class LoadMeetingHandler implements Route {
 
         String serialize() {
             try {
-                // Just like in SoupAPIUtilities.
-                //   (How could we rearrange these similar methods better?)
                 Moshi moshi = new Moshi.Builder()
-                        //.add(Map.class) //this is complex, something i'm introducing
                         .build();
                 JsonAdapter<LoadMeetingHandler.LoadMeetingSuccessResponse> adapter = moshi.adapter(LoadMeetingHandler.LoadMeetingSuccessResponse.class);
                 return adapter.toJson(this);
             } catch(Exception e) {
-                // For debugging purposes, show in the console _why_ this fails
-                // Otherwise we'll just get an error 500 from the API in integration
-                // testing.
                 e.printStackTrace();
                 throw e;
             }
@@ -91,9 +83,6 @@ public class LoadMeetingHandler implements Route {
         }
     }
 
-    /**
-     * Response object to send if someone requested soup before any recipes were loaded
-     */
     public record LoadMeetingRequestFailureResponse(String response_type, String output) {
         public LoadMeetingRequestFailureResponse(String output) { this("error_bad_request", output); }
 
@@ -106,9 +95,7 @@ public class LoadMeetingHandler implements Route {
         }
     }
 
-    /**
-     * Response object to send if someone requested soup before any recipes were loaded
-     */
+
     public record LoadMeetingDatasourceFailureResponse(String response_type, String output) {
         public LoadMeetingDatasourceFailureResponse(String output) { this("error_datasource", output); }
 

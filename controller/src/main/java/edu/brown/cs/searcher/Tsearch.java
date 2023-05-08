@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Optional;
 import org.typesense.api.*;
 import org.typesense.model.*;
 import org.typesense.resources.*;
@@ -61,7 +62,7 @@ public class Tsearch {
      */
     public void createDocument(Map<String,Object> doc) throws Exception {
         this.client.collections(this.collectionName).documents().create(doc);
-    }    
+    }
     
     /**
      * given a String representing a json of many documents, adds them to the searcher
@@ -88,6 +89,25 @@ public class Tsearch {
     }
 
     /**
+     * Makes SearchParameters for the "q" and "queryBy" parameters
+     *
+     * Serves as a building block for the searchMeetings() methods to add optional parameters,
+     * based on which parameters are passed
+     */
+    private SearchParameters requiredSearchParams(String keyphrase) {
+        return new SearchParameters()
+            .q(keyphrase)
+            .queryBy("latestAgenda").queryBy("latestMinutes").queryBy("publicBody");
+    }
+
+    public SearchResult searchMeetings(String keyphrase, String publicBody) {
+        SearchParameters params = requiredSearchParams(keyphrase)
+            .
+
+
+    }
+
+    /**
      * filters unnecessary terms out of a query, if the query is not empty afterwards
      * @param query, the query to enter
      * @return, a filtered query OR the original query if filtered is empty
@@ -107,4 +127,27 @@ public class Tsearch {
             return query;
         return ret;
     }
+
+    private class MeetingSearchParams {
+        private final SearchParameters params = new SearchParameters();
+
+        MeetingSearchParams(String keyphrase) {
+            params
+                .q(keyphrase)
+                .queryBy("latestAgenda")
+                .queryBy("latestMinutes")
+                .queryBy("publicBody");
+        }
+
+        MeetingSearchParams withBody(String publicBody) {
+            params.filterBy(String.format("body: %s", publicBody));
+            return this;
+        }
+
+        MeetingSearchParams withDateStart(String publicBody) {
+            params.filterBy(String.format("body: %s", publicBody));
+            return this;
+        }
+    }
+
 }
