@@ -18,10 +18,9 @@ export default function BodySelect({
   const [checkedBody, setCheckedBody] = useState<string | null>(null);
 
   useEffect(() => {
-    if (searchParams.has("body")) {
-      const body: string = searchParams.get("body")!;
-      body === "all" ? setCheckedBody(null) : setCheckedBody(body);
-    }
+    const bodyParam = searchParams.get("body");
+    console.log(bodyParam);
+    setCheckedBody(bodyParam === "all" ? null : bodyParam);
   }, []);
 
   useEffect(() => {

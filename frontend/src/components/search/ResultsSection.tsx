@@ -1,18 +1,18 @@
 import styles from "./ResultsSection.module.css";
 
-import { MeetingResult, Search } from "../../meetingTypes";
+import { MeetingResult, SearchResults } from "../../meetingTypes";
 import SearchResult from "./SearchResult";
 import Sidebar from "./Sidebar";
 
 interface ResultSectionProps {
-  search: Search;
+  searchResults: SearchResults;
   handleBodySelect: (body: string | null) => void;
   handleDate: (dateStart: Date | null, dateEnd: Date | null) => void;
   searchParams: URLSearchParams;
 }
 
 export default function ResultSection({
-  search,
+  searchResults,
   handleBodySelect,
   handleDate,
   searchParams,
@@ -20,14 +20,18 @@ export default function ResultSection({
   return (
     <div className={styles.ResultsSection}>
       <Sidebar
-        search={search}
+        searchResults={searchResults}
         handleBodySelect={handleBodySelect}
         handleDate={handleDate}
         searchParams={searchParams}
       />
       <main id={styles["results"]}>
-        {search.results.map((result: MeetingResult) => (
-          <SearchResult key={result.id} result={result} />
+        {searchResults.results.map((result: MeetingResult) => (
+          <SearchResult
+            key={result.id}
+            result={result}
+            searchParams={searchParams}
+          />
         ))}
       </main>
     </div>

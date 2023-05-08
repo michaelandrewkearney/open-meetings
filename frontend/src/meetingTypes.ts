@@ -1,32 +1,20 @@
 import { isCancelled } from "./server/searchResponse";
 
-
-/**
- * Manages search state in the React app. 
- * 
- * A `null` `search` property indicates the search has been cleared, or no 
- * search has been performed yet.
- * 
- * `null` values for the `dateStart` and `dateEnd` properties indicates no filter
- * is selected for the corresponding date range boundary.
- */
-export interface SearchState {
-  search: Search | null;
-  dateStart: Date | null;
-  dateEnd: Date | null;
+export interface SearchFilters {
+  readonly body: string | null;
+  readonly dateStart: Date | null;
+  readonly dateEnd: Date | null;
 }
 
 /**
  * The search returned from the Open Meetings API. 
  */
-export interface Search {
-  /** Keyphrase to search on */
-  readonly keyphrase: string;
+export interface SearchResults {
   /** 
    * Public body to filter results on. A `null` value indicates meetings from 
    * all public bodies should be returned.
    */
-  readonly selectedBody: string | null;
+
   /** Meetings returned by the current search */
   readonly results: readonly MeetingResult[];
   /**  
@@ -71,7 +59,11 @@ interface AbstractMeeting {
   readonly id: string;
   readonly body: string;
   readonly meetingDate: Date;
+  readonly filingDate: Date;
   readonly address: string;
+  readonly is_emergency: boolean;
+  readonly is_annual_calendar: boolean;
+  readonly is_public_notice: boolean;
   readonly latestAgenda: string[] | null;
   readonly latestAgendaLink: string | null;
   readonly latestMinutes: string[] | null; 
@@ -114,6 +106,9 @@ function isAbstractMeeting(target: any): target is AbstractMeeting {
   if (!("body" in target)) return false
   if (!("meetingDate" in target)) return false
   if (!("address" in target)) return false
+  if (!("is_emergency" in target)) return false
+  if (!("is_annual_calendar" in target)) return false
+  if (!("is_public_notice" in target)) return false
   if (!("latestAgenda" in target)) return false
   if (!("latestAgendaLink" in target)) return false
   if (!("latestMinutes" in target)) return false

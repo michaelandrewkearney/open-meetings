@@ -1,5 +1,6 @@
 import { FormEvent } from "react";
 import styles from "./SearchBar.module.css";
+import Logo from "../Logo";
 
 interface SearchBarProps {
   keyphrase: string;
@@ -14,12 +15,7 @@ export default function SearchBar({
 }: SearchBarProps) {
   return (
     <header className={styles.SearchBar}>
-      <a id={styles["logo"]}>
-        <h1>
-          <span id={styles["logo-small-text"]}>Rhode Island</span>
-          <span id={styles["logo-big-text"]}>Open Meetings</span>
-        </h1>
-      </a>
+      <Logo />
       <form
         id={styles["search-form"]}
         aria-label="meeting search"

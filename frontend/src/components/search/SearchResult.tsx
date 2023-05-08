@@ -6,9 +6,13 @@ import { Link } from "react-router-dom";
 
 interface SearchResultProps {
   result: MeetingResult;
+  searchParams: URLSearchParams;
 }
 
-export default function SearchResult({ result }: SearchResultProps) {
+export default function SearchResult({
+  result,
+  searchParams,
+}: SearchResultProps) {
   const getBodyName = (): string => {
     const nameWithMarks: ResultHighlight | undefined = result.highlights.find(
       (highlight) => highlight.field === "body"
@@ -27,7 +31,10 @@ export default function SearchResult({ result }: SearchResultProps) {
       ) : (
         <></>
       )}
-      <Link to={`meetings/${result.id}`}>
+      <Link
+        to={`meetings/${result.id}`}
+        state={{ prevQuery: searchParams.toString() }}
+      >
         <h3>{bodyName}</h3>
       </Link>
       <ul className={styles["result-metadata"]}>
