@@ -90,6 +90,7 @@ public class Tsearch {
 
 
     public SearchResult searchMeetings(SearchParameters params) throws Exception {
+        System.out.print(params);
         return client.collections("meetings").documents().search(params);
     }
 
