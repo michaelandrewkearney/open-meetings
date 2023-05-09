@@ -78,6 +78,7 @@ function convertHits(hits: Hit[]): MeetingResult[] {
       meetingDate: new Date(doc.meeting_dt * 1000),
       address: doc.address,
       highlights: convertHighlights(hit),
+      latestAgendaPreview: doc.latestAgenda?.at(0),
       filing_dt: doc.filing_dt,
     }
     

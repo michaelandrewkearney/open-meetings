@@ -38,6 +38,7 @@ interface AbstractMeetingResult {
   readonly meetingDate: Date;
   readonly address: string;
   readonly highlights?: ResultHighlight[]
+  readonly latestAgendaPreview?: string;
 }
 
 export interface StringFieldHighlight {

@@ -18,13 +18,13 @@ export default function Sidebar({
   searchParams,
 }: SidebarProps) {
   return (
-    <aside className={styles["Sidebar"]}>
+    <form className={styles["Sidebar"]} aria-label="Search Filter Options">
       <DateSelect handleDate={handleDate} searchParams={searchParams} />
       <BodySelect
         facetMap={searchResults.bodyFacetMap}
         handleBodySelect={handleBodySelect}
         searchParams={searchParams}
       />
-    </aside>
+    </form>
   );
 }

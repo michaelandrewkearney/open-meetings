@@ -24,87 +24,25 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
   });
   const [results, setResults] = useState<SearchResults>();
 
-  // useEffect(() => {
-  //   console.log([...searchParams.entries()]);
-  //   const keyphraseParam = searchParams.get("keyphrase");
-  //   if (keyphraseParam === null) {
-  //     console.log("making new search");
-  //     setKeyphrase("*");
-  //     handleNewKeyphraseSearch("*", {
-  //       body: null,
-  //       dateStart: null,
-  //       dateEnd: null,
-  //     });
-  //   } else {
-  //     const bodyParam = searchParams.get("body");
-  //     const dateStartParam = searchParams.get("dateStart");
-  //     const dateEndParam = searchParams.get("dateEnd");
-
-  //     handleNewKeyphraseSearch(keyphraseParam, {
-  //       body: bodyParam === "all" ? null : bodyParam,
-  //       dateStart: dateStartParam ? toDateObj(dateStartParam) : null,
-  //       dateEnd: dateEndParam ? toDateObj(dateEndParam) : null,
-  //     });
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (keyphrase) {
-  //     setSearchParams({
-  //       keyphrase: keyphrase,
-  //       body: filters.body ? filters.body : "all",
-  //       ...(filters.dateStart && {
-  //         dateStart: toDateStr(filters.dateStart),
-  //       }),
-  //       ...(filters.dateEnd && { dateEnd: toDateStr(filters.dateEnd) }),
-  //     });
-  //   }
-  // }, [keyphrase]);
-
   useEffect(() => {
     const params = {
       keyphrase: searchParams.get("keyphrase"),
-      body: searchParams.get("body"), // === "all" ? null : searchParams.get("body")
+      body: searchParams.get("body"),
       dateStart: searchParams.get("dateStart"),
       dateEnd: searchParams.get("dateEnd"),
     };
 
-    if (!params.keyphrase) return;
-
-    const newFilters: SearchFilters = {
-      body: params.body === "all" ? null : params.body,
-      dateStart: params.dateStart ? toDateObj(params.dateStart) : null,
-      dateEnd: params.dateEnd ? toDateObj(params.dateEnd) : null,
-    };
-
-    searchFromParams(params.keyphrase, newFilters);
+    if (!params.keyphrase) {
+      searchFromParams("*", { body: null, dateStart: null, dateEnd: null });
+    } else {
+      const newFilters: SearchFilters = {
+        body: params.body === "all" ? null : params.body,
+        dateStart: params.dateStart ? toDateObj(params.dateStart) : null,
+        dateEnd: params.dateEnd ? toDateObj(params.dateEnd) : null,
+      };
+      searchFromParams(params.keyphrase, newFilters);
+    }
   }, []);
-
-  // useEffect(() => {
-  //   const params = {
-  //     keyphrase: searchParams.get("keyphrase"),
-  //     body: searchParams.get("body"), // === "all" ? null : searchParams.get("body")
-  //     dateStart: searchParams.get("dateStart"),
-  //     dateEnd: searchParams.get("dateStart"),
-  //   };
-
-  //   if (!params.keyphrase) {
-  //     searchFromParams("*", { body: null, dateStart: null, dateEnd: null });
-
-  //     setSearchParams(() => ({
-  //       keyphrase: "*",
-  //       body: "all",
-  //     }));
-  //     return;
-  //   }
-
-  //   const newFilters: SearchFilters = {
-  //     body: params.body === "all" ? null : params.body,
-  //     dateStart: params.dateStart ? toDateObj(params.dateStart) : null,
-  //     dateEnd: params.dateEnd ? toDateObj(params.dateEnd) : null,
-  //   };
-  //   searchFromParams(params.keyphrase, newFilters);
-  // }, []);
 
   async function searchFromParams(
     newKeyphrase: string,
@@ -128,21 +66,9 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
       newFilters
     );
 
-    setResults(() => ({ ...filteredByBody, bodyFacetMap: bodyFacetMap }));
+    console.log(filteredByBody);
 
-    // // set results to filtered by body results, with the old bodyFacetMap
-    // const filteredByBody: SearchResults = await getSearch(
-    //   newKeyphrase,
-    //   newFilters
-    // );
-    // const newInput: string = newKeyphrase === "*" ? "" : newKeyphrase;
-    // setSearchInput(() => newInput);
-    // setKeyphrase(() => newKeyphrase);
-    // setFilters(() => newFilters);
-    // setResults(() => ({
-    //   ...filteredByBody,
-    //   bodyFacetMap: bodyFacetMap,
-    // }));
+    setResults(() => ({ ...filteredByBody, bodyFacetMap: bodyFacetMap }));
   }
 
   const handleNewKeyphraseSearch = (
@@ -171,13 +97,8 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
 
     getSearch(keyphrase, { ...filters, body: body }).then((newResults) =>
       setResults((prevResults) => {
-        console.log({ ...filters, body: body });
-        console.log(newResults);
         if (prevResults) {
-          console.log({
-            ...newResults,
-            bodyFacetMap: prevResults.bodyFacetMap,
-          });
+          console.log(body);
           return { ...newResults, bodyFacetMap: prevResults.bodyFacetMap };
         } else {
           return newResults;
@@ -210,7 +131,7 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
   };
 
   return (
-    <div className="App">
+    <>
       <SearchBar
         keyphrase={searchInput}
         handleSearchValue={(value) => setSearchInput(value)}
@@ -229,11 +150,13 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
           handleBodySelect={handleBodySelect}
           handleDate={handleDate}
           searchParams={searchParams}
+          filters={filters}
+          keyphrase={keyphrase}
         />
       ) : (
         <></>
       )}
-    </div>
+    </>
   );
 }
 

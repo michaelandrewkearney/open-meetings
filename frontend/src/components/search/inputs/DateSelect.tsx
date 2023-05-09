@@ -26,7 +26,10 @@ export default function DateSelect({
   }, []);
 
   return (
-    <fieldset className={styles["DateSelect"]}>
+    <fieldset
+      className={styles["DateSelect"]}
+      aria-label="Meeting date filter controls"
+    >
       <legend>Date</legend>
       <div>
         <label htmlFor="start">Start</label>

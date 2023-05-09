@@ -38,7 +38,10 @@ export default function BodySelect({
   }, [facetMap]);
 
   return (
-    <fieldset className={styles["BodySelect"]}>
+    <fieldset
+      className={styles["BodySelect"]}
+      aria-label="Public body filter controls"
+    >
       <legend>Body</legend>
       <div className={styles["body-option"]}>
         <input
@@ -49,7 +52,10 @@ export default function BodySelect({
           onChange={() => setCheckedBody(null)}
         />
         <label htmlFor={"all-bodies"}>
-          All Bodies <span className={styles["body-count"]}>{numResults}</span>
+          All Bodies <span className="sr-only">{numResults} results</span>
+          <span className={styles["body-count"]} aria-hidden="true">
+            {numResults}
+          </span>
         </label>
       </div>
 
@@ -65,8 +71,13 @@ export default function BodySelect({
                 onChange={(e) => setCheckedBody(e.currentTarget.value)}
               />
               <label htmlFor={body}>
-                {body}{" "}
-                <span className={styles["body-count"]}>
+                <span role="presentation">
+                  {body}
+                  <span className="sr-only">
+                    : {facetMap.get(body)} results
+                  </span>{" "}
+                </span>
+                <span className={styles["body-count"]} aria-hidden="true">
                   {facetMap.get(body)}
                 </span>
               </label>

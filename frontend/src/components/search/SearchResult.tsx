@@ -39,12 +39,11 @@ export default function SearchResult({
         to={`meetings/${result.id}`}
         state={{ prevQuery: searchParams.toString() }}
       >
-        <h3>{bodyName}</h3>
+        <h3>
+          {bodyName} | {result.meetingDate.toLocaleDateString()}
+        </h3>
       </Link>
-      <ul className={styles["result-metadata"]}>
-        <p>{result.meetingDate.toLocaleString()}</p>
-        <p>{result.address}</p>
-      </ul>
+      <ul className={styles["result-metadata"]}></ul>
       {result.highlights?.map((highlight) =>
         ["latestAgenda", "latestMinutes"].includes(highlight.field) ? (
           <Snippet highlight={highlight} />
@@ -52,7 +51,7 @@ export default function SearchResult({
           <></>
         )
       )}
-      <hr />
+      <hr aria-hidden="true" />
     </div>
   );
 }

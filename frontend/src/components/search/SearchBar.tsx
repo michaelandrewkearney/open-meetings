@@ -14,15 +14,16 @@ export default function SearchBar({
   handleSearchSubmit,
 }: SearchBarProps) {
   return (
-    <header className={styles.SearchBar}>
+    <div className={styles.SearchBar}>
       <Logo />
       <form
         id={styles["search-form"]}
-        aria-label="meeting search"
+        aria-label="Main search"
         onSubmit={(e) => handleSearchSubmit(e)}
+        aria-role="search"
       >
         <label id={styles["search-label"]} htmlFor="search-input">
-          Meeting or Public Body
+          Search a Meeting or Public Body
         </label>
         <input
           type="search"
@@ -31,8 +32,8 @@ export default function SearchBar({
           value={keyphrase}
           onChange={(e) => handleSearchValue(e.target.value)}
         />
-        <button>Search</button>
+        <input type="submit" value="Search" aria-label="Search meetings" />
       </form>
-    </header>
+    </div>
   );
 }
