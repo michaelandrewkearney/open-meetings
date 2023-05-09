@@ -7,6 +7,7 @@ import {
 } from "../../meetingTypes";
 import SearchResult from "./SearchResult";
 import Sidebar from "./Sidebar";
+import { kMaxLength } from "buffer";
 
 interface ResultSectionProps {
   searchResults: SearchResults;
@@ -15,6 +16,7 @@ interface ResultSectionProps {
   searchParams: URLSearchParams;
   filters: SearchFilters;
   keyphrase: string;
+  bodyFacet: Map<string, number>;
 }
 
 export default function ResultSection({
@@ -24,6 +26,7 @@ export default function ResultSection({
   searchParams,
   filters,
   keyphrase,
+  bodyFacet,
 }: ResultSectionProps) {
   const getDateFilterInfo = (): string => {
     if (!filters.dateStart && !filters.dateEnd) {
@@ -39,22 +42,31 @@ export default function ResultSection({
   };
 
   const dateFilterInfo: string = getDateFilterInfo();
+  const bodyInfo: string = filters.body ? filters.body : "all bodies";
+  const keyphraseInfo: string = keyphrase === "*" ? "all meetings" : keyphrase;
 
   return (
     <div className={styles.ResultsSection}>
       <Sidebar
-        searchResults={searchResults}
         handleBodySelect={handleBodySelect}
         handleDate={handleDate}
         searchParams={searchParams}
+        bodyFacet={bodyFacet}
+        filters={filters}
       />
       <main id={styles["results"]} aria-label="Search results">
-        <p aria-live="polite" role="presentation">
-          {`${searchResults.resultsInfo.found} results `}
-          <span className="sr-only">{` for ${keyphrase} from ${
-            filters.body ? filters.body : "all bodies"
-          }, ${dateFilterInfo}`}</span>
-        </p>
+        <i aria-live="polite" aria-atomic="true" role="presentation">
+          {searchResults.resultsInfo.found} meetings found
+          <span className="sr-only">
+            {keyphrase !== "*" ? (
+              <span>Search Term: {keyphraseInfo}</span>
+            ) : (
+              <></>
+            )}
+            <span>Body: {bodyInfo}</span>
+            <span>Date: {dateFilterInfo}</span>
+          </span>
+        </i>
         {searchResults.results.length != 0 ? (
           searchResults.results.map((result: MeetingResult) => (
             <SearchResult

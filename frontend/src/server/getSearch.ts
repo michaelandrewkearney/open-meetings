@@ -138,26 +138,18 @@ interface GetSearchResponseFunction {
  */
 function buildGetSearchResponse(requestJson: RequestJsonFunction): GetSearchResponseFunction {
     async function getSearchResponse({ keyphrase, publicBody, dateStart, dateEnd }: SearchEndpointParams): Promise<SearchResponse> {
-
-    console.log("in getsearch response")
-    console.log({ keyphrase, publicBody, dateStart, dateEnd })
-
     const url: URL = new URL(`${BASE_URL}/meetingSearch`)
     url.searchParams.append("keyphrase", keyphrase)
 
     if (publicBody) url.searchParams.append("publicBody", publicBody)
     if (dateStart) url.searchParams.append("dateStart", dateStart.toString())
     if (dateEnd) url.searchParams.append("dateEnd", dateEnd.toString())
-
-    console.log(url.href)
-
     
     const json: Promise<any> = await requestJson(url)
     if (isSearchResponse(json)) {
       const resp: SearchResponse = json
       return resp;
     } else {
-      console.log(json)
       throw new Error("not a search response")
     }
   }

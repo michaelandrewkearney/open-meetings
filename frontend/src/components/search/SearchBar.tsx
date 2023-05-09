@@ -18,9 +18,9 @@ export default function SearchBar({
       <Logo />
       <form
         id={styles["search-form"]}
-        aria-label="Main search"
+        aria-label="Full-text search"
         onSubmit={(e) => handleSearchSubmit(e)}
-        aria-role="search"
+        role="search"
       >
         <label id={styles["search-label"]} htmlFor="search-input">
           Search a Meeting or Public Body

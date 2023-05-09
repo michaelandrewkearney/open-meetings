@@ -1,27 +1,30 @@
 import styles from "./Sidebar.module.css";
 
-import { SearchResults } from "../../meetingTypes";
+import { SearchFilters, SearchResults } from "../../meetingTypes";
 import DateSelect from "./inputs/DateSelect";
 import BodySelect from "./inputs/BodySelect";
 
 interface SidebarProps {
-  searchResults: SearchResults;
   handleBodySelect: any;
   handleDate: any;
   searchParams: URLSearchParams;
+  filters: SearchFilters;
+  bodyFacet: Map<string, number>;
 }
 
 export default function Sidebar({
-  searchResults,
   handleBodySelect,
   handleDate,
   searchParams,
+  bodyFacet,
+  filters,
 }: SidebarProps) {
   return (
-    <form className={styles["Sidebar"]} aria-label="Search Filter Options">
+    <form className={styles["Sidebar"]} aria-label="Filter Options">
       <DateSelect handleDate={handleDate} searchParams={searchParams} />
       <BodySelect
-        facetMap={searchResults.bodyFacetMap}
+        facetMap={bodyFacet}
+        selectedBody={filters.body}
         handleBodySelect={handleBodySelect}
         searchParams={searchParams}
       />

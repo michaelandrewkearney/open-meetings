@@ -1,111 +1,51 @@
-import { useEffect, useState } from "react";
+import {
+  Reducer,
+  ReducerAction,
+  ReducerState,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import SearchBar from "../components/search/SearchBar";
 import { RequestJsonFunction } from "../server/types";
 import { SearchFilters, SearchResults } from "../meetingTypes";
 import ResultsSection from "../components/search/ResultsSection";
 import { buildSearch } from "../server/getSearch";
-import { useSearchParams } from "react-router-dom";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 import { toDateObj, toDateStr } from "../components/search/date_utils";
+import { FacetCount } from "../server/searchResponse";
+import { SearchState, isSearchState } from "..";
 
 interface SearchPageProps {
   requestJsonFunction: RequestJsonFunction;
 }
 
 function SearchPage({ requestJsonFunction }: SearchPageProps) {
-  const getSearch = buildSearch(requestJsonFunction);
-
-  const [searchInput, setSearchInput] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [keyphrase, setKeyphrase] = useState<string>("*");
-  const [filters, setFilters] = useState<SearchFilters>({
-    body: null,
-    dateStart: null,
-    dateEnd: null,
-  });
-  const [results, setResults] = useState<SearchResults>();
-
-  useEffect(() => {
-    const params = {
-      keyphrase: searchParams.get("keyphrase"),
-      body: searchParams.get("body"),
-      dateStart: searchParams.get("dateStart"),
-      dateEnd: searchParams.get("dateEnd"),
-    };
-
-    if (!params.keyphrase) {
-      searchFromParams("*", { body: null, dateStart: null, dateEnd: null });
-    } else {
-      const newFilters: SearchFilters = {
-        body: params.body === "all" ? null : params.body,
-        dateStart: params.dateStart ? toDateObj(params.dateStart) : null,
-        dateEnd: params.dateEnd ? toDateObj(params.dateEnd) : null,
-      };
-      searchFromParams(params.keyphrase, newFilters);
-    }
-  }, []);
-
-  async function searchFromParams(
-    newKeyphrase: string,
-    newFilters: SearchFilters
-  ) {
-    const newInput: string = newKeyphrase === "*" ? "" : newKeyphrase;
-    setSearchInput(() => newInput);
-    setKeyphrase(() => newKeyphrase);
-    setFilters(() => ({ ...newFilters }));
-
-    // get results without filtering by body so we can get facet map
-    const initialResults = await getSearch(newKeyphrase, {
-      ...newFilters,
-      body: null,
-    });
-
-    const bodyFacetMap = initialResults.bodyFacetMap;
-
-    const filteredByBody: SearchResults = await getSearch(
-      newKeyphrase,
-      newFilters
-    );
-
-    console.log(filteredByBody);
-
-    setResults(() => ({ ...filteredByBody, bodyFacetMap: bodyFacetMap }));
+  const loaderData: unknown = useLoaderData();
+  if (!isSearchState(loaderData)) {
+    throw new Error("Not a SearchState");
   }
 
-  const handleNewKeyphraseSearch = (
-    newKeyphrase: string,
-    newDateStart: Date | null,
-    newDateEnd: Date | null
-  ) => {
-    setKeyphrase(newKeyphrase);
-    const newFilters: SearchFilters = {
-      body: null,
-      dateStart: newDateStart,
-      dateEnd: newDateEnd,
-    };
+  const initState: SearchState = loaderData;
 
-    setFilters(() => newFilters);
-    getSearch(newKeyphrase, newFilters).then((newResults: SearchResults) => {
-      setResults(() => newResults);
-    });
-  };
+  const [keyphrase, setKeyphrase] = useState<string>(initState.keyphrase);
+  /** Map of body names to facet counts */
+  const [bodyFacet, setBodyFacet] = useState<Map<string, number>>(
+    initState.bodyFacet
+  );
 
-  const handleBodySelect = (body: string | null) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      body: body,
-    }));
+  const [filteredBodyFacet, setFilteredBodyFacet] = useState<
+    Map<string, number>
+  >(initState.filteredBodyFacet);
+  const [filters, setFilters] = useState<SearchFilters>(initState.filters);
+  const [results, setResults] = useState<SearchResults>(initState.results);
 
-    getSearch(keyphrase, { ...filters, body: body }).then((newResults) =>
-      setResults((prevResults) => {
-        if (prevResults) {
-          console.log(body);
-          return { ...newResults, bodyFacetMap: prevResults.bodyFacetMap };
-        } else {
-          return newResults;
-        }
-      })
-    );
-  };
+  const initSearchInput =
+    initState.keyphrase === "*" ? "" : initState.keyphrase;
+  const [searchInput, setSearchInput] = useState(initSearchInput);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const getSearch = buildSearch(requestJsonFunction);
 
   useEffect(() => {
     setSearchParams(() => ({
@@ -116,6 +56,36 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
     }));
   }, [filters, keyphrase]);
 
+  const handleNewKeyphraseSearch = (
+    newKeyphrase: string,
+    newDateStart: Date | null,
+    newDateEnd: Date | null
+  ) => {
+    const newFilters: SearchFilters = {
+      body: null,
+      dateStart: newDateStart,
+      dateEnd: newDateEnd,
+    };
+
+    setKeyphrase(newKeyphrase);
+    setFilters(() => newFilters);
+    getSearch(newKeyphrase, newFilters).then((newResults: SearchResults) => {
+      setResults(() => newResults);
+      setBodyFacet(() => newResults.bodyFacetMap);
+    });
+  };
+
+  const handleBodySelect = (body: string | null) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      body: body,
+    }));
+
+    getSearch(keyphrase, { ...filters, body: body }).then((newResults) =>
+      setResults(() => newResults)
+    );
+  };
+
   const handleDate = (dateStart: Date | null, dateEnd: Date | null) => {
     setFilters((prevFilters) => ({
       body: prevFilters.body,
@@ -123,11 +93,26 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
       dateEnd: dateEnd,
     }));
 
+    if (dateStart === null && dateEnd === null) {
+      setFilteredBodyFacet(() => bodyFacet);
+      getSearch(keyphrase, {
+        ...filters,
+        dateStart: dateStart,
+        dateEnd: dateEnd,
+      }).then((newResults) => {
+        setResults(() => newResults);
+      });
+      return;
+    }
+
     getSearch(keyphrase, {
       ...filters,
       dateStart: dateStart,
       dateEnd: dateEnd,
-    }).then((newResults) => setResults(() => newResults));
+    }).then((newResults) => {
+      setResults(() => newResults);
+      setFilteredBodyFacet(() => newResults.bodyFacetMap);
+    });
   };
 
   return (
@@ -144,13 +129,14 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
           );
         }}
       />
-      {results ? (
+      {results && bodyFacet ? (
         <ResultsSection
           searchResults={results}
           handleBodySelect={handleBodySelect}
           handleDate={handleDate}
           searchParams={searchParams}
           filters={filters}
+          bodyFacet={filteredBodyFacet}
           keyphrase={keyphrase}
         />
       ) : (

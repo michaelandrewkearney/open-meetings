@@ -28,6 +28,14 @@ export default function SearchResult({
 
   return (
     <div className={styles["SearchResult"]}>
+      <Link
+        to={`meetings/${result.id}`}
+        state={{ prevQuery: searchParams.toString() }}
+      >
+        <h3>
+          {bodyName} on {result.meetingDate.toLocaleDateString()}
+        </h3>
+      </Link>
       {result.isCancelled ? (
         <p className={styles["cancelled-text"]}>
           Cancelled {result.cancelledDate.toLocaleString()}
@@ -35,22 +43,7 @@ export default function SearchResult({
       ) : (
         <></>
       )}
-      <Link
-        to={`meetings/${result.id}`}
-        state={{ prevQuery: searchParams.toString() }}
-      >
-        <h3>
-          {bodyName} | {result.meetingDate.toLocaleDateString()}
-        </h3>
-      </Link>
-      <ul className={styles["result-metadata"]}></ul>
-      {result.highlights?.map((highlight) =>
-        ["latestAgenda", "latestMinutes"].includes(highlight.field) ? (
-          <Snippet highlight={highlight} />
-        ) : (
-          <></>
-        )
-      )}
+      <Snippet result={result} />
       <hr aria-hidden="true" />
     </div>
   );

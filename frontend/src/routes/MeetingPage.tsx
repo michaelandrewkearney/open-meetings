@@ -9,6 +9,7 @@ export default function MeetingPage() {
     throw new Error("Could not retrieve meeting");
   }
   const meeting: Meeting = loaderData;
+
   const { state } = useLocation();
   const prevPath = state ? `/?${state.prevQuery}` : "/";
 
@@ -32,19 +33,34 @@ export default function MeetingPage() {
         <Link to={prevPath}>Back to Search</Link>
       </nav>
       <main id={styles["page-content"]}>
+        {meeting.isCancelled ? (
+          <div id={styles["cancelled-detail"]}>
+            <p id={styles["cancelled-time"]}>
+              Cancelled on {meeting.cancelledDate.toLocaleString()}
+            </p>
+            <p>Reason: {meeting.cancelledReason}</p>
+          </div>
+        ) : (
+          <></>
+        )}
         <h1>
-          {meeting.body} | {meeting.meetingDate.toLocaleDateString()}
+          {meeting.body} on {meeting.meetingDate.toLocaleDateString()}
         </h1>
         <div id={styles["meeting-attrs"]}>
-          {attrs.map((attr) => (
-            <span key={attr}>{attr}</span>
-          ))}
+          <span key={attrs.join(",")}>{attrs.join(", ")}</span>
         </div>
-        <section id={styles["meeting-info"]}>
+        <section aria-label="Meeting Information" id={styles["meeting-info"]}>
           <div>
             {meetingInfo.map(({ label, info }) => (
-              <p key={label} className={styles["meeting-detail"]}>
-                <span className={styles["label"]}>{label}:</span>
+              <p
+                key={label}
+                className={styles["meeting-detail"]}
+                role="presentation"
+              >
+                <span
+                  className={styles["label"]}
+                  id={label}
+                >{`${label}:`}</span>
                 <span className={styles["info"]}>{info}</span>
               </p>
             ))}
@@ -60,7 +76,7 @@ export default function MeetingPage() {
           </p>
         </section>
         <hr />
-        <section>
+        <section aria-label="Minutes and Agenda">
           <DocumentSection
             title="Latest Agenda"
             link={meeting.latestAgendaLink}
@@ -86,13 +102,19 @@ interface DocumentSectionProps {
 const DocumentSection = ({ title, link, paragraphs }: DocumentSectionProps) => (
   <div className={styles.DocumentSection}>
     <div className={styles["doc-section-title"]}>
-      <h2>{title}</h2>
-      {link ? <a href={link ? link : undefined}>View PDF</a> : <></>}
+      <h2 id={title}>{title}</h2>
+      {link ? (
+        <a href={link ? link : undefined} aria-label={`View ${title} PDF`}>
+          View PDF
+        </a>
+      ) : (
+        <></>
+      )}
     </div>
     {paragraphs ? (
       paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)
     ) : (
-      <></>
+      <i>No data available</i>
     )}
   </div>
 );

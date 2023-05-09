@@ -1,24 +1,33 @@
 import styles from "./Snippet.module.css";
 
-import { ResultHighlight } from "../../meetingTypes";
+import { MeetingResult, ResultHighlight } from "../../meetingTypes";
 import { snippetToJSXElt } from "./parseMarks";
 
 interface SnippetProps {
-  highlight: ResultHighlight;
+  result: MeetingResult;
 }
 
-export default function Snippet({ highlight }: SnippetProps) {
+export default function Snippet({ result }: SnippetProps) {
+  let snippets: string[] = [];
+
+  if (result.highlights && result.highlights.length > 0) {
+    result.highlights.forEach((highlight) => {
+      snippets =
+        "snippets" in highlight
+          ? highlight.snippets
+          : (snippets = [highlight.snippet]);
+    });
+  } else if (result.latestAgendaPreview) {
+    snippets = [result.latestAgendaPreview];
+  }
+
   return (
     <>
-      {"snippet" in highlight ? (
-        <p className={styles["snippet"]} key={JSON.stringify(highlight)}>
-          {snippetToJSXElt(highlight.snippet)}
+      {snippets.map((snippet, index) => (
+        <p className={styles["Snippet"]} key={index}>
+          {snippetToJSXElt(snippet)}
         </p>
-      ) : (
-        <p className={styles["snippet"]} key={JSON.stringify(highlight)}>
-          {snippetToJSXElt(highlight.snippets[0])}
-        </p>
-      )}
+      ))}
     </>
   );
 }

@@ -20,5 +20,6 @@
 
 .cancelled-text {
   font-style: italic;
+  font-size: 0.95rem;
   color: var(--cancelled-text-color)
 }

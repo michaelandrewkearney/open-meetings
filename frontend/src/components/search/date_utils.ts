@@ -18,7 +18,10 @@
    * @param date
    * @returns
    */
-  export const toDateStr = (date: Date): string => {
+  export const toDateStr = (date: Date | null): string => {
+    if (date === null) {
+      return ""
+    }
     const year: string = date.getFullYear().toString();
     const month: string = (date.getMonth() + 1).toString().padStart(2, "0")
     const day: string = date.getDate().toString().padStart(2, "0")

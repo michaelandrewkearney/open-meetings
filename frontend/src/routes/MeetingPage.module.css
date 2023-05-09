@@ -27,6 +27,7 @@
   gap: 1rem;
   padding: 1rem 0rem;
   line-height: 150%;
+  font-size: 0.9rem;
 }
 
 .meeting-detail {
@@ -65,4 +66,13 @@
 
 .DocumentSection p {
   line-height: 150%;
+}
+
+#cancelled-detail {
+  color: var(--cancelled-text-color);
+  font-style: italic;
+}
+
+#cancelled-time {
+  font-weight: bold;
 }
