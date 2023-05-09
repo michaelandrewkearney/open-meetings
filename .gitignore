@@ -1,6 +1,7 @@
 private/
-riomp-scrape/riomp_scrape/data
-riomp-scrape/riomp_scrape/pages
+scrape/scrape/data
+containers/mongodb
+containers/typesense
 
 # typesense
 typesense-data/

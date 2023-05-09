@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "scrape"
+version = "0.1.0"
+description = ""
+authors = ["Michael Kearney <michaelkearney55@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+tika = "^2.6.0"
+requests = "^2.29.0"
+beautifulsoup4 = "^4.12.2"
+pytest = "^7.3.1"
+pytz = "^2023.3"
+progress = "^1.6"
+typesense = "^0.15.1"
+lxml = "^4.9.2"
+pymongo = "^4.3.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

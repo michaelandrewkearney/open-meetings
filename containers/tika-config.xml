@@ -1,0 +1,71 @@
+<properties>
+  <parsers>
+    <parser class="org.apache.tika.parser.DefaultParser">
+      <!-- this is not formally necessary, but prevents loading of unnecessary parser -->
+      <parser-exclude class="org.apache.tika.parser.ocr.TesseractOCRParser"/>
+      <parser-exclude class="org.apache.tika.parser.pdf.PDFParser"/>
+    </parser>
+    <parser class="org.apache.tika.parser.pdf.PDFParser">
+      <params>
+       <!-- these are the defaults; you only need to specify the ones you want
+            to modify -->
+        <param name="allowExtractionForAccessibility" type="bool">false</param>
+        <param name="averageCharTolerance" type="float">0.3</param>
+        <param name="detectAngles" type="bool">false</param>
+        <param name="extractAcroFormContent" type="bool">true</param>
+        <param name="extractActions" type="bool">false</param>
+        <param name="catchIntermediateIOExceptions" type="bool">true</param>
+        <param name="dropThreshold" type="float">2.5</param>
+        <param name="enableAutoSpace" type="bool">true</param>
+        <param name="extractAnnotationText" type="bool">false</param>
+        <param name="extractBookmarksText" type="bool">false</param>
+        <param name="extractFontNames" type="bool">false</param>
+        <param name="extractInlineImages" type="bool">false</param>
+        <param name="extractMarkedContent" type="bool">true</param>
+        <param name="extractUniqueInlineImagesOnly" type="bool">false</param>
+        <param name="ifXFAExtractOnlyXFA" type="bool">false</param>
+        <param name="maxMainMemoryBytes" type="long">-1</param>
+        <param name="ocrDPI" type="int">300</param>
+        <param name="ocrImageFormatName" type="string">png</param>
+        <param name="ocrImageQuality" type="float">1.0</param>
+        <param name="ocrRenderingStrategy" type="string">NO_TEXT</param>
+        <param name="ocrStrategy" type="string">NO_OCR</param>
+        <!--<param name="ocrStrategyAuto" type="string">better</param>
+        <param name="ocrImageType" type="string">gray</param>-->
+        <param name="setKCMS" type="bool">false</param>
+        <param name="sortByPosition" type="bool">false</param>
+        <param name="spacingTolerance" type="float">0.5</param>
+        <param name="suppressDuplicateOverlappingText" type="bool">false</param>
+      </params>
+    </parser>
+    <parser class="org.apache.tika.parser.DefaultParser">
+      <parser-exclude class="org.apache.tika.parser.ocr.TesseractOCRParser"/>
+    </parser>
+    <!-- <parser class="org.apache.tika.parser.ocr.TesseractOCRParser">
+      <params> -->
+        <!-- these are the defaults; you only need to specify the ones you want
+             to modify -->
+        <!-- <param name="applyRotation" type="bool">true</param>
+        <param name="colorSpace" type="string">gray</param>
+        <param name="density" type="int">300</param>
+        <param name="depth" type="int">4</param>
+        <param name="enableImagePreprocessing" type="bool">true</param>
+        <param name="filter" type="string">triangle</param>
+        <param name="language" type="string">eng</param>
+        <param name="maxFileSizeToOcr" type="long">2147483647</param>
+        <param name="minFileSizeToOcr" type="long">0</param>
+        <param name="pageSegMode" type="string">1</param>
+        <param name="pageSeparator" type="string"></param>
+        <param name="preserveInterwordSpacing" type="bool">false</param>
+        <param name="resize" type="int">200</param>
+        <param name="skipOcr" type="bool">false</param>
+        <param name="timeoutSeconds" type="int">120</param>
+      </params>
+    </parser> -->
+    <!-- <parser class="org.apache.tika.parser.ner.NamedEntityParser">
+        <mime>text/plain</mime>
+        <mime>text/html</mime>
+        <mime>application/xhtml+xml</mime>
+    </parser> -->
+  </parsers>
+</properties>
