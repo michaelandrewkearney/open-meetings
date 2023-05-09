@@ -7,7 +7,6 @@ import {
 } from "../../meetingTypes";
 import SearchResult from "./SearchResult";
 import Sidebar from "./Sidebar";
-import { kMaxLength } from "buffer";
 
 interface ResultSectionProps {
   searchResults: SearchResults;

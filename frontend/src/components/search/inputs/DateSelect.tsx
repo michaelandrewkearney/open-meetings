@@ -2,7 +2,7 @@ import { useLoaderData } from "react-router-dom";
 import { toDateObj, toDateStr } from "../date_utils";
 import styles from "./DateSelect.module.css";
 import { useEffect, useState } from "react";
-import { SearchState, isSearchState } from "../../..";
+import { isSearchState } from "../../..";
 
 interface DateSelectProps {
   handleDate: (startDate: Date | null, endDate: Date | null) => void;

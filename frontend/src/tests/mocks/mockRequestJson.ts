@@ -1,4 +1,4 @@
-import { apiResponses } from "./mockMap";
+import { apiResponses } from "./mockAPI";
 
 export default function mockRequestJson(url: URL): any {
   console.log(url.href)

@@ -18,7 +18,7 @@ export default function SearchBar({
       <Logo />
       <form
         id={styles["search-form"]}
-        aria-label="Full-text search"
+        aria-label="Full-text Search"
         onSubmit={(e) => handleSearchSubmit(e)}
         role="search"
       >

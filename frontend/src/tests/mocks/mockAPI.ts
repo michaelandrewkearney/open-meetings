@@ -2,7 +2,7 @@ import { BASE_URL } from "../../config";
 import { MeetingResponse } from "../../server/meetingResponse";
 import { SearchResponse } from "../../server/searchResponse";
 import { mockMeetingMetadata } from "./meetingMetadata";
-import { mockMeetings } from "./meetings";
+import { mockMeetings } from "./mockMeetings";
 
 export const apiResponses: Map<string, SearchResponse|MeetingResponse> = new Map()
 
@@ -10,47 +10,36 @@ export const apiResponses: Map<string, SearchResponse|MeetingResponse> = new Map
 const searchURL: URL = new URL(`${BASE_URL}/searchMeeting`)
 const getMeetingURL: URL = new URL(`${BASE_URL}/getMeeting`)
 
-// const allMeetingsParams= new URLSearchParams([
-//   ["keyphrase", "*"],
-// ])
-// apiResponses.set(`${searchURL}?${allMeetingsParams}`, {
-//   result: "success",
-//   found: 4, 
-//   out_of: 4, 
-//   facet_counts: [
-//     {
-//       counts: [
-//         {
-//           count: 2,
-//           value: "Rhode Island School Building Taskforce",
-//         },
-//         {
-//           count: 2,
-//           value: "Barrington School Committee",
-//         },
-//       ],
-//       field_name: "body"
-//     },
-//   ],
-//   hits: [
-//     {
-//       highlights: [],
-//       document: mockMeetingMetadata.get("1")!
-//     },
-//     {
-//       highlights: [],
-//       document: mockMeetingMetadata.get("2")!
-//     },
-//     {
-//       highlights: [],
-//       document: mockMeetingMetadata.get("3")!
-//     },
-//     {
-//       highlights: [],
-//       document: mockMeetingMetadata.get("4")!
-//     }
-//   ]
-// })
+const allMeetingsParams= new URLSearchParams([
+  ["keyphrase", "*"],
+])
+apiResponses.set(`${searchURL}?${allMeetingsParams}`, {
+  response_type: "success",
+  found: 4, 
+  out_of: 4, 
+  facet_counts: [
+    {
+      counts: [
+        {
+          count: 2,
+          value: "Rhode Island School Building Taskforce",
+        },
+        {
+          count: 2,
+          value: "Barrington School Committee",
+        },
+      ],
+      fieldName: "body"
+    },
+  ],
+  hits: [
+    {
+      document: mockMeetings.get("1")!,
+      highlight: {},
+      text_match: 0
+    },
+  ]
+})
 
 // const taskforceBodySearchParams = new URLSearchParams([
 //   ["keyphrase", "*"],

@@ -1,6 +1,6 @@
 import styles from "./Sidebar.module.css";
 
-import { SearchFilters, SearchResults } from "../../meetingTypes";
+import { SearchFilters } from "../../meetingTypes";
 import DateSelect from "./inputs/DateSelect";
 import BodySelect from "./inputs/BodySelect";
 
@@ -26,7 +26,6 @@ export default function Sidebar({
         facetMap={bodyFacet}
         selectedBody={filters.body}
         handleBodySelect={handleBodySelect}
-        searchParams={searchParams}
       />
     </form>
   );

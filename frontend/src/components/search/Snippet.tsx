@@ -1,6 +1,6 @@
 import styles from "./Snippet.module.css";
 
-import { MeetingResult, ResultHighlight } from "../../meetingTypes";
+import { MeetingResult } from "../../meetingTypes";
 import { snippetToJSXElt } from "./parseMarks";
 
 interface SnippetProps {
