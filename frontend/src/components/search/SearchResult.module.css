@@ -1,0 +1,25 @@
+.SearchResult h3 {
+  font-size: 1.15rem;
+  color: var(--result-text-color)
+}
+
+.SearchResult hr {
+  margin: 0.25rem 0;
+  border-top: 2px solid var(--result-text-color);
+  opacity: 50%;
+}
+
+.SearchResult a{
+  text-decoration: none;
+  color: inherit;
+}
+
+.result-metadata {
+  padding-inline-start: 0;
+}
+
+.cancelled-text {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--cancelled-text-color)
+}

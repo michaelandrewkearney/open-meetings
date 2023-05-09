@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Optional;
 import org.typesense.api.*;
 import org.typesense.model.*;
 import org.typesense.resources.*;
@@ -28,7 +29,7 @@ public class Tsearch {
         List<Node> nodes = new ArrayList<Node>();
         nodes.add(new Node("http", "localhost", "8108"));
         this.nodes = nodes;
-        this.config = new Configuration(nodes, Duration.ofSeconds(2), "API_KEY");
+        this.config = new Configuration(nodes, Duration.ofSeconds(10), System.getenv("TYPESENSE_API_KEY"));
         this.client = new Client(config);
         this.stop_words = stopWords.stop_words();
     }
@@ -61,7 +62,7 @@ public class Tsearch {
      */
     public void createDocument(Map<String,Object> doc) throws Exception {
         this.client.collections(this.collectionName).documents().create(doc);
-    }    
+    }
     
     /**
      * given a String representing a json of many documents, adds them to the searcher
@@ -87,6 +88,16 @@ public class Tsearch {
         return result;
     }
 
+
+    public SearchResult searchMeetings(SearchParameters params) throws Exception {
+        System.out.print(params);
+        return client.collections("meetings").documents().search(params);
+    }
+
+    public Map<String, Object> getMeeting(String id) throws Exception {
+        return client.collections("meetings").documents(id).retrieve();
+    }
+
     /**
      * filters unnecessary terms out of a query, if the query is not empty afterwards
      * @param query, the query to enter
@@ -107,4 +118,7 @@ public class Tsearch {
             return query;
         return ret;
     }
+
+
+
 }
