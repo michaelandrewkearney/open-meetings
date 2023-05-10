@@ -12,16 +12,14 @@ export default function SearchBar({
   handleSearchValue,
 }: SearchBarProps) {
   return (
-    <header className={styles['search-bar']}>
-      <Logo />
-      <div className={styles["search-input-wrapper"]}>
-        <input
+    <div className={styles["SearchBar"]}>
+      <input
         className={styles["search-input"]}
-        aria-labelledby="search-label"
+        aria-labelledby="Search a Meeting or Public Body"
         value={searchInput}
         onChange={(e) => handleSearchValue(e.target.value)}
-        placeholder="Search a Meeting or Public Body" />
-      </div>
-    </header>
+        placeholder="Search a Meeting or Public Body"
+      />
+    </div>
   );
 }

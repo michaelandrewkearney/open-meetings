@@ -12,6 +12,7 @@ import {
 import { toDateObj, toDateStr } from "../components/search/date_utils";
 import { SearchState, isSearchState } from "..";
 import styles from "./SearchPage.module.css";
+import Logo from "../components/Logo";
 
 export function buildInitialSearch(requestJsonFunc: RequestJsonFunction) {
   async function initialSearch({
@@ -107,14 +108,14 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
   }, [filters, keyphrase]);
 
   useEffect(() => {
-    let prevSearchInput: string = searchInput
+    let prevSearchInput: string = searchInput;
     const timeoutId = setTimeout(() => {
       if (prevSearchInput == searchInput) {
-        setKeyphrase(searchInput === "" ? "*" : searchInput)
+        setKeyphrase(searchInput === "" ? "*" : searchInput);
       }
-    }, 500)
-    return () => clearTimeout(timeoutId)
-  }, [searchInput])
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
 
   const handleNewKeyphraseSearch = () => {
     const newFilters: SearchFilters = {
@@ -130,8 +131,8 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
   };
 
   useEffect(() => {
-    handleNewKeyphraseSearch()
-  }, [keyphrase])
+    handleNewKeyphraseSearch();
+  }, [keyphrase]);
 
   const handleBodySelect = (body: string | null) => {
     setFilters((prevFilters) => ({
@@ -172,15 +173,18 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
     });
   };
 
-  document.title = 'Open Meetings'
+  document.title = "Open Meetings";
 
   return (
     <>
-      <SearchBar
-        searchInput={searchInput}
-        handleSearchValue={(value) => setSearchInput(value)}
-      />
-        {results && bodyFacet ? (
+      <header className={styles["header"]}>
+        <Logo />
+        <SearchBar
+          searchInput={searchInput}
+          handleSearchValue={(value) => setSearchInput(value)}
+        />
+      </header>
+      {results && bodyFacet ? (
         <ResultsSection
           searchResults={results}
           handleBodySelect={handleBodySelect}

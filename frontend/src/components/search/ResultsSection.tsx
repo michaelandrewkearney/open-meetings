@@ -54,7 +54,12 @@ export default function ResultSection({
         filters={filters}
       />
       <main className={styles["results"]} aria-label="Search results">
-        <i aria-live="polite" aria-atomic="true" role="presentation">
+        <i
+          aria-live="polite"
+          aria-atomic="true"
+          role="presentation"
+          className={styles["results-info"]}
+        >
           {searchResults.resultsInfo.found} meetings found
           <span className="sr-only">
             {keyphrase !== "*" ? (
@@ -66,7 +71,7 @@ export default function ResultSection({
             <span>Date: {dateFilterInfo}</span>
           </span>
         </i>
-          {searchResults.results.length != 0 ? (
+        {searchResults.results.length != 0 ? (
           searchResults.results.map((result: MeetingResult) => (
             <SearchResult
               key={result.id}

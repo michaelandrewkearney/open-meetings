@@ -1,7 +1,14 @@
 import { useLoaderData } from "react-router-dom";
 import { toDateObj, toDateStr } from "../date_utils";
 import styles from "./DateSelect.module.css";
-import { useEffect, useState } from "react";
+import {
+  KeyboardEvent,
+  Ref,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { isSearchState } from "../../..";
 
 interface DateSelectProps {
@@ -9,10 +16,7 @@ interface DateSelectProps {
   searchParams: URLSearchParams;
 }
 
-export default function DateSelect({
-  handleDate,
-  searchParams,
-}: DateSelectProps) {
+export default function DateSelect({ handleDate }: DateSelectProps) {
   const initState: unknown = useLoaderData();
   if (!isSearchState(initState)) {
     throw new Error("Not a SearchState");
@@ -22,54 +26,95 @@ export default function DateSelect({
   const [dateStart, setDateStart] = useState<string>(initDateStart);
   const [dateEnd, setDateEnd] = useState<string>(initDateEnd);
 
-  useEffect(() => {
-    const dateStartParam = searchParams.get("dateStart");
-    const dateEndParam = searchParams.get("dateEnd");
-    if (dateStartParam) {
-      setDateStart(dateStartParam);
-    }
-    if (dateEndParam) {
-      setDateEnd(dateEndParam);
-    }
-  }, []);
+  const startInputRef = useRef<HTMLInputElement>(null);
+  const endInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    handleDate(toDateObj(dateStart), toDateObj(dateEnd))
-  }, [dateStart, dateEnd])
+  const submitDate = () => {
+    handleDate(toDateObj(dateStart), toDateObj(dateEnd));
+  };
+
+  const handleEnterKeydown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    inputRef: RefObject<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitDate();
+      inputRef.current?.blur();
+    }
+  };
 
   return (
-    <fieldset className={styles["DateSelect"]} aria-labelledby="date-legend">
-      <legend className='sr-only' id="date-legend">Filter by Date</legend>
-      <div className={styles["datepickers-wrapper"]}>
-        <input
-          type="date"
-          id="start"
-          value={dateStart}
-          onChange={(e) => {
-            setDateStart(e.currentTarget.value)
-            e.target.blur()
-          }}
-        />
-        <p>–</p>
-        <input
-          type="date"
-          id="end"
-          value={dateEnd}
-          onChange={(e) => {
-            setDateEnd(e.currentTarget.value)
-            e.target.blur()
-          }}
-        />
-        <button
-          aria-label="Clear start date filter"
-          onClick={() => {
-            setDateStart("");
-            setDateEnd("");
-          }}
-        >
-          {'\u00d7'}
-        </button>
-      </div>
-    </fieldset>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+    >
+      <fieldset className={styles["DateSelect"]} aria-labelledby="date-legend">
+        <legend className="sr-only" id="date-legend">
+          Filter by Date
+        </legend>
+        <div className={styles["datepickers-wrapper"]}>
+          <input
+            type="date"
+            id="start"
+            aria-label="Start date"
+            value={dateStart}
+            ref={startInputRef}
+            onChange={(e) => {
+              console.log("set start date");
+              setDateStart(e.currentTarget.value);
+            }}
+            onKeyDown={(e) => handleEnterKeydown(e, startInputRef)}
+            onSubmit={(e) => console.log("submitted")}
+            onBlur={() => submitDate()}
+          />
+          <ClearButton
+            handleClear={() => {
+              setDateStart("");
+              handleDate(null, toDateObj(dateEnd));
+            }}
+            ariaLabel="Clear start date"
+          />
+
+          <span>—</span>
+          <input
+            type="date"
+            id="end"
+            value={dateEnd}
+            aria-label="End Date"
+            ref={endInputRef}
+            onChange={(e) => {
+              setDateEnd(e.currentTarget.value);
+            }}
+            onBlur={() => submitDate()}
+            onKeyDown={(e) => handleEnterKeydown(e, startInputRef)}
+          />
+          <ClearButton
+            handleClear={() => {
+              setDateEnd("");
+              handleDate(null, toDateObj(dateEnd));
+            }}
+            ariaLabel="Clear end date"
+          />
+        </div>
+      </fieldset>
+    </form>
   );
 }
+
+interface ClearButtonProps {
+  handleClear: () => void;
+  ariaLabel: string;
+}
+
+const ClearButton = ({ handleClear, ariaLabel }: ClearButtonProps) => (
+  <button
+    aria-label={ariaLabel}
+    onClick={() => {
+      handleClear();
+    }}
+  >
+    {"\u00d7"}
+  </button>
+);

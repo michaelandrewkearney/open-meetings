@@ -20,13 +20,13 @@ export default function Sidebar({
   filters,
 }: SidebarProps) {
   return (
-    <form className={styles["Sidebar"]} aria-label="Filter Options">
+    <section className={styles["Sidebar"]} aria-label="Filter Options">
       <DateSelect handleDate={handleDate} searchParams={searchParams} />
       <BodySelect
         facetMap={bodyFacet}
         selectedBody={filters.body}
         handleBodySelect={handleBodySelect}
       />
-    </form>
+    </section>
   );
 }

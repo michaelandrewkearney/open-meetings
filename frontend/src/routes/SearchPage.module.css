@@ -1,3 +1,9 @@
-.result-section {
-    
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  background-color: var(--dark-blue);
+  padding: 1rem;
 }
+

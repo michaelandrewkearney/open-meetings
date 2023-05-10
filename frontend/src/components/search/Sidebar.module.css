@@ -1,9 +1,10 @@
 .Sidebar {
   display: flex;
   flex-direction: column;
-  flex: 1 0;
+  flex: 0 1 33%;
   position: -webkit-sticky;
   position: sticky;
-  top: 0px;
-  height: 95%;
+  top: var(--header-height);
+  height: 35rem;
+  padding: 1rem;
 }

@@ -2,11 +2,6 @@
   display: flex;
   gap: 1rem;
   align-items: stretch;
-  height: 80vh;
-}
-
-.ResultsSection>* {
-  height: 100%;
 }
 
 .ResultsSection legend {
@@ -21,10 +16,9 @@
 }
 
 .results {
-  flex: 3 0;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  height: 100%;
-  overflow-x: auto;
+  flex: 3 0;
+  padding-top: 1rem;
 }

@@ -21,38 +21,35 @@ export default function BodySelect({
   return (
     <fieldset
       className={styles["BodySelect"]}
-      id="body-select"
+      id={styles["body-select"]}
       aria-labelledby="body-legend"
       role="radiogroup"
     >
-      <legend className='sr-only' id="body-legend">Filter by Body</legend>
-      <div className={styles["body-option"]}>
-        <input
-          type="radio"
-          name="body-select"
-          id="all-bodies"
-          value="all"
-          checked={selectedBody === null}
-          onChange={() => handleBodySelect(null)}
-        />
-        <label htmlFor={"all-bodies"}>
-          <span className={styles["body-count"]} aria-hidden="true">
-            {numResults}
-          </span>
-          <div className={styles["body-name"]} role="presentation">
-            All bodies
-            <span className="sr-only">
-              - {numResults} results
-            </span>
-          </div>
-          
-        </label>
-      </div>
+      <legend className="sr-only" id="body-legend">
+        Filter by Body
+      </legend>
+      <input
+        type="radio"
+        name="body-select"
+        id="all-bodies"
+        value="all"
+        checked={selectedBody === null}
+        onChange={() => handleBodySelect(null)}
+      />
+      <label htmlFor={"all-bodies"}>
+        <span className={styles["body-count"]} aria-hidden="true">
+          {numResults}
+        </span>
+        <div className={styles["body-name"]} role="presentation">
+          All bodies
+          <span className="sr-only">- {numResults} results</span>
+        </div>
+      </label>
 
       {bodyNames ? (
         bodyNames.map((body: string) => {
           return (
-            <div className={styles["body-option"]} key={body}>
+            <>
               <input
                 name="body-select"
                 type="radio"
@@ -73,7 +70,7 @@ export default function BodySelect({
                   </span>
                 </div>
               </label>
-            </div>
+            </>
           );
         })
       ) : (
