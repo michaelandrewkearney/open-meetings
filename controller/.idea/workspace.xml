@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bace9f92-de11-40f8-98e8-fc59bf9daac3" name="Changes" comment="" />
+    <list default="true" id="bace9f92-de11-40f8-98e8-fc59bf9daac3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/brown/cs/searcher/SearchParamBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/brown/cs/searcher/SearchParamBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/brown/cs/searcher/Tsearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/brown/cs/searcher/Tsearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/brown/cs/server/LoadMeetingHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/brown/cs/server/LoadMeetingHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/brown/cs/server/SearchHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/brown/cs/server/SearchHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/brown/cs/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/brown/cs/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../typesense/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../typesense/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../typesense/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../typesense/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../typesense/src/meeting_data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../typesense/src/meeting_data.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -98,7 +108,8 @@
       <option name="presentableId" value="Default" />
       <updated>1683521983578</updated>
       <workItem from="1683521985686" duration="8046000" />
-      <workItem from="1683630365066" duration="636000" />
+      <workItem from="1683630365066" duration="760000" />
+      <workItem from="1683680952041" duration="1160000" />
     </task>
     <servers />
   </component>

@@ -6,18 +6,41 @@ export interface Meeting {
   is_cancelled: boolean;
   cancelled_dt: number;
   cancelled_reason: string;
-  latestAgenda: string[];
-  latestAgendaLink: string;
-  latestMinutes: string[];
-  latestMinutesLink: string;
+  latestAgenda?: string[];
+  latestAgendaLink?: string;
+  latestMinutes?: string[];
+  latestMinutesLink?: string;
   contactPerson: string;
   contactEmail: string;
   contactPhone: string;
 }
 
-function isMeeting(target: any): target is Meeting {
+
+
+export interface RawMeeting {
+  id: number;
+  body: string;
+  meeting_dt: number; 
+  address: string;
+  is_cancelled: boolean;
+  cancelled_dt: number;
+  cancelled_reason: string;
+  latestAgenda?: string[];
+  latestAgendaLink?: string;
+  latestMinutes?: string[];
+  latestMinutesLink?: string;
+  contactPerson: string;
+  contactEmail: string;
+  contactPhone: string;
+}
+
+function isRawMeeting(target: any): target is RawMeeting {
   const requiredProps= ["id", "body", "meeting_dt", "address", "is_cancelled", "cancelled_dt", 
-  "cancelled_reason", "latestAgenda", "latestAgendaLink", "latestMinutes", "latestMinutesLink", "contactPerson", "contactEmail", "contactPhone"]
+  "cancelled_reason", "contactPerson", "contactEmail", "contactPhone"]
+
+  if (target === null) {
+    throw new Error("Target is null")
+  }
 
   requiredProps.forEach((prop: string) => {
     if (!(prop in target)) {
@@ -28,10 +51,10 @@ function isMeeting(target: any): target is Meeting {
   if ((target.is_cancelled && (!target.cancelled_dt || !target.cancelled_reason))) {
     throw new Error(`cancelled meetings must have a cancelled_dt and cancelled_reason property: ${JSON.stringify(target)}`)
   }
-  if (target.latestAgenda != null && target.latestAgendaLink == null) {
+  if (target.latestAgenda != undefined && target.latestAgendaLink == undefined) {
     throw new Error(`Meetings with agendas must have an agenda link: ${JSON.stringify(target)}`)
   }
-  if (target.latestMinutes != null && target.latestMinutesLink == null) {
+  if (target.latestMinutes != undefined && target.latestMinutesLink == undefined) {
     throw new Error(`Meetings with agendas must have an agenda link: ${JSON.stringify(target)}`)
   }
   return true
@@ -46,9 +69,9 @@ export function getMeetingData(meetingsJson: any): Meeting[] {
   
   meetingsJson.forEach((obj) => {
     try {
-      if (isMeeting(obj)) {
-        const meeting: Meeting = obj;
-        meetings.push(meeting)
+      if (isRawMeeting(obj)) {
+        const meeting: RawMeeting = obj;
+        meetings.push({...meeting, id: meeting.id.toString()})
       }
     } catch (error) {
       console.log(error)

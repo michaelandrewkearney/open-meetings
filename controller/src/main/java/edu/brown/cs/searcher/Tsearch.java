@@ -90,13 +90,17 @@ public class Tsearch {
 
 
     public SearchResult searchMeetings(SearchParameters params) throws Exception {
-        System.out.print(params);
         return client.collections("meetings").documents().search(params);
     }
 
     public Map<String, Object> getMeeting(String id) throws Exception {
         return client.collections("meetings").documents(id).retrieve();
     }
+
+    public Map<String, Object> getMeetingsCollection(String id) throws Exception {
+        return client.collections("meetings").documents(id).retrieve();
+    }
+
 
     /**
      * filters unnecessary terms out of a query, if the query is not empty afterwards

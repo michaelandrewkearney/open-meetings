@@ -5,7 +5,6 @@ import com.squareup.moshi.Moshi;
 
 import edu.brown.cs.searcher.SearchParamBuilder;
 import edu.brown.cs.searcher.Tsearch;
-import edu.brown.cs.server.MeetingData;
 import java.util.List;
 import java.util.Map;
 import org.typesense.model.FacetCounts;
@@ -63,6 +62,7 @@ public class SearchHandler implements Route {
         try {
             // this is where we get data from Tsearcher
             SearchResult searchResult = searcher.searchMeetings(paramBuilder.build());
+            System.out.println(searchResult);
             SearchSuccessResponse successResp = new SearchSuccessResponse(
                 searchResult.getFound(),
                 searchResult.getOutOf(),

@@ -17,7 +17,6 @@ public final class SearchParamBuilder {
   }
 
   public SearchParamBuilder withBody(String publicBody) {
-    System.out.println(publicBody);
     filterStrings.add(String.format("body:=%s", publicBody));
     return this;
   }
