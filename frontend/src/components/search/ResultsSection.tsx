@@ -55,7 +55,8 @@ export default function ResultSection({
       />
       <main id={styles["results"]} aria-label="Search results">
         <i aria-live="polite" aria-atomic="true" role="presentation">
-          {searchResults.resultsInfo.found} meetings found
+          retrieved {searchResults.results.length} out of{" "}
+          {searchResults.resultsInfo.found} total results
           <span className="sr-only">
             {keyphrase !== "*" ? (
               <span>Search Term: {keyphraseInfo}</span>
