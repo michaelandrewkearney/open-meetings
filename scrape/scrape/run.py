@@ -8,7 +8,7 @@ from typing import Callable, Iterator
 from progress.bar import Bar
 from pymongo import MongoClient
 from pymongo.database import Database
-from io_utils import make_dir_if_not_exists_and_check_is_dir, make_log_and_lock, threadsafe_write_if_log, get_database, is_in_db, is_tika_server_healthy, is_mongodb_server_healthy
+from io_utils import make_dir_if_not_exists_and_check_is_dir, make_log_and_lock, threadsafe_write_if_log, get_database, is_tika_server_healthy, is_mongodb_server_healthy, is_in_db
 from download import download_meeting, download_body
 from parse import parse_meeting, parse_body
 from validate import validate_meeting, validate_body, Meeting, Body
@@ -95,10 +95,12 @@ def build_process_body(db: Database) -> Callable[[int], int]:
         return 1
     return process_body
 
-def build_export_meeting(db: Database) -> Callable[[int], dict]:
+def build_export_meeting(db: Database) -> Callable[[int], dict | None]:
     db_lock = Lock()
-    def export_meeting(id: int) -> dict:
-        return get_meeting_as_indexable(db, db_lock, id)
+    def export_meeting(id: int) -> dict | None:
+        if is_in_db(db, db_lock, ResourceType.MEETING.collection_name(), id):
+            return get_meeting_as_indexable(db, db_lock, id)
+        return None
     return export_meeting
 
 def build_export_body(db: Database) -> Callable[[int], dict]:
@@ -166,7 +168,15 @@ def main(args):
     func = func_builder(db)
     bar_lock = Lock()
     log_and_lock = make_log_and_lock(LOGS_DIR, f'{args[1]}_{args[2]}')
-    with Bar(args[1], max=count) as bar:
+    chunk_number = 0
+    chunk_size = 50000
+    chunk_start = start
+    chunk_count = 0
+    count_copy = count
+    while (count_copy > 0):
+        chunk_count += 1
+        count_copy -= chunk_size
+    with Bar(args[1], max=count) as bar, Bar("chunks", max=chunk_count) as chunk_bar:
         def try_process(i: int) -> int | dict | None:
             result = None
             try:
@@ -176,10 +186,15 @@ def main(args):
             with bar_lock:
                 bar.next()
             return result
-        with ThreadPoolExecutor(max_workers=64) as executor:
-            results = list(filter(lambda x : x is not None, executor.map(try_process, range(start, start+count).__iter__())))
-        with open(f'{OUTPUTS_DIR}/output_{dt.datetime.utcnow()}.json', 'w') as output:
-            output.write(json.dumps(results))
+        while chunk_start < start + count:
+            chunk_end = min(chunk_start + chunk_size, start + count)
+            with ThreadPoolExecutor(max_workers=64) as executor:
+                results = list(filter(lambda x : x is not None, executor.map(try_process, range(chunk_start, chunk_end).__iter__())))
+            with open(f'{OUTPUTS_DIR}/output_{chunk_number}_{dt.datetime.utcnow()}.json', 'w') as output:
+                output.write(json.dumps(results))
+            chunk_start = chunk_end
+            chunk_number += 1
+            chunk_bar.next()
 
 
 # def main(args):

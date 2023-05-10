@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "index": "export TYPESENSE_API_KEY=xyz && npx ts-node ./src/add_documents.ts ../data/to_index.json 8108",
-    "prestart": "docker pull typesense/typesense:0.24.1",
-    "start": "docker run --name opm -p 8108:8108 -v typesense-database:/data typesense/typesense:0.24.1 --data-dir /data --api-key=xyz --enable-cors --api-port=8108",
-    "poststart": "docker rm opm",
+    "index": "npx ts-node ./src/add_documents.ts",
+    "clear": "npx ts-node ./src/clear_documents.ts",
+    "prestart": "sh ../containers/setup.sh",
+    "start": "sh ../containers/run.sh typesense",
     "test": "npx jest"
   },
   "author": "",

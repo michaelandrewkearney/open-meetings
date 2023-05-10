@@ -12,7 +12,7 @@ public final class SearchParamBuilder {
     this.filterStrings = new LinkedList<>();
     params
         .q(keyphrase)
-        .queryBy("latestAgenda, latestMinutes")
+        .queryBy("latestAgenda, latestMinutes, body")
         .facetBy("body")
         .perPage(100)
         .maxFacetValues(5000);
