@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { toDateObj, toDateStr } from "../date_utils";
 import styles from "./DateSelect.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isSearchState } from "../../..";
 
 interface DateSelectProps {
@@ -33,9 +33,13 @@ export default function DateSelect({
     }
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     handleDate(toDateObj(dateStart), toDateObj(dateEnd))
   }, [dateStart, dateEnd])
+=======
+  const dateStartRef = useRef<HTMLInputElement>(null);
+>>>>>>> main
 
   return (
     <fieldset className={styles["DateSelect"]} aria-labelledby="date-legend">
@@ -44,6 +48,7 @@ export default function DateSelect({
         <input
           type="date"
           id="start"
+          ref={dateStartRef}
           value={dateStart}
           onChange={(e) => {
             setDateStart(e.currentTarget.value)

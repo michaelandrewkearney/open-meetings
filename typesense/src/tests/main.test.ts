@@ -14,12 +14,15 @@ const client = new Typesense.Client({
   'connectionTimeoutSeconds': 60
 })
 
-test("is_a_meeting", function() {
-  const meetingsJson = require('../../data/test_omp_data.json')
-  meetingsJson.forEach((obj: any) => {
-    expect(isRawMeeting(obj)).toBeTruthy()
-  })
-})
+test('meeting collection exists', async function() {
+  const collections = await client.collections().retrieve()
+  expect(collections.find(collection => collection.name === "meetings")).toBeTruthy()
+});
+
+test('five documents are indexed', async function() {
+  const meetingCollection = await client.collections('meetings').retrieve()
+  expect(meetingCollection.num_documents).toBe(5)
+});
 
 test('retrieve a meeting by id', async function() {
   const meeting = await client.collections<Meeting>('meetings')
@@ -29,27 +32,16 @@ test('retrieve a meeting by id', async function() {
   expect(meeting.body).toBe(mockMeetingJson[0].body)
 });
 
-test('first search!!', async function() {
+test('first search', async function() {
   let searchParameters = {
     'q'         : 'collective',
     'query_by'  : 'latestAgenda',
   }
-  const resp = await client.collections('meetings')
+  const resp: SearchResponse<{}> = await client.collections('meetings')
   .documents()
   .search(searchParameters)
 
-  const firstHit = resp.hits![0]
+  expect(resp.found).toBe(1)
+  expect(resp.out_of).toBe(5)
 });
 
-test('faceted search!!', async function() {
-  let searchParameters = {
-    'q'         : 'the',
-    'query_by'  : 'latestAgenda',
-    'facet_by' : "body"
-  }
-  const resp = await client.collections('meetings')
-  .documents()
-  .search(searchParameters)
-
-  console.log((resp.facet_counts![0]).counts)
-});

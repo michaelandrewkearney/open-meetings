@@ -1,6 +1,7 @@
 .DateSelect {
   border: none;
-  padding: 0;
+  padding: 0rem 1rem 1rem;
+  box-shadow: inset 0px 0px 4px rgb(212, 211, 211);
 }
 
 .DateSelect label {

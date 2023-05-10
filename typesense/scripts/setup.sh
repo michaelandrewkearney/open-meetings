@@ -1,5 +1,4 @@
 #!/bin/bash
-
 output=$(docker images | grep "53d71694cf5a")
 
 if [ -z "$output" ]; then

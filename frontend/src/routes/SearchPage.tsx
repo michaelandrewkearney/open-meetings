@@ -107,14 +107,14 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
   }, [filters, keyphrase]);
 
   useEffect(() => {
-    let prevSearchInput: string = searchInput
+    let prevSearchInput: string = searchInput;
     const timeoutId = setTimeout(() => {
       if (prevSearchInput == searchInput) {
-        setKeyphrase(searchInput === "" ? "*" : searchInput)
+        setKeyphrase(searchInput === "" ? "*" : searchInput);
       }
-    }, 500)
-    return () => clearTimeout(timeoutId)
-  }, [searchInput])
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
 
   const handleNewKeyphraseSearch = () => {
     const newFilters: SearchFilters = {
@@ -125,13 +125,14 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
     setFilters(() => newFilters);
     getSearch(keyphrase, newFilters).then((newResults: SearchResults) => {
       setResults(() => newResults);
+      setBodyFacet(() => newResults.bodyFacetMap);
       setFilteredBodyFacet(() => newResults.bodyFacetMap);
     });
   };
 
   useEffect(() => {
-    handleNewKeyphraseSearch()
-  }, [keyphrase])
+    handleNewKeyphraseSearch();
+  }, [keyphrase]);
 
   const handleBodySelect = (body: string | null) => {
     setFilters((prevFilters) => ({
@@ -163,16 +164,29 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
     }
 
     getSearch(keyphrase, {
-      ...filters,
+      body: null,
       dateStart: dateStart,
       dateEnd: dateEnd,
     }).then((newResults) => {
       setResults(() => newResults);
-      setFilteredBodyFacet(() => newResults.bodyFacetMap);
+      if (dateStart === null && dateEnd === null) {
+        setFilteredBodyFacet(() => bodyFacet);
+      } else {
+        // update only the facet counts
+        console.log(newResults.bodyFacetMap);
+        const filteredFacet: Map<string, number> = new Map();
+        for (const body of bodyFacet.keys()) {
+          console.log(body);
+          const newFacetCount: number | undefined =
+            newResults.bodyFacetMap.get(body);
+          filteredFacet.set(body, newFacetCount ? newFacetCount : 0);
+        }
+        setFilteredBodyFacet(() => filteredFacet);
+      }
     });
   };
 
-  document.title = 'Open Meetings'
+  document.title = "Open Meetings";
 
   return (
     <>
@@ -180,7 +194,7 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
         searchInput={searchInput}
         handleSearchValue={(value) => setSearchInput(value)}
       />
-        {results && bodyFacet ? (
+      {results && bodyFacet ? (
         <ResultsSection
           searchResults={results}
           handleBodySelect={handleBodySelect}
