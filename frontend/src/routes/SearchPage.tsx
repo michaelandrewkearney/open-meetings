@@ -121,6 +121,7 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
     getSearch(newKeyphrase, newFilters).then((newResults: SearchResults) => {
       setResults(() => newResults);
       setBodyFacet(() => newResults.bodyFacetMap);
+      setFilteredBodyFacet(() => newResults.bodyFacetMap);
     });
   };
 
@@ -142,25 +143,26 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
       dateEnd: dateEnd,
     }));
 
-    if (dateStart === null && dateEnd === null) {
-      setFilteredBodyFacet(() => bodyFacet);
-      getSearch(keyphrase, {
-        ...filters,
-        dateStart: dateStart,
-        dateEnd: dateEnd,
-      }).then((newResults) => {
-        setResults(() => newResults);
-      });
-      return;
-    }
-
     getSearch(keyphrase, {
-      ...filters,
+      body: null,
       dateStart: dateStart,
       dateEnd: dateEnd,
     }).then((newResults) => {
       setResults(() => newResults);
-      setFilteredBodyFacet(() => newResults.bodyFacetMap);
+      if (dateStart === null && dateEnd === null) {
+        setFilteredBodyFacet(() => bodyFacet);
+      } else {
+        // update only the facet counts
+        console.log(newResults.bodyFacetMap);
+        const filteredFacet: Map<string, number> = new Map();
+        for (const body of bodyFacet.keys()) {
+          console.log(body);
+          const newFacetCount: number | undefined =
+            newResults.bodyFacetMap.get(body);
+          filteredFacet.set(body, newFacetCount ? newFacetCount : 0);
+        }
+        setFilteredBodyFacet(() => filteredFacet);
+      }
     });
   };
 

@@ -20,7 +20,11 @@ export default function Sidebar({
   filters,
 }: SidebarProps) {
   return (
-    <form className={styles["Sidebar"]} aria-label="Filter Options">
+    <form
+      className={styles["Sidebar"]}
+      aria-label="Filter Options"
+      onSubmit={(e) => e.preventDefault()}
+    >
       <DateSelect handleDate={handleDate} searchParams={searchParams} />
       <BodySelect
         facetMap={bodyFacet}
