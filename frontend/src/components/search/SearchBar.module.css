@@ -1,19 +1,11 @@
-.SearchBar {
+.search-input-wrapper {
+  flex: 3 0;
   display: flex;
   align-items: center;
-  gap: 1em;
-  background-color: var(--light-bg-color);
 }
 
-#search-form {
-  flex: 3 0;
-}
-
-#search-label {
-  display: block;
-  font-weight: bold;
-}
-
-#search-input {
-  width: 80%;
+.search-input {
+  font-size: 1.2rem;
+  width: 95%;
+  padding: 1rem;
 }

@@ -5,3 +5,5 @@ containers/typesense
 
 # typesense
 typesense-data/
+typesense/data/big_data.json
+

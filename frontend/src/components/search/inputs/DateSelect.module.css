@@ -9,6 +9,42 @@
   font-weight: bold;
 }
 
-.DateSelect label:not(:first-child) {
+.datepickers-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
   padding-top: 1rem;
+  gap: .3rem;
+}
+
+.datepickers-wrapper input {
+  font-size: 1rem;
+  border: none;
+}
+
+.datepickers-wrapper button {
+  background-color: white;
+  border: 1px solid var(--light-blue);
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: var(--light-blue);
+  cursor: pointer;
+  font-size: 1rem;
+  text-align: center;
+  text-rendering: geometricprecision;
+  touch-action: manipulation;
+  vertical-align: middle;
+  transition: all .2s;
+}
+
+.datepickers-wrapper button:hover,
+.datepickers-wrapper button:active {
+  background-color: var(--orange);
+  border-color: var(--orange);
+  color: white;
+}
+
+.datepickers-wrapper button:active {
+  opacity: .5;
 }

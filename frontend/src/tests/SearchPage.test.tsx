@@ -16,13 +16,18 @@ test("search renders", async () => {
 
   render(
     <SearchBar
-      keyphrase="*"
-      handleSearchSubmit={() => {}}
+      searchInput="*"
       handleSearchValue={(target) => {
         mockInputState = target;
       }}
     />
   );
+  function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+  (async () => { 
+    await delay(5000);
+  })();
   expect(screen.getByRole("searchbox")).toBeInTheDocument();
   // verify page content for default route
   expect(

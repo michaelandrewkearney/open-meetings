@@ -1,7 +1,8 @@
 import Typesense, { Client } from "typesense";
-import { Meeting, getMeetingData } from "../meeting_data";
+import { Meeting, isRawMeeting, getMeetingData } from "../meeting_data";
 import mockMeetingJson from "../../data/test_omp_data.json"
 import { SearchResponse } from "typesense/lib/Typesense/Documents";
+
 
 const client = new Typesense.Client({
   'nodes': [{
@@ -11,6 +12,13 @@ const client = new Typesense.Client({
   }],
   'apiKey': process.env.TYPESENSE_API_KEY!,
   'connectionTimeoutSeconds': 60
+})
+
+test("is_a_meeting", function() {
+  const meetingsJson = require('../../data/test_omp_data.json')
+  meetingsJson.forEach((obj: any) => {
+    expect(isRawMeeting(obj)).toBeTruthy()
+  })
 })
 
 test('retrieve a meeting by id', async function() {

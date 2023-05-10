@@ -24,6 +24,8 @@ export default function MeetingPage() {
   if (meeting.is_annual_calendar) attrs.push("Annual Calendar");
   if (meeting.is_public_notice) attrs.push("Public Announcement");
 
+  document.title = 'Open Meetings'
+
   return (
     <>
       <header className={styles["header"]}>

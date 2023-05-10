@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exit()
-
 port=$1
 
 mkdir $(pwd)/typesense-database

@@ -5,8 +5,7 @@ from threading import Lock
 
 def get_resource_by_id(rtype: ResourceType, db: Database, db_lock: Lock, id: int) -> dict:
     collection = db[rtype.collection_name()]
-    with db_lock:
-        result: dict | None = collection.find_one({'_id': id})
+    result: dict | None = collection.find_one({'_id': id})
     if result:
         return result
     raise RuntimeError(f'Error: could not find resource of type {rtype} and id {id}')
@@ -26,7 +25,7 @@ def get_snippet(db: Database, db_lock: Lock, id: int) -> dict:
 def get_meeting_as_indexable(db: Database, db_lock: Lock, id: int) -> dict:
     d = {}
     meeting = get_meeting(db, db_lock, id)
-    d['id'] = meeting['_id']
+    d['id'] = str(meeting['_id'])
     d['body'] = get_body(db, db_lock, meeting['body'])['name']
     d['meeting_dt'] = int(meeting['meeting_dt'])
     d['address'] = meeting['meeting_address']
@@ -41,8 +40,8 @@ def get_meeting_as_indexable(db: Database, db_lock: Lock, id: int) -> dict:
         d['cancelled_dt'] = int(meeting['cancelled_dt'])
         d['cancelled_reason'] = meeting['cancelled_reason']
     else:
-        d['cancelled_dt'] = None
-        d['cancelled_reason'] = None
+        d['cancelled_dt'] = 0
+        d['cancelled_reason'] = ''
     d['contactPerson'] = meeting['contact_name']
     d['contactEmail'] = meeting['contact_email']
     d['contactPhone'] = meeting['contact_phone']
@@ -53,6 +52,9 @@ def get_meeting_as_indexable(db: Database, db_lock: Lock, id: int) -> dict:
             snippets.append(get_snippet(db, db_lock, snippet)['text'])
         d['latestAgenda'] = snippets
         d['latestAgendaLink'] = generate_document_url(latest_agenda['path'])
+    else:
+        d['latestAgenda'] = []
+        d['latestAgendaLink'] = ''
     if len(meeting['minutes']) > 0:
         latest_minutes = get_document(db, db_lock, meeting['minutes'][0])
         snippets = []
@@ -60,6 +62,9 @@ def get_meeting_as_indexable(db: Database, db_lock: Lock, id: int) -> dict:
             snippets.append(get_snippet(db, db_lock, snippet)['text'])
         d['latestMinutes'] = snippets
         d['latestMinutesLink'] = generate_document_url(latest_minutes['path'])
+    else:
+        d['latestMinutes'] = []
+        d['latestMinutesLink'] = ''
     return d
 
 def get_body_as_indexable(db: Database, db_lock: Lock, id: int) -> dict:

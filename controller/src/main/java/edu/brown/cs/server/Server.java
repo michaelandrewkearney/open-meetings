@@ -13,6 +13,12 @@ public class Server {
         // TODO: add more :)
         static StopWords sWords = new StopWords(List.of("a", "the", "you", "we", "me", "i", "them", "this", "that", "is", "and", "but", "as", "or"));
     public static void main(String[] args) {
+        String api_key = System.getenv("TYPESENSE_API_KEY");
+
+        if (api_key == null) {
+            throw new RuntimeException("Error: no TYPESENSE_API_KEY variable set in shell environment.");
+        }
+
         Spark.port(3232);
 
         after((request, response) -> {

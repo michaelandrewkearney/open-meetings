@@ -63,7 +63,8 @@ def build_process_meeting(db: Database) -> Callable[[int], int]:
         collection: str = ResourceType.MEETING.collection_name()
         if is_in_db(db, db_lock, collection, id):
             if overwrite:
-                db[collection].delete_one({'_id': id})
+                with db_lock:
+                    db[collection].delete_one({'_id': id})
             else:
                 return -1
         download = download_meeting(id)
@@ -81,7 +82,8 @@ def build_process_body(db: Database) -> Callable[[int], int]:
         collection: str = ResourceType.BODY.collection_name()
         if is_in_db(db, db_lock, collection, id):
             if overwrite:
-                db[collection].delete_one({'_id': id})
+                with db_lock:
+                    db[collection].delete_one({'_id': id})
             else:
                 return -1
         download = download_body(id)
@@ -175,7 +177,7 @@ def main(args):
                 bar.next()
             return result
         with ThreadPoolExecutor(max_workers=64) as executor:
-            results = list(executor.map(try_process, range(start, start+count).__iter__()))
+            results = list(filter(lambda x : x is not None, executor.map(try_process, range(start, start+count).__iter__())))
         with open(f'{OUTPUTS_DIR}/output_{dt.datetime.utcnow()}.json', 'w') as output:
             output.write(json.dumps(results))
 

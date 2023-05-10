@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import { toDateObj, toDateStr } from "../components/search/date_utils";
 import { SearchState, isSearchState } from "..";
+import styles from "./SearchPage.module.css";
 
 export function buildInitialSearch(requestJsonFunc: RequestJsonFunction) {
   async function initialSearch({
@@ -105,24 +106,32 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
     }));
   }, [filters, keyphrase]);
 
-  const handleNewKeyphraseSearch = (
-    newKeyphrase: string,
-    newDateStart: Date | null,
-    newDateEnd: Date | null
-  ) => {
+  useEffect(() => {
+    let prevSearchInput: string = searchInput
+    const timeoutId = setTimeout(() => {
+      if (prevSearchInput == searchInput) {
+        setKeyphrase(searchInput === "" ? "*" : searchInput)
+      }
+    }, 500)
+    return () => clearTimeout(timeoutId)
+  }, [searchInput])
+
+  const handleNewKeyphraseSearch = () => {
     const newFilters: SearchFilters = {
       body: null,
-      dateStart: newDateStart,
-      dateEnd: newDateEnd,
+      dateStart: null,
+      dateEnd: null,
     };
-
-    setKeyphrase(newKeyphrase);
     setFilters(() => newFilters);
-    getSearch(newKeyphrase, newFilters).then((newResults: SearchResults) => {
+    getSearch(keyphrase, newFilters).then((newResults: SearchResults) => {
       setResults(() => newResults);
-      setBodyFacet(() => newResults.bodyFacetMap);
+      setFilteredBodyFacet(() => newResults.bodyFacetMap);
     });
   };
+
+  useEffect(() => {
+    handleNewKeyphraseSearch()
+  }, [keyphrase])
 
   const handleBodySelect = (body: string | null) => {
     setFilters((prevFilters) => ({
@@ -137,7 +146,7 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
 
   const handleDate = (dateStart: Date | null, dateEnd: Date | null) => {
     setFilters((prevFilters) => ({
-      body: prevFilters.body,
+      ...prevFilters,
       dateStart: dateStart,
       dateEnd: dateEnd,
     }));
@@ -151,7 +160,6 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
       }).then((newResults) => {
         setResults(() => newResults);
       });
-      return;
     }
 
     getSearch(keyphrase, {
@@ -164,21 +172,15 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
     });
   };
 
+  document.title = 'Open Meetings'
+
   return (
     <>
       <SearchBar
-        keyphrase={searchInput}
+        searchInput={searchInput}
         handleSearchValue={(value) => setSearchInput(value)}
-        handleSearchSubmit={(e) => {
-          e.preventDefault();
-          handleNewKeyphraseSearch(
-            searchInput === "" ? "*" : searchInput,
-            filters.dateStart,
-            filters.dateEnd
-          );
-        }}
       />
-      {results && bodyFacet ? (
+        {results && bodyFacet ? (
         <ResultsSection
           searchResults={results}
           handleBodySelect={handleBodySelect}
