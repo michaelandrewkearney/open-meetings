@@ -21,6 +21,7 @@ export default function SearchBar({
         aria-label="Full-text Search"
         onSubmit={(e) => handleSearchSubmit(e)}
         role="search"
+        autoComplete="off"
       >
         <label id={styles["search-label"]} htmlFor="search-input">
           Search a Meeting or Public Body
