@@ -6,6 +6,7 @@ if [[ -n $(uname -a | grep arm64) ]]; then
     PLATFORM="linux/arm64"
 fi
 
+export TYPESENSE_API_KEY=xyz
 
 # maintain order of all arrays when adding new containers or arrays
 export tools=('tika' 'mongodb' 'typesense')

@@ -1,4 +1,4 @@
-package edu.brown.cs.server.helpers;
+package edu.brown.cs.server;
 
 
 import java.util.List;

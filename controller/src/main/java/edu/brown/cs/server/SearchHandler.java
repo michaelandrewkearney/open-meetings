@@ -5,7 +5,7 @@ import com.squareup.moshi.Moshi;
 
 import edu.brown.cs.searcher.SearchParamBuilder;
 import edu.brown.cs.searcher.Tsearch;
-import edu.brown.cs.server.helpers.MeetingData;
+import edu.brown.cs.server.MeetingData;
 import java.util.List;
 import java.util.Map;
 import org.typesense.model.FacetCounts;

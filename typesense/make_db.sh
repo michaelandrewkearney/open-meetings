@@ -7,11 +7,11 @@ until [ $serverReady == true ];
 do 
   echo "waiting for server..."
   sleep 2
-  serverReady=$(bash ./scripts/check-server.sh "$port")
+  serverReady=$(bash $(dirname $0)/scripts/check-server.sh "$port")
 done
 echo "server ready for requests"
 
-bash index-docs.sh "$datapath" "$port"
+bash $(dirname $0)/scripts/index-docs.sh "$datapath" "$port"
 
 curl -H "X-TYPESENSE-API-KEY: ${TYPESENSE_API_KEY}" \
     "http://localhost:$port/collections"

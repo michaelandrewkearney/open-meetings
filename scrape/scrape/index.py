@@ -28,9 +28,9 @@ def get_meeting_as_indexable(db: Database, db_lock: Lock, id: int) -> dict:
     meeting = get_meeting(db, db_lock, id)
     d['id'] = meeting['_id']
     d['body'] = get_body(db, db_lock, meeting['body'])['name']
-    d['meeting_dt'] = meeting['meeting_dt']
+    d['meeting_dt'] = int(meeting['meeting_dt'])
     d['address'] = meeting['meeting_address']
-    d['filing_dt'] = meeting['filing_dt']
+    d['filing_dt'] = int(meeting['filing_dt'])
     for field in ['is_emergency', 'is_annual_calendar', 'is_public_notice']:
         d[field] = field in meeting and meeting[field]
     if 'is_cancelled' in meeting:
@@ -38,7 +38,7 @@ def get_meeting_as_indexable(db: Database, db_lock: Lock, id: int) -> dict:
     else:
         d['is_cancelled'] = False
     if d['is_cancelled']:
-        d['cancelled_dt'] = meeting['cancelled_dt']
+        d['cancelled_dt'] = int(meeting['cancelled_dt'])
         d['cancelled_reason'] = meeting['cancelled_reason']
     else:
         d['cancelled_dt'] = None

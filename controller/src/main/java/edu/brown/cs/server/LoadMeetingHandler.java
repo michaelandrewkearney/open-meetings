@@ -1,10 +1,9 @@
-package edu.brown.cs.server.handlers;
+package edu.brown.cs.server;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import edu.brown.cs.searcher.Tsearch;
-import edu.brown.cs.server.helpers.MeetingData;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
@@ -36,7 +35,6 @@ public class LoadMeetingHandler implements Route {
         if (id == null) {
             return new LoadMeetingRequestFailureResponse("Must include an 'id' query.").serialize();
         }
-
 
         // need to take in meeting from searcher? and return 
         try {

@@ -1,15 +1,7 @@
 package edu.brown.cs.server;
 
-
 import static spark.Spark.after;
-
-import edu.brown.cs.server.handlers.LoadMeetingHandler;
 import java.util.List;
-
-import org.typesense.api.FieldTypes;
-
-import com.google.protobuf.Int32Value;
-
 import edu.brown.cs.searcher.StopWords;
 import edu.brown.cs.searcher.Tsearch;
 import spark.Spark;
@@ -20,7 +12,7 @@ public class Server {
 
         // TODO: add more :)
         static StopWords sWords = new StopWords(List.of("a", "the", "you", "we", "me", "i", "them", "this", "that", "is", "and", "but", "as", "or"));
-        public static void main(String[] args) {
+    public static void main(String[] args) {
         Spark.port(3232);
 
         after((request, response) -> {
