@@ -2,8 +2,6 @@ package edu.brown.cs.server;
 
 
 import static spark.Spark.after;
-
-import edu.brown.cs.server.handlers.LoadMeetingHandler;
 import java.util.List;
 
 import org.typesense.api.FieldTypes;
