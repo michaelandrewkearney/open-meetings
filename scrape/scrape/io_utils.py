@@ -102,5 +102,4 @@ def clear(db: Database):
         db[rtype.collection_name()].delete_many({})
 
 def is_in_db(db: Database, db_lock: Lock, collection: str, id: int) -> bool:
-    with db_lock:
-        return db[collection].find_one({'_id': id}) is not None
+    return db[collection].find_one({'_id': id}) is not None

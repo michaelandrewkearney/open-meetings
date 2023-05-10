@@ -62,7 +62,6 @@ public class SearchHandler implements Route {
         try {
             // this is where we get data from Tsearcher
             SearchResult searchResult = searcher.searchMeetings(paramBuilder.build());
-            System.out.println(searchResult);
             SearchSuccessResponse successResp = new SearchSuccessResponse(
                 searchResult.getFound(),
                 searchResult.getOutOf(),

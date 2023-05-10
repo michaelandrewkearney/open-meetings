@@ -33,47 +33,46 @@ export default function DateSelect({
     }
   }, []);
 
+<<<<<<< HEAD
+  useEffect(() => {
+    handleDate(toDateObj(dateStart), toDateObj(dateEnd))
+  }, [dateStart, dateEnd])
+=======
   const dateStartRef = useRef<HTMLInputElement>(null);
+>>>>>>> main
 
   return (
     <fieldset className={styles["DateSelect"]} aria-labelledby="date-legend">
-      <legend id="date-legend">Filter by Date</legend>
-      <div>
-        <label htmlFor="start">Start Date</label>
+      <legend className='sr-only' id="date-legend">Filter by Date</legend>
+      <div className={styles["datepickers-wrapper"]}>
         <input
           type="date"
           id="start"
           ref={dateStartRef}
           value={dateStart}
-          onChange={(e) => setDateStart(e.currentTarget.value)}
-          onBlur={() => handleDate(toDateObj(dateStart), toDateObj(dateEnd))}
-        />
-        <button
-          onClick={() => {
-            setDateStart("");
-            handleDate(null, toDateObj(dateEnd));
+          onChange={(e) => {
+            setDateStart(e.currentTarget.value)
+            e.target.blur()
           }}
-          aria-label="Clear start date filter"
-        >
-          Clear
-        </button>
-
-        <label htmlFor="end">End Date</label>
+        />
+        <p>–</p>
         <input
           type="date"
           id="end"
           value={dateEnd}
-          onChange={(e) => setDateEnd(e.currentTarget.value)}
-          onBlur={() => handleDate(toDateObj(dateStart), toDateObj(dateEnd))}
+          onChange={(e) => {
+            setDateEnd(e.currentTarget.value)
+            e.target.blur()
+          }}
         />
         <button
           aria-label="Clear start date filter"
           onClick={() => {
+            setDateStart("");
             setDateEnd("");
-            handleDate(toDateObj(dateStart), null);
           }}
         >
-          Clear
+          {'\u00d7'}
         </button>
       </div>
     </fieldset>

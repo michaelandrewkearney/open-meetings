@@ -34,28 +34,28 @@ export interface RawMeeting {
   contactPhone: string;
 }
 
-function isRawMeeting(target: any): target is RawMeeting {
+export function isRawMeeting(target: any): target is RawMeeting {
   const requiredProps= ["id", "body", "meeting_dt", "address", "is_cancelled", "cancelled_dt", 
   "cancelled_reason", "contactPerson", "contactEmail", "contactPhone"]
 
   if (target === null) {
-    throw new Error("Target is null")
+    return false
   }
 
   requiredProps.forEach((prop: string) => {
     if (!(prop in target)) {
-      throw new Error(`Missing '${prop}' property : ${JSON.stringify(target)}`)
+      return false
     }
   })
 
   if ((target.is_cancelled && (!target.cancelled_dt || !target.cancelled_reason))) {
-    throw new Error(`cancelled meetings must have a cancelled_dt and cancelled_reason property: ${JSON.stringify(target)}`)
+    return false
   }
   if (target.latestAgenda != undefined && target.latestAgendaLink == undefined) {
-    throw new Error(`Meetings with agendas must have an agenda link: ${JSON.stringify(target)}`)
+    return false
   }
   if (target.latestMinutes != undefined && target.latestMinutesLink == undefined) {
-    throw new Error(`Meetings with agendas must have an agenda link: ${JSON.stringify(target)}`)
+    return false
   }
   return true
 }

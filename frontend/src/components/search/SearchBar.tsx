@@ -3,38 +3,26 @@ import styles from "./SearchBar.module.css";
 import Logo from "../Logo";
 
 interface SearchBarProps {
-  keyphrase: string;
+  searchInput: string;
   handleSearchValue: (target: string) => void;
-  handleSearchSubmit: (e: FormEvent<HTMLFormElement>) => void;
 }
 
 export default function SearchBar({
-  keyphrase,
+  searchInput,
   handleSearchValue,
-  handleSearchSubmit,
 }: SearchBarProps) {
   return (
-    <div className={styles.SearchBar}>
+    <header className={styles["search-bar"]}>
       <Logo />
-      <form
-        id={styles["search-form"]}
-        aria-label="Full-text Search"
-        onSubmit={(e) => handleSearchSubmit(e)}
-        role="search"
-        autoComplete="off"
-      >
-        <label id={styles["search-label"]} htmlFor="search-input">
-          Search a Meeting or Public Body
-        </label>
+      <div className={styles["search-input-wrapper"]}>
         <input
-          type="search"
-          id={styles["search-input"]}
+          className={styles["search-input"]}
           aria-labelledby="search-label"
-          value={keyphrase}
+          value={searchInput}
           onChange={(e) => handleSearchValue(e.target.value)}
+          placeholder="Search a Meeting or Public Body"
         />
-        <input type="submit" value="Search" aria-label="Search meetings" />
-      </form>
-    </div>
+      </div>
+    </header>
   );
 }

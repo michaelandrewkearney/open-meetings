@@ -1,7 +1,8 @@
-import Typesense from "typesense";
-import { Meeting } from "../meeting_data";
+import Typesense, { Client } from "typesense";
+import { Meeting, isRawMeeting, getMeetingData } from "../meeting_data";
 import mockMeetingJson from "../../data/test_omp_data.json"
 import { SearchResponse } from "typesense/lib/Typesense/Documents";
+
 
 const client = new Typesense.Client({
   'nodes': [{

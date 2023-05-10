@@ -21,10 +21,11 @@ export default function BodySelect({
   return (
     <fieldset
       className={styles["BodySelect"]}
+      id="body-select"
       aria-labelledby="body-legend"
       role="radiogroup"
     >
-      <legend id="body-legend">Filter by Body</legend>
+      <legend className='sr-only' id="body-legend">Filter by Body</legend>
       <div className={styles["body-option"]}>
         <input
           type="radio"
@@ -35,10 +36,16 @@ export default function BodySelect({
           onChange={() => handleBodySelect(null)}
         />
         <label htmlFor={"all-bodies"}>
-          All Bodies <span className="sr-only"> - {numResults} results</span>
           <span className={styles["body-count"]} aria-hidden="true">
             {numResults}
           </span>
+          <div className={styles["body-name"]} role="presentation">
+            All bodies
+            <span className="sr-only">
+              - {numResults} results
+            </span>
+          </div>
+          
         </label>
       </div>
 
@@ -56,15 +63,15 @@ export default function BodySelect({
                 onChange={(e) => handleBodySelect(e.currentTarget.value)}
               />
               <label htmlFor={body}>
-                <span role="presentation">
+                <div className={styles["body-count"]} aria-hidden="true">
+                  {facetMap.get(body)}
+                </div>
+                <div className={styles["body-name"]} role="presentation">
                   {body}
                   <span className="sr-only">
                     - {facetMap.get(body)} results
                   </span>
-                </span>
-                <span className={styles["body-count"]} aria-hidden="true">
-                  {facetMap.get(body)}
-                </span>
+                </div>
               </label>
             </div>
           );

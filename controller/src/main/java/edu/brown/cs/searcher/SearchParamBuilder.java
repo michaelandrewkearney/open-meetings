@@ -14,8 +14,8 @@ public final class SearchParamBuilder {
         .q(keyphrase)
         .queryBy("latestAgenda, latestMinutes, body")
         .facetBy("body")
-        .perPage(250)
-        .maxFacetValues(250);
+        .perPage(100)
+        .maxFacetValues(5000);
   }
 
   public SearchParamBuilder withBody(String publicBody) {
