@@ -12,6 +12,10 @@
   --header-height: 15vh
 }
 
+body {
+  height: 100vh;
+}
+
 * {
   margin: 0;
   box-sizing: border-box;
@@ -26,6 +30,7 @@ a:hover {
   color: var(--orange);
   
 }
+
 
 .sr-only {
   clip: rect(1px, 1px, 1px, 1px);
@@ -53,7 +58,7 @@ body {
 }
 
  #root > :not(header) {
-  position: absolute;
+  position: fixed;
   top: var(--header-height)
 } 
 
