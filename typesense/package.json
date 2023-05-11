@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "index": "npx ts-node ./src/add_documents.ts",
-    "clear": "npx ts-node ./src/clear_documents.ts",
-    "prestart": "sh ../containers/setup.sh",
-    "start": "sh ../containers/run.sh typesense",
+    "index": "npx ts-node ./src/add_documents.ts ../sample/sample.json 8108",
+    "start": "sh ../containers/start.sh typesense || sh ../containers/run.sh typesense",
     "test": "npx jest"
   },
   "author": "",

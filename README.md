@@ -1,11 +1,17 @@
-# Open Meetings Portal
+# How to run a sample of this program
 
-## Containers
+1. Download [Docker](https://www.docker.com/products/docker-desktop/). For more help, see containers/README.md.
+2. run:
 
-## Controller
+        echo 'export TYPESENSE_API_KEY=xyz' >> ~/.bashrc
+        source ~/.bashrc
 
-## Frontend
+3. in typesense/ run:
 
-## Scrape
+        npm start
+        npm index
 
-## Typesense
+4. in controller/ run server.java
+5. in frontend/ run:
+
+        npm start

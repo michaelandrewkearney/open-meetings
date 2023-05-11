@@ -3,14 +3,15 @@ import { CollectionSchema } from "typesense/lib/Typesense/Collection";
 import { CollectionCreateSchema } from "typesense/lib/Typesense/Collections";
 import { ImportResponse } from "typesense/lib/Typesense/Documents";
 import { Meeting, getMeetingData } from "./meeting_data";
+import { ObjectNotFound } from "typesense/lib/Typesense/Errors";
 
 const API_KEY = process.env.TYPESENSE_API_KEY!
 const TIMEOUT_MINUTES = 5
 
-const port = process.argv[2]
-const meetingsJsonPath = process.argv[3]
+const meetingsJsonPath = process.argv[2]
+const port = process.argv[3]
 
-const meetings_schema: CollectionCreateSchema = {
+const meetingsCreateSchema: CollectionCreateSchema = {
   name: "meetings", 
   fields: [
     {
@@ -120,45 +121,54 @@ let client: Client = new Typesense.Client({
   'connectionTimeoutSeconds': TIMEOUT_MINUTES * 60
 })
 
-async function importMeetingsFromJSON(path: string): Promise<ImportResponse[]> {
-  const meetingsJson = require(path)
-  const meetings: Meeting[] = getMeetingData(meetingsJson)
-  return client.collections(meetings_schema.name)
+async function indexFromJson(collection: string, path: string, jsonToArray: Function): Promise<ImportResponse[]> {
+  const json = require(path)
+  const documents: any[] = jsonToArray(json)
+  return client.collections(collection)
     .documents()
-    .import(meetings, {action: 'create'})
+    .import(documents, {action: 'create'})
 }
 
-async function getOrCreateMeetingsCollection(): Promise<CollectionSchema> {
-  const meetingsCollectionSchema: CollectionSchema = await client.collections(meetings_schema.name).retrieve()
-
-  if (meetings_schema.name in meetingsCollectionSchema){
-    return meetingsCollectionSchema
+async function createCollectionIfNotExists(schema: CollectionCreateSchema): Promise<boolean> {
+  try {
+    const existingSchema: CollectionSchema = await client.collections(schema.name).retrieve()
+    return false
+  } catch (e) {
+    if (e instanceof ObjectNotFound) {
+      await client.collections().create(schema)
+      return true
+    } else {
+      throw e
+    }
   }
-  return client.collections().create(meetings_schema)
 }
 
 async function indexMeetings() {
-  console.log("creating meetings collections...")
-  await getOrCreateMeetingsCollection()
-  console.log("meetings collection successfully created")
+  console.log("Checking for meetings collections...")
+  let created: Promise<boolean> = createCollectionIfNotExists(meetingsCreateSchema)
+  created.then((val) => {
+    if (val) {
+      console.log("Created meetings collection.")
+    } else {
+      console.log("Meetings collection already created.")
+    }
+  })
 
-  console.log(`importing meetings from ${meetingsJsonPath}`)
-  const importResults: ImportResponse[] = await importMeetingsFromJSON(meetingsJsonPath)
-  let total_imports: number = importResults.length
+  console.log(`Importing meetings from ${meetingsJsonPath}`)
+  const importResults: ImportResponse[] = await indexFromJson(meetingsCreateSchema.name, meetingsJsonPath, getMeetingData)
+
   let failures: number = 0
-      
   importResults.forEach((resp: ImportResponse) => {
     if (!resp.success) {
-      console.log("Error importing meetings")
+      console.log("Error importing meeting:")
       console.log(resp)
       failures += 1
     }
   })
 
-  const total_doc_count: number = (await client.collections('meetings').retrieve()).num_documents
+  const total_doc_count: number = (await client.collections(meetingsCreateSchema.name).retrieve()).num_documents
 
-  console.log("meeting import finished")
-  console.log(`successfully imported ${total_imports-failures} out of ${total_imports} meetings. total document count is now ${total_doc_count}`)
+  console.log(`Imported ${importResults.length-failures} out of ${importResults.length} meetings. Total document count is now ${total_doc_count}.`)
 }
 
 indexMeetings()

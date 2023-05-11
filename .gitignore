@@ -1,9 +1,10 @@
-private/
 scrape/scrape/data
 containers/mongodb
 containers/typesense
 
+controller/target
+
 # typesense
 typesense-data/
-typesense/data/big_data.json
+typesense/data/
 
