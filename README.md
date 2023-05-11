@@ -15,3 +15,7 @@
 5. in frontend/ run:
 
         npm start
+
+Navigate to http://localhost:3000. It should look like this:
+
+![The working app.](app.png "Rhode Island Open Meetings Portal")
