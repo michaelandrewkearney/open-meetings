@@ -1,24 +1,18 @@
 .BodySelect {
+  flex-direction: column;
+  flex-wrap: nowrap;
   border-width: .15rem 0;
   border-style: solid;
   border-color: var(--dark-blue);
-  padding: 0;
-  margin: 1rem 0;
-  gap: 0.25rem;
+  padding: 0.5rem 0;
+  gap: 0.5rem;
   display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
   height: 100%;
   overflow: scroll;
 }
 
-#body-select {
-  display: flex;
-  flex-wrap: nowrap;
-  padding-top: 0.5rem;
-}
 
-#body-select label {
+.BodySelect label {
   display: flex;
   gap: 0.75rem;
   align-items: center;
@@ -26,20 +20,18 @@
   line-height: 115%;
 }
 
-#body-select input {
-  visibility: hidden;
-  margin: 0;
-  padding: 0;
-  height: 0;
+.BodySelect input[type="radio"] {
+  opacity: 0;
   width: 0;
 }
 
-#body-select input[type="radio"]+label .body-name {
+
+.BodySelect input[type="radio"]+label .body-name {
   transition: color .25s;
   color: var(--light-blue);
 }
 
-#body-select input[type="radio"]+label .body-count {
+.BodySelect input[type="radio"]+label .body-count {
   flex-shrink: 0;
   transition: all .25s;
   background-color: var(--light-blue);
@@ -52,6 +44,10 @@
   color: white;
   font-size: 1rem;
   transition: all .2s;
+}
+
+#body-select input[type="radio"]:focus-visible+label {
+  outline: -webkit-focus-ring-color auto 1px;
 }
 
 #body-select input[type="radio"]:checked+label .body-name {

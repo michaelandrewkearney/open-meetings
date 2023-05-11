@@ -27,43 +27,7 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
 
   const startInputRef = useRef<HTMLInputElement>(null);
   const endInputRef = useRef<HTMLInputElement>(null);
-  
-  return (
-    <fieldset className={styles["DateSelect"]} aria-labelledby="date-legend">
-      <legend className='sr-only' id="date-legend">Filter by Date</legend>
-      <div className={styles["datepickers-wrapper"]}>
-        <input
-          type="date"
-          id="start"
-          ref={dateStartRef}
-          value={dateStart}
-          onChange={(e) => {
-            setDateStart(e.currentTarget.value)
-            e.target.blur()
-          }}
-        />
-        <p>–</p>
-        <input
-          type="date"
-          id="end"
-          value={dateEnd}
-          onChange={(e) => {
-            setDateEnd(e.currentTarget.value)
-            e.target.blur()
-          }}
-        />
-        <button
-          aria-label="Clear start date filter"
-          onClick={() => {
-            setDateStart("");
-            setDateEnd("");
-          }}
-        >
-          {'\u00d7'}
-        </button>
-      </div>
-    </fieldset>
-=======
+
   const submitDate = () => {
     handleDate(toDateObj(dateStart, false), toDateObj(dateEnd, true));
   };
@@ -71,57 +35,57 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
   const handleEnterKeydown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     inputRef: RefObject<HTMLInputElement>
+  ) => {
     if (e.key === "Enter") {
       e.preventDefault();
       submitDate();
       inputRef.current?.blur();
     }
   };
-
   return (
-      <fieldset className={styles["DateSelect"]} aria-labelledby="date-legend">
-        <legend className="sr-only" id="date-legend">
-          Filter by Date
-        </legend>
-        <div className={styles["datepickers-wrapper"]}>
-          <input
-            type="date"
-            id="start"
-            aria-label="Start date"
-            value={dateStart}
-            ref={startInputRef}
-            onChange={(e) => {
-              console.log("set start date");
-              setDateStart(e.currentTarget.value);
-            }}
-            onKeyDown={(e) => handleEnterKeydown(e, startInputRef)}
-            onSubmit={(e) => console.log("submitted")}
-            onBlur={() => submitDate()}
-          />
+    <fieldset className={styles["DateSelect"]} aria-labelledby="date-legend">
+      <legend className="sr-only" id="date-legend">
+        Filter by Date
+      </legend>
+      <div className={styles["datepickers-wrapper"]}>
+        <input
+          type="date"
+          id="start"
+          aria-label="Start date"
+          value={dateStart}
+          ref={startInputRef}
+          onChange={(e) => {
+            console.log("set start date");
+            setDateStart(e.currentTarget.value);
+          }}
+          onKeyDown={(e) => handleEnterKeydown(e, startInputRef)}
+          onSubmit={(e) => console.log("submitted")}
+          onBlur={() => submitDate()}
+        />
 
-          <span>—</span>
-          <input
-            type="date"
-            id="end"
-            value={dateEnd}
-            aria-label="End Date"
-            ref={endInputRef}
-            onChange={(e) => {
-              setDateEnd(e.currentTarget.value);
-            }}
-            onBlur={() => submitDate()}
-            onKeyDown={(e) => handleEnterKeydown(e, startInputRef)}
-          />
-          <ClearButton
-            handleClear={() => {
-              setDateStart("");
-              setDateEnd("");
-              handleDate(null, null);
-            }}
-            ariaLabel="Clear end date"
-          />
-        </div>
-      </fieldset>
+        <span>—</span>
+        <input
+          type="date"
+          id="end"
+          value={dateEnd}
+          aria-label="End Date"
+          ref={endInputRef}
+          onChange={(e) => {
+            setDateEnd(e.currentTarget.value);
+          }}
+          onBlur={() => submitDate()}
+          onKeyDown={(e) => handleEnterKeydown(e, startInputRef)}
+        />
+        <ClearButton
+          handleClear={() => {
+            setDateStart("");
+            setDateEnd("");
+            handleDate(null, null);
+          }}
+          ariaLabel="Clear end date"
+        />
+      </div>
+    </fieldset>
   );
 }
 

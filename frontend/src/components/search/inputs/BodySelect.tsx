@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import styles from "./BodySelect.module.css";
 
 interface BodySelectProps {
@@ -24,10 +25,8 @@ export default function BodySelect({
       id={styles["body-select"]}
       aria-labelledby="body-legend"
       role="radiogroup"
+      aria-label="Filter by Body"
     >
-      <legend className="sr-only" id="body-legend">
-        Filter by Body
-      </legend>
       <input
         type="radio"
         name="body-select"
@@ -49,7 +48,7 @@ export default function BodySelect({
       {bodyNames ? (
         bodyNames.map((body: string) => {
           return (
-            <>
+            <Fragment key={body}>
               <input
                 name="body-select"
                 type="radio"
@@ -59,18 +58,18 @@ export default function BodySelect({
                 aria-required="true"
                 onChange={(e) => handleBodySelect(e.currentTarget.value)}
               />
-              <label htmlFor={body}>
+              <label htmlFor={body} key={`${body}-label`}>
                 <div className={styles["body-count"]} aria-hidden="true">
                   {facetMap.get(body)}
                 </div>
                 <div className={styles["body-name"]} role="presentation">
                   {body}
-                  <span className="sr-only">
+                  <span className="sr-only" key={`${body}-label-name-sr-only`}>
                     - {facetMap.get(body)} results
                   </span>
                 </div>
               </label>
-            </>
+            </Fragment>
           );
         })
       ) : (

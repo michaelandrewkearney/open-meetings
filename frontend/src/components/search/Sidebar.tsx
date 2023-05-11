@@ -23,12 +23,12 @@ export default function Sidebar({
       aria-label="Filter Options"
       onSubmit={(e) => e.preventDefault()}
     >
-      <DateSelect handleDate={handleDate} searchParams={searchParams} />
+      <DateSelect handleDate={handleDate} />
       <BodySelect
         facetMap={bodyFacet}
         selectedBody={filters.body}
         handleBodySelect={handleBodySelect}
       />
-    </section>
+    </form>
   );
 }
