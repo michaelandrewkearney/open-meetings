@@ -4,12 +4,12 @@
    * @param date
    * @returns
    */
-  export const toDateObj = (date: string): Date | null => {
+  export const toDateObj = (date: string, dayEnd: boolean): Date | null => {
     if (date === "") return null
     const year: number = parseInt(date.substring(0, 4));
     const month: number = parseInt(date.substring(5, 7)) - 1;
     const day: number = parseInt(date.slice(8));
-    return new Date(year, month, day, 23, 59);
+    return dayEnd ? new Date(year, month, day, 23, 59) : new Date(year, month, day) ;
   };
 
    /**

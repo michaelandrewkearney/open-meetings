@@ -4,18 +4,11 @@
   box-shadow: inset 0px 0px 4px rgb(212, 211, 211);
 }
 
-.DateSelect label {
-  display: flex;
-  line-height: 150%;
-  font-weight: bold;
-}
-
 .datepickers-wrapper {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1rem;
   gap: .3rem;
 }
 

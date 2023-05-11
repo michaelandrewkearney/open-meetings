@@ -7,7 +7,6 @@ import BodySelect from "./inputs/BodySelect";
 interface SidebarProps {
   handleBodySelect: any;
   handleDate: any;
-  searchParams: URLSearchParams;
   filters: SearchFilters;
   bodyFacet: Map<string, number>;
 }
@@ -15,7 +14,6 @@ interface SidebarProps {
 export default function Sidebar({
   handleBodySelect,
   handleDate,
-  searchParams,
   bodyFacet,
   filters,
 }: SidebarProps) {
@@ -31,6 +29,6 @@ export default function Sidebar({
         selectedBody={filters.body}
         handleBodySelect={handleBodySelect}
       />
-    </form>
+    </section>
   );
 }

@@ -1,12 +1,10 @@
 .ResultsSection {
+  position: fixed;
+  top: var(--header-height);
+  max-height: calc(100vh - var(--header-height));
   display: flex;
-  gap: 1rem;
   align-items: stretch;
-  height: 80vh;
-}
-
-.ResultsSection>* {
-  height: 100%;
+  width: 100%;
 }
 
 .ResultsSection legend {
@@ -21,10 +19,12 @@
 }
 
 .results {
-  flex: 3 0;
   display: flex;
   flex-direction: column;
+  width: 95%;
   gap: 0.5rem;
-  height: 100%;
-  overflow-x: auto;
+  flex: 1 1 66%;
+  padding: 1rem;
+  height: calc(100vh - var(--header-height));
+  overflow: scroll;
 }
