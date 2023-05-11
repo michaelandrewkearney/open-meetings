@@ -49,11 +49,11 @@ export default function ResultSection({
       <Sidebar
         handleBodySelect={handleBodySelect}
         handleDate={handleDate}
-        searchParams={searchParams}
         bodyFacet={bodyFacet}
         filters={filters}
       />
       <main className={styles["results"]} aria-label="Search results">
+
         <i aria-live="polite" aria-atomic="true" role="presentation">
           displaying {searchResults.results.length} out of{" "}
           {searchResults.resultsInfo.found} results
@@ -67,7 +67,7 @@ export default function ResultSection({
             <span>Date: {dateFilterInfo}</span>
           </span>
         </i>
-          {searchResults.results.length != 0 ? (
+        {searchResults.results.length != 0 ? (
           searchResults.results.map((result: MeetingResult) => (
             <SearchResult
               key={result.id}

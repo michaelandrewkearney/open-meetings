@@ -23,9 +23,9 @@ test("search renders", async () => {
     />
   );
   function delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
-  (async () => { 
+  (async () => {
     await delay(5000);
   })();
   expect(screen.getByRole("searchbox")).toBeInTheDocument();

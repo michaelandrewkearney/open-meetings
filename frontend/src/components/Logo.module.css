@@ -1,4 +1,8 @@
 
+#logo {
+  white-space: nowrap;
+}
+
 #logo span {
   display: block;
   font-weight: bold;

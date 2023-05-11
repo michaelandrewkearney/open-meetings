@@ -9,11 +9,12 @@
   --light-blue: #5770D4;
   --blue: #374785;
   --dark-blue: #24305E;
-  height: 100%;
+  --header-height: 15vh
 }
 
 * {
   margin: 0;
+  box-sizing: border-box;
 }
 
 a {
@@ -23,7 +24,9 @@ a {
 
 a:hover {
   color: var(--orange);
+  
 }
+
 
 .sr-only {
   clip: rect(1px, 1px, 1px, 1px);
@@ -36,68 +39,38 @@ a:hover {
   position: absolute;
 }
 
-/* use flexboxes so App fills but doesn't overfill viewport */
-html {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-  overflow: hidden;
-}
-
 body {
-  margin: 0;
-  box-sizing: border-box;
   font-family: 'Fira-Sans', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content:stretch;
-  align-items: stretch;
-}
-
-#root {
-  flex-grow: 1;
-  min-height: 0;
-  /* Avoid setting maxes allows zoom out for large data. */
-  /* max-height: 1280px; */
-  /* max-width: 1280px; */
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: stretch;
 }
 
 #root>header {
-  padding: 2% 7%;
-  flex-grow: 0;
-  flex-shrink: 0;
-  gap: 5rem;
-  height: 15vh;
-  display: flex;
-  align-items: center;
-  justify-items: space-between;
+  z-index: 1;
+  position: fixed;
+  height: var(--header-height);
+  width: 100%;
   background-color: var(--dark-blue);
-  box-sizing: border-box;
+  padding: 1rem;
 }
 
-#root>div {
+ #root > .page-body {
+  position: absolute;
+  top: var(--header-height)
+} 
+
+/* #root>div {
   margin: 2rem 7% 0rem;
   gap: 5rem;
   height: calc(100%-200px);
   box-sizing: border-box;
-}
+} */
 
-#root>main {
+/* #root>main {
   overflow-x: auto;
-}
+} */
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
