@@ -7,7 +7,6 @@ import BodySelect from "./inputs/BodySelect";
 interface SidebarProps {
   handleBodySelect: any;
   handleDate: any;
-  searchParams: URLSearchParams;
   filters: SearchFilters;
   bodyFacet: Map<string, number>;
 }
@@ -15,13 +14,12 @@ interface SidebarProps {
 export default function Sidebar({
   handleBodySelect,
   handleDate,
-  searchParams,
   bodyFacet,
   filters,
 }: SidebarProps) {
   return (
     <section className={styles["Sidebar"]} aria-label="Filter Options">
-      <DateSelect handleDate={handleDate} searchParams={searchParams} />
+      <DateSelect handleDate={handleDate} />
       <BodySelect
         facetMap={bodyFacet}
         selectedBody={filters.body}

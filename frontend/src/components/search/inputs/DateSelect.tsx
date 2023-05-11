@@ -13,7 +13,6 @@ import { isSearchState } from "../../..";
 
 interface DateSelectProps {
   handleDate: (startDate: Date | null, endDate: Date | null) => void;
-  searchParams: URLSearchParams;
 }
 
 export default function DateSelect({ handleDate }: DateSelectProps) {
@@ -30,7 +29,7 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
   const endInputRef = useRef<HTMLInputElement>(null);
 
   const submitDate = () => {
-    handleDate(toDateObj(dateStart), toDateObj(dateEnd));
+    handleDate(toDateObj(dateStart, false), toDateObj(dateEnd, true));
   };
 
   const handleEnterKeydown = (
@@ -69,13 +68,6 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
             onSubmit={(e) => console.log("submitted")}
             onBlur={() => submitDate()}
           />
-          <ClearButton
-            handleClear={() => {
-              setDateStart("");
-              handleDate(null, toDateObj(dateEnd));
-            }}
-            ariaLabel="Clear start date"
-          />
 
           <span>—</span>
           <input
@@ -92,8 +84,9 @@ export default function DateSelect({ handleDate }: DateSelectProps) {
           />
           <ClearButton
             handleClear={() => {
+              setDateStart("");
               setDateEnd("");
-              handleDate(null, toDateObj(dateEnd));
+              handleDate(null, null);
             }}
             ariaLabel="Clear end date"
           />

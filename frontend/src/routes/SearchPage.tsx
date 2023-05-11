@@ -41,8 +41,8 @@ export function buildInitialSearch(requestJsonFunc: RequestJsonFunction) {
     } else {
       const filters: SearchFilters = {
         body: params.body === "all" ? null : params.body,
-        dateStart: params.dateStart ? toDateObj(params.dateStart) : null,
-        dateEnd: params.dateEnd ? toDateObj(params.dateEnd) : null,
+        dateStart: params.dateStart ? toDateObj(params.dateStart, false) : null,
+        dateEnd: params.dateEnd ? toDateObj(params.dateEnd, true) : null,
       };
       const keywordOnly = await search(params.keyphrase, defaultFilters);
       const bodyFacet = keywordOnly.bodyFacetMap;
@@ -117,21 +117,28 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
     return () => clearTimeout(timeoutId);
   }, [searchInput]);
 
-  const handleNewKeyphraseSearch = () => {
+  const handleNewKeyphraseSearch = (
+    newKeyphrase: string,
+    newDateStart: Date | null,
+    newDateEnd: Date | null
+  ) => {
     const newFilters: SearchFilters = {
       body: null,
-      dateStart: null,
-      dateEnd: null,
+      dateStart: newDateStart,
+      dateEnd: newDateEnd,
     };
+
+    setKeyphrase(newKeyphrase);
     setFilters(() => newFilters);
-    getSearch(keyphrase, newFilters).then((newResults: SearchResults) => {
+    getSearch(newKeyphrase, newFilters).then((newResults: SearchResults) => {
       setResults(() => newResults);
+      setBodyFacet(() => newResults.bodyFacetMap);
       setFilteredBodyFacet(() => newResults.bodyFacetMap);
     });
   };
 
   useEffect(() => {
-    handleNewKeyphraseSearch();
+    handleNewKeyphraseSearch(keyphrase, filters.dateStart, filters.dateEnd);
   }, [keyphrase]);
 
   const handleBodySelect = (body: string | null) => {
@@ -146,31 +153,82 @@ function SearchPage({ requestJsonFunction }: SearchPageProps) {
   };
 
   const handleDate = (dateStart: Date | null, dateEnd: Date | null) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      dateStart: dateStart,
-      dateEnd: dateEnd,
-    }));
-
-    if (dateStart === null && dateEnd === null) {
-      setFilteredBodyFacet(() => bodyFacet);
-      getSearch(keyphrase, {
-        ...filters,
-        dateStart: dateStart,
-        dateEnd: dateEnd,
-      }).then((newResults) => {
-        setResults(() => newResults);
+    async function asyncHandleDate() {
+      const allBodies = await getSearch(keyphrase, {
+        body: null,
+        dateStart,
+        dateEnd,
       });
+
+      const fileredByBody = await getSearch(keyphrase, {
+        body: filters.body,
+        dateStart,
+        dateEnd,
+      });
+
+      if (dateStart === null && dateEnd === null) {
+        setFilteredBodyFacet(() => bodyFacet);
+        setFilters(() => ({ body: filters.body, dateStart, dateEnd }));
+        setResults(() => fileredByBody);
+        return;
+      }
+
+      setFilteredBodyFacet(() => allBodies.bodyFacetMap);
+      if (filters.body && !fileredByBody.bodyFacetMap.has(filters.body)) {
+        setFilters(() => ({ body: null, dateStart, dateEnd }));
+        setResults(() => allBodies);
+      } else {
+        setFilters((prevFilters) => ({
+          body: prevFilters.body,
+          dateStart,
+          dateEnd,
+        }));
+        setFilters(() => ({ body: filters.body, dateStart, dateEnd }));
+        setResults(() => fileredByBody);
+      }
     }
 
     getSearch(keyphrase, {
-      ...filters,
+      body: null,
       dateStart: dateStart,
       dateEnd: dateEnd,
     }).then((newResults) => {
-      setResults(() => newResults);
-      setFilteredBodyFacet(() => newResults.bodyFacetMap);
+      if (dateStart === null && dateEnd === null) {
+        setFilteredBodyFacet(() => bodyFacet);
+      } else {
+        setFilteredBodyFacet(() => newResults.bodyFacetMap);
+      }
     });
+
+    asyncHandleDate();
+
+    // getSearch(keyphrase, {
+    //   body: filters.body,
+    //   dateStart: dateStart,
+    //   dateEnd: dateEnd,
+    // }).then((newResults) => {
+    //   if (dateStart === null && dateEnd === null) {
+    //     setFilteredBodyFacet(() => bodyFacet);
+    //     setResults(() => newResults);
+    //   } else {
+    //     if (filters.body && !newResults.bodyFacetMap.has(filters.body)) {
+    //       setFilters(() => ({
+    //         body: null,
+    //         dateStart: dateStart,
+    //         dateEnd: dateEnd,
+    //       }));
+    //       getSearch(keyphrase, { body: null, dateStart, dateEnd }).then(
+    //         (newResults) => setResults(() => newResults)
+    //       );
+    //     } else {
+    //       setFilters((prevFilters) => ({
+    //         body: prevFilters.body,
+    //         dateStart: dateStart,
+    //         dateEnd: dateEnd,
+    //       }));
+    //     }
+    //   }
+    // });
   };
 
   document.title = "Open Meetings";

@@ -12,10 +12,6 @@
   --header-height: 15vh
 }
 
-body {
-  height: 100vh;
-}
-
 * {
   margin: 0;
   box-sizing: border-box;
@@ -55,10 +51,13 @@ body {
   z-index: 1;
   position: fixed;
   height: var(--header-height);
+  width: 100%;
+  background-color: var(--dark-blue);
+  padding: 1rem;
 }
 
- #root > :not(header) {
-  position: fixed;
+ #root > .page-body {
+  position: absolute;
   top: var(--header-height)
 } 
 

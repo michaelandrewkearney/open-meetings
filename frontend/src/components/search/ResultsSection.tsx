@@ -49,7 +49,6 @@ export default function ResultSection({
       <Sidebar
         handleBodySelect={handleBodySelect}
         handleDate={handleDate}
-        searchParams={searchParams}
         bodyFacet={bodyFacet}
         filters={filters}
       />

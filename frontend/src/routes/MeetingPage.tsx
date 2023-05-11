@@ -24,73 +24,75 @@ export default function MeetingPage() {
   if (meeting.is_annual_calendar) attrs.push("Annual Calendar");
   if (meeting.is_public_notice) attrs.push("Public Announcement");
 
-  document.title = 'Open Meetings'
+  document.title = "Open Meetings";
 
   return (
     <>
       <header className={styles["header"]}>
         <Logo />
       </header>
-      <nav id={styles["back-nav"]}>
-        <Link to={prevPath}>Back to Search</Link>
-      </nav>
-      <main id={styles["page-content"]}>
-        {meeting.isCancelled ? (
-          <div id={styles["cancelled-detail"]}>
-            <p id={styles["cancelled-time"]}>
-              Cancelled on {meeting.cancelledDate.toLocaleString()}
-            </p>
-            <p>Reason: {meeting.cancelledReason}</p>
-          </div>
-        ) : (
-          <></>
-        )}
-        <h1>
-          {meeting.body} on {meeting.meetingDate.toLocaleDateString()}
-        </h1>
-        <div id={styles["meeting-attrs"]}>
-          <span key={attrs.join(",")}>{attrs.join(", ")}</span>
-        </div>
-        <section aria-label="Meeting Information" id={styles["meeting-info"]}>
-          <div>
-            {meetingInfo.map(({ label, info }) => (
-              <p
-                key={label}
-                className={styles["meeting-detail"]}
-                role="presentation"
-              >
-                <span
-                  className={styles["label"]}
-                  id={label}
-                >{`${label}:`}</span>
-                <span className={styles["info"]}>{info}</span>
+      <div className="page-body">
+        <nav id={styles["back-nav"]}>
+          <Link to={prevPath}>Back to Search</Link>
+        </nav>
+        <main id={styles["page-content"]}>
+          {meeting.isCancelled ? (
+            <div id={styles["cancelled-detail"]}>
+              <p id={styles["cancelled-time"]}>
+                Cancelled on {meeting.cancelledDate.toLocaleString()}
               </p>
-            ))}
+              <p>Reason: {meeting.cancelledReason}</p>
+            </div>
+          ) : (
+            <></>
+          )}
+          <h1>
+            {meeting.body} on {meeting.meetingDate.toLocaleDateString()}
+          </h1>
+          <div id={styles["meeting-attrs"]}>
+            <span key={attrs.join(",")}>{attrs.join(", ")}</span>
           </div>
+          <section aria-label="Meeting Information" id={styles["meeting-info"]}>
+            <div>
+              {meetingInfo.map(({ label, info }) => (
+                <p
+                  key={label}
+                  className={styles["meeting-detail"]}
+                  role="presentation"
+                >
+                  <span
+                    className={styles["label"]}
+                    id={label}
+                  >{`${label}:`}</span>
+                  <span className={styles["info"]}>{info}</span>
+                </p>
+              ))}
+            </div>
 
-          <p className={styles["meeting-detail"]} id={styles["contact-info"]}>
-            <span className={styles["label"]}>Contact:</span>
-            <span className={styles["info"]}>
-              <span>{meeting.contactPerson}</span>
-              <span>{meeting.contactEmail}</span>
-              <span>{meeting.contactPhone}</span>
-            </span>
-          </p>
-        </section>
-        <hr />
-        <section aria-label="Minutes and Agenda">
-          <DocumentSection
-            title="Latest Agenda"
-            link={meeting.latestAgendaLink}
-            paragraphs={meeting.latestAgenda}
-          />
-          <DocumentSection
-            title="Latest Minutes"
-            link={meeting.latestMinutesLink}
-            paragraphs={meeting.latestMinutes}
-          />
-        </section>
-      </main>
+            <p className={styles["meeting-detail"]} id={styles["contact-info"]}>
+              <span className={styles["label"]}>Contact:</span>
+              <span className={styles["info"]}>
+                <span>{meeting.contactPerson}</span>
+                <span>{meeting.contactEmail}</span>
+                <span>{meeting.contactPhone}</span>
+              </span>
+            </p>
+          </section>
+          <hr />
+          <section aria-label="Minutes and Agenda">
+            <DocumentSection
+              title="Latest Agenda"
+              link={meeting.latestAgendaLink}
+              paragraphs={meeting.latestAgenda}
+            />
+            <DocumentSection
+              title="Latest Minutes"
+              link={meeting.latestMinutesLink}
+              paragraphs={meeting.latestMinutes}
+            />
+          </section>
+        </main>
+      </div>
     </>
   );
 }
