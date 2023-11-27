@@ -58,6 +58,7 @@ body {
 
  #root > .page-body {
   position: absolute;
+  width: 100%;
   top: var(--header-height)
 } 
 
