@@ -1,6 +1,6 @@
 # Open Meetings
 
-![Preview](preview/preview.mp4)
+![Preview](preview/preview.mov)
 
 ## About this Project
 
