@@ -1,5 +1,7 @@
 # Open Meetings
 
+![Preview](preview/preview.mp4)
+
 ## About this Project
 
 Open Meetings is a full-stack web application for accessing information about the meetings of public bodies in Rhode Island, including with keyword search. It was developed by Michael Kearney, Lizzy Zhang, Austin Miles, and Ronnie Shashoua for a software development class taught by Tim Nelson at Brown University in Spring 2023.
