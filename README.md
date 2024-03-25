@@ -1,6 +1,6 @@
 # Open Meetings
 
-![Preview](preview/preview.mov)
+https://github.com/michaelandrewkearney/open-meetings/assets/23644580/4a2f21b4-925f-4748-8857-c2e3db680073
 
 ## About this Project
 
