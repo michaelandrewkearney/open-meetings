@@ -24,8 +24,6 @@ The project contains three major components:
 
 ## Preview and Features
 
-View a recording of the app in action at [preview/app.mov](preview/app.mov).
-
 See upcoming meetings:
 ![Main Page](preview/main_page.png)
 
